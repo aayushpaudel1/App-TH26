@@ -379,7 +379,7 @@ function drawLeaderboard() {
         ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 25);
         ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
         ctx.font = (ip ? 'bold ' : '600 ') + "18px 'Segoe UI',sans-serif";
-        ctx.fillText(e.name, w / 2 - cw / 2 + 15, y + 48);
+        ctx.fillText(e.name, w / 2 - cw / 2 + 80, y + 48);
         ctx.textAlign = 'right';
         ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
         ctx.font = "bold 18px 'Segoe UI',sans-serif";
@@ -406,6 +406,7 @@ function leaderboardToDialemma() {
     document.getElementById('closeShop').style.display = 'none';
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.getElementById('cards-tab').classList.add('active');
+    updateShopStats(); // Update balance and health before showing dilemma
     startDilemma();
 }
 
@@ -920,7 +921,7 @@ const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
 class Obstacle {
     constructor() {
         this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
-        this.scale = 0.8 + Math.random() * 0.5;
+        this.scale = 0.5 + Math.random() * 1.0;
         this.w = 50 * this.scale;
         this.h = 50 * this.scale;
         this.x = w;
@@ -1033,7 +1034,7 @@ function checkCollisions() {
             playDamage();
             triggerPlayerAnim('damage', 20);
             Juice.shake = 20;
-            Juice.flash = 10;
+            Juice.flash = 0;
             Juice.freeze = 5;
             obs.remove();
             if (player.health <= 0) {
@@ -1109,7 +1110,7 @@ const Juice = {
     postDraw() {
         if (this.shake > 0) ctx.restore();
         if (this.flash > 0) {
-            ctx.fillStyle = "rgba(255, 0, 0, " + (this.flash / 10) + ")";
+            ctx.fillStyle = "rgba(255, 0, 0, " + (this.flash / 30) + ")";
             ctx.fillRect(0, 0, w, h);
         }
     }
@@ -1244,6 +1245,11 @@ function loop() {
         requestAnimationFrame(loop);
         return;
     } else if (gameState === 'GAMEOVER') {
+        // Draw opaque background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        ctx.fillRect(0, 0, w, h);
+
+        // Draw game over text
         ctx.fillStyle = '#fff';
         ctx.font = '40px Courier New';
         ctx.textAlign = 'center';
@@ -1262,8 +1268,8 @@ loop();
 // ========== SKILL DATA & HANDLERS ==========
 const skillData = {
     'code-rabbit': { name: 'Code Rabbit', description: 'Fast coding AI.', buffs: ['💰 Income +10%'], debuffs: [], price: 500 },
-    'velocity-demon': { name: 'Velocity Demon', description: 'Extreme dev speed.', buffs: ['💰 Income +15%'], debuffs: [], price: 1200 },
-    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Infinite knowledge.', buffs: ['💰 Income +25%'], debuffs: [], price: 1500 },
+    'velocity-demon': { name: 'Velocity Demon', description: 'Extreme dev speed.', buffs: ['💰 Income +15%'], debuffs: ['⚠️ Damage Taken +8%'], price: 1200 },
+    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Infinite knowledge.', buffs: ['💰 Income +25%'], debuffs: ['⚠️ Damage Taken +10%'], price: 1500 },
     'caffeine': { name: 'Caffeine Overdrive', description: 'Coffee-fueled productivity.', buffs: ['📊 Passive Income +10%'], debuffs: ['⚠️ Damage Taken +8%'], price: 2000 },
     'turbo': { name: 'Turbo Compiler', description: 'Fast but fragile.', buffs: ['💰 Income +20%'], debuffs: ['🛡️ Defense -15%'], price: 2500 },
     'passive-bot': { name: 'Passive Income Bot', description: 'Automated income.', buffs: ['💰 Income +20%', '📊 Passive Income +15%'], debuffs: [], price: 3000 },
