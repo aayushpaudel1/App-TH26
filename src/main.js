@@ -45,7 +45,7 @@ function initAudio() {
 
 function stopMu(id) {
     const s = muState[id];
-    if (s) { s.on = false; s.nodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch(e){} }); s.nodes = []; }
+    if (s) { s.on = false; s.nodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } }); s.nodes = []; }
 }
 
 function playMu(id, cfg) {
@@ -67,64 +67,72 @@ function playMu(id, cfg) {
 }
 
 function startGameMusic() {
-    const notes = [220,277,330,440,554,440,330,277];
-    playMu('game', { vol: 0.15, ms: 130, play(mg, t) {
-        const m = Math.floor(t/16)%4;
-        let sh = 0; if(m===1)sh=-1; if(m===2)sh=-3; if(m===3)sh=-4;
-        const f = notes[t%8]*Math.pow(2,sh/12);
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type='square'; o.frequency.value=f; o.detune.value=Math.random()*10-5;
-        g.gain.setValueAtTime(0.15,audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.12);
-        o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+0.15);
-    }});
+    const notes = [-12, -8, -5, 0, 4, 0, -5, -8];
+    playMu('game', {
+        vol: 0.15, ms: 130, play(mg, t) {
+            const m = (t / 16 | 0) % 4;
+            let sh = 0; if (m === 1) sh = -1; if (m === 2) sh = -3; if (m === 3) sh = -4;
+            const f = 440 * 2 ** ((notes[t % 8] + sh) / 12);
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type = 'square'; o.frequency.value = f; o.detune.value = Math.random() * 10 - 5;
+            g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime + 0.15);
+        }
+    });
 }
 
 function startShopMusic() {
-    const ch = [[261,329,392],[293,369,440],[246,311,369],[220,277,329]];
-    playMu('shop', { vol: 0.25, ms: 2000, play(mg, t) {
-        ch[t%4].forEach(f => {
-            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-            o.type='sine'; o.frequency.value=f;
-            g.gain.setValueAtTime(0,audioCtx.currentTime);
-            g.gain.linearRampToValueAtTime(0.15,audioCtx.currentTime+0.3);
-            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.8);
-            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+2);
-        });
-    }});
+    const ch = [[261, 329, 392], [293, 369, 440], [246, 311, 369], [220, 277, 329]];
+    playMu('shop', {
+        vol: 0.25, ms: 2000, play(mg, t) {
+            ch[t % 4].forEach(f => {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'sine'; o.frequency.value = f;
+                g.gain.setValueAtTime(0, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.3);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.8);
+                o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime + 2);
+            });
+        }
+    });
 }
 
 function startLeaderboardMusic() {
-    const ch = [[523,659,784],[587,740,880],[659,831,988],[698,880,1047]];
-    playMu('lb', { vol: 0.15, ms: 800, play(mg, t) {
-        ch[t%4].forEach(f => {
-            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-            o.type='sawtooth'; o.frequency.value=f; o.detune.value=Math.random()*6-3;
-            g.gain.setValueAtTime(0,audioCtx.currentTime);
-            g.gain.linearRampToValueAtTime(0.12,audioCtx.currentTime+0.1);
-            g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+0.4);
-            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+0.8);
-            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+0.9);
-        });
-    }});
+    const ch = [[523, 659, 784], [587, 740, 880], [659, 831, 988], [698, 880, 1047]];
+    playMu('lb', {
+        vol: 0.15, ms: 800, play(mg, t) {
+            ch[t % 4].forEach(f => {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = Math.random() * 6 - 3;
+                g.gain.setValueAtTime(0, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.1);
+                g.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.4);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+                o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime + 0.9);
+            });
+        }
+    });
 }
 
 function startDilemmaMusic() {
-    const ch = [[220,233,311],[196,233,294],[185,220,277],[208,247,311]];
-    playMu('dil', { vol: 0.22, ms: 2200, play(mg, t) {
-        ch[t%4].forEach(f => {
-            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-            o.type='triangle'; o.frequency.value=f;
-            const lfo = audioCtx.createOscillator(), lg = audioCtx.createGain();
-            lfo.frequency.value=4+Math.random()*2; lg.gain.value=3;
-            lfo.connect(lg); lg.connect(o.frequency); lfo.start(); lfo.stop(audioCtx.currentTime+2.5);
-            g.gain.setValueAtTime(0,audioCtx.currentTime);
-            g.gain.linearRampToValueAtTime(0.1,audioCtx.currentTime+0.5);
-            g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+1.5);
-            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+2.2);
-            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+2.5);
-        });
-    }});
+    const ch = [[220, 233, 311], [196, 233, 294], [185, 220, 277], [208, 247, 311]];
+    playMu('dil', {
+        vol: 0.22, ms: 2200, play(mg, t) {
+            ch[t % 4].forEach(f => {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'triangle'; o.frequency.value = f;
+                const lfo = audioCtx.createOscillator(), lg = audioCtx.createGain();
+                lfo.frequency.value = 4 + Math.random() * 2; lg.gain.value = 3;
+                lfo.connect(lg); lg.connect(o.frequency); lfo.start(); lfo.stop(audioCtx.currentTime + 2.5);
+                g.gain.setValueAtTime(0, audioCtx.currentTime);
+                g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.5);
+                g.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 1.5);
+                g.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2.2);
+                o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime + 2.5);
+            });
+        }
+    });
 }
 
 function stopAllAudio() { Object.keys(muState).forEach(stopMu); }
@@ -326,10 +334,10 @@ function initializeGame() {
 
 // ========== LEADERBOARD SYSTEM ==========
 
-const botPre = ["Doge","Bark","Stonk","Hodl","Moon","Crypto","Diamond","Rocket","Block","Pixel"];
-const botSuf = ["Coin","Hound","Paws","Mutt","Shiba","Terrier","Corgi","Pup","Rover","Lab"];
+const botPre = ["Doge", "Bark", "Stonk", "Hodl", "Moon", "Crypto", "Diamond", "Rocket", "Block", "Pixel"];
+const botSuf = ["Coin", "Hound", "Paws", "Mutt", "Shiba", "Terrier", "Corgi", "Pup", "Rover", "Lab"];
 const botNames = [];
-for(let i=0;i<10;i++) for(let j=0;j<10;j++) botNames.push(botPre[i]+botSuf[j]);
+for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) botNames.push(botPre[i] + botSuf[j]);
 
 let lbBots = [];
 let lbRoundNumber = 0;
@@ -340,7 +348,7 @@ function updateLeaderboardBots() {
     const playerMoney = player.money;
     if (lbBots.length === 0) {
         lbBots = botNames.slice(0, 99).map(name => ({
-            name, netWorth: Math.floor(playerMoney * (0.3 + Math.random() * 1.4)),
+            name, netWorth: playerMoney * (0.3 + Math.random() * 1.4) | 0,
             alive: true
         }));
     } else {
@@ -348,9 +356,9 @@ function updateLeaderboardBots() {
         lbBots.forEach(bot => {
             if (!bot.alive) return;
             const change = (Math.random() - 0.48) * 1.2;
-            bot.netWorth = Math.floor(bot.netWorth * (1 + change));
-            bot.netWorth = Math.floor(bot.netWorth * 0.7 + playerMoney * (0.1 + Math.random() * 0.5) * 0.3);
-            if (bot.netWorth < Math.floor(playerMoney * 0.05)) {
+            bot.netWorth = bot.netWorth * (1 + change) | 0;
+            bot.netWorth = bot.netWorth * 0.7 + playerMoney * (0.1 + Math.random() * 0.5) * 0.3 | 0;
+            if (bot.netWorth < (playerMoney * 0.05 | 0)) {
                 bot.alive = false;
                 bot.netWorth = 0;
                 roundBankrupt++;
@@ -370,15 +378,15 @@ function drawLeaderboard() {
     ctx.fillRect(0, 0, w, h);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#facc15';
-    ctx.font = "bold 20px 'Segoe UI',sans-serif";
+    ctx.font = "bold 20px system-ui";
     ctx.fillText(`ROUND ${lbRoundNumber} ENDED`, w / 2, 80);
     ctx.fillStyle = '#fff';
-    ctx.font = "800 48px 'Segoe UI',sans-serif";
+    ctx.font = "800 48px system-ui";
     ctx.fillText('LEADERBOARD', w / 2, 130);
     ctx.fillStyle = lbBankruptMsg.includes('\u2705') ? '#4ade80' : '#ef4444';
-    ctx.font = "bold 20px 'Segoe UI',sans-serif";
+    ctx.font = "bold 20px system-ui";
     ctx.fillText(lbBankruptMsg, w / 2, 170);
-    ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(20,190,w-40,1);
+    ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(20, 190, w - 40, 1);
     let si = Math.max(0, rank - 2), ei = Math.min(all.length, rank + 3);
     if (ei - si < 5) { if (si === 0) ei = Math.min(all.length, 5); else si = Math.max(0, all.length - 5); }
     const cw = Math.min(600, w - 40), ch = 60, gap = 12;
@@ -389,17 +397,17 @@ function drawLeaderboard() {
         ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
         ctx.textBaseline = 'middle';
         ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
-        ctx.font = "bold 16px 'Segoe UI',sans-serif";
+        ctx.font = "bold 16px system-ui";
         ctx.textAlign = 'left';
         ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + ch / 2 | 0);
         ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
-        ctx.font = (ip ? 'bold ' : '600 ') + "20px 'Segoe UI',sans-serif";
+        ctx.font = (ip ? 'bold ' : '600 ') + "20px system-ui";
         ctx.textAlign = 'center';
         ctx.fillText(e.name, w / 2, y + ch / 2 | 0);
         ctx.textAlign = 'right';
         ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
         ctx.font = "bold 16px 'Segoe UI',sans-serif";
-        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + ch / 2 | 0);
+        ctx.fillText(e.alive ? `$${(e.netWorth | 0).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + ch / 2 | 0);
         ctx.textAlign = 'left';
     }
 }
@@ -543,7 +551,7 @@ const cardsDecisions = [
 let currentCardDecision = null;
 
 function startDilemma() {
-    currentCardDecision = cardsDecisions[Math.floor(Math.random() * cardsDecisions.length)];
+    currentCardDecision = cardsDecisions[Math.random() * cardsDecisions.length | 0];
     renderCard(currentCardDecision);
 }
 
@@ -606,7 +614,7 @@ function selectCardOption(option) {
     const stats = selectedOption.stats;
 
     if (stats.money === 'percent') {
-        player.money = Math.floor(player.money * (1 + stats.moneyPercent));
+        player.money = player.money * (1 + stats.moneyPercent) | 0;
     } else if (stats.money === 'gamble') {
         if (Math.random() > 0.5) {
             player.money *= 2;
@@ -708,8 +716,8 @@ function resize() {
     w = c.width = window.innerWidth;
     h = c.height = window.innerHeight;
     [skyCvs, auroraCvs, starsCvs, cityCvs].forEach(cvs => {
-        cvs.width = window.innerWidth;
-        cvs.height = window.innerHeight;
+        cvs.width = w;
+        cvs.height = h;
     });
     if (gameState === 'TITLE') player.y = h / 2;
     initStars();
@@ -757,8 +765,8 @@ function initStars() {
     for (let i = 0; i < 300; i++) {
         const isShiny = Math.random() < 0.1;
         bgStars.push({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * (window.innerHeight * config.waterLevel),
+            x: Math.random() * w,
+            y: Math.random() * (h * config.waterLevel),
             size: isShiny ? Math.random() * 2 + 1 : Math.random() * 1.5,
             opacity: Math.random(),
             twinkleSpeed: (Math.random() * 0.05 + 0.01) * (isShiny ? 2000 : 1),
@@ -788,17 +796,17 @@ let cars = [];
 function initCity() {
     buildings = [];
     let currentX = 0;
-    const groundY = window.innerHeight * config.waterLevel;
-    while (currentX < window.innerWidth) {
+    const groundY = h * config.waterLevel;
+    while (currentX < w) {
         let width, height, shape = 'flattop';
         const rand = Math.random();
         if (rand > 0.85) { shape = 'empire'; width = 80; height = 400 + Math.random() * 100; }
         else { shape = 'block'; width = 50 + Math.random() * 80; height = 150 + Math.random() * 300; }
-        if (currentX + width > window.innerWidth) width = window.innerWidth - currentX;
+        if (currentX + width > w) width = w - currentX;
         if (width < 20) break;
         const winW = 6, winH = 9, gapX = 4, gapY = 6;
-        const cols = Math.floor((width - 4) / (winW + gapX));
-        const rows = Math.floor((height - 10) / (winH + gapY));
+        const cols = (width - 4) / (winW + gapX) | 0;
+        const rows = (height - 10) / (winH + gapY) | 0;
         const winArr = [];
         for (let r = 0; r < rows; r++) {
             for (let col = 0; col < cols; col++) {
@@ -813,7 +821,7 @@ function initCity() {
     cars = [];
     for (let i = 0; i < 40; i++) {
         cars.push({
-            x: Math.random() * window.innerWidth,
+            x: Math.random() * w,
             y: groundY - Math.random() * 5,
             speed: Math.random() + 0.5,
             dir: Math.random() > 0.5 ? 1 : -1,
@@ -823,8 +831,8 @@ function initCity() {
 }
 
 function drawStaticCity() {
-    staticCityCvs.width = window.innerWidth;
-    staticCityCvs.height = window.innerHeight;
+    staticCityCvs.width = w;
+    staticCityCvs.height = h;
     staticCityCtx.clearRect(0, 0, staticCityCvs.width, staticCityCvs.height);
     buildings.forEach(b => {
         const hue = 220 + b.colorIdx * 40;
@@ -851,7 +859,7 @@ function drawCity() {
     if (cityScroll <= -w) cityScroll += w;
     cityCtx.drawImage(staticCityCvs, cityScroll, 0);
     cityCtx.drawImage(staticCityCvs, cityScroll + w, 0);
-    const groundY = window.innerHeight * config.waterLevel;
+    const groundY = h * config.waterLevel;
     [cityScroll, cityScroll + w].forEach(offsetX => {
         if (offsetX > w || offsetX + w < 0) return;
         buildings.forEach(b => {
@@ -866,10 +874,10 @@ function drawCity() {
         });
     });
     cityCtx.fillStyle = '#000';
-    cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5);
-    for (let x = 20; x < window.innerWidth; x += 100) {
-        let lampX = (x + cityScroll) % window.innerWidth;
-        if (lampX < 0) lampX += window.innerWidth;
+    cityCtx.fillRect(0, groundY - 5, w, 5);
+    for (let x = 20; x < w; x += 100) {
+        let lampX = (x + cityScroll) % w;
+        if (lampX < 0) lampX += w;
         cityCtx.fillStyle = '#444';
         cityCtx.fillRect(lampX, groundY - 40, 3, 40);
         cityCtx.fillStyle = '#ffaa00';
@@ -882,8 +890,8 @@ function drawCity() {
     }
     cars.forEach(car => {
         car.x += car.speed * car.dir;
-        if (car.x > window.innerWidth) car.x = -20;
-        if (car.x < -20) car.x = window.innerWidth;
+        if (car.x > w) car.x = -20;
+        if (car.x < -20) car.x = w;
         cityCtx.fillStyle = car.color;
         cityCtx.shadowBlur = 5;
         cityCtx.shadowColor = car.color;
@@ -932,11 +940,11 @@ resize();
 requestAnimationFrame(frame);
 
 // ========== OBSTACLES & COINS ==========
-const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
+const OBSTACLE_EMOJI = ['💳', '🏠', '☕', '📱', '🎓', '🎰', '🏥'];
 
 class Obstacle {
     constructor() {
-        this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
+        this.emoji = OBSTACLE_EMOJI[Math.random() * OBSTACLE_EMOJI.length | 0];
         this.scale = 0.8 + Math.random() * 0.5;
         this.w = 50 * this.scale;
         this.h = 50 * this.scale;
@@ -1042,7 +1050,7 @@ function checkCollisions() {
         const obs = obstacles[i];
         if (player.x < obs.x + obs.w && player.x + player.size > obs.x &&
             player.y < obs.y + obs.h && player.y + player.size > obs.y) {
-            const damage = Math.floor(20 / defense);
+            const damage = 20 / defense | 0;
             player.health -= damage;
             playDamage();
             triggerPlayerAnim('damage', 20);
@@ -1062,7 +1070,7 @@ function checkCollisions() {
         const coinSize = cn.size * 2;
         if (player.x < cn.x + coinSize && player.x + player.size > cn.x &&
             player.y < cn.y + coinSize && player.y + player.size > cn.y) {
-            player.money += Math.floor(100 * income);
+            player.money += 100 * income | 0;
             playCoin();
             triggerPlayerAnim('collect', 15);
             Juice.shake = 5;
@@ -1180,7 +1188,7 @@ function loop() {
             const timeRemaining = Math.max(0, Math.ceil(GAME_INTERVAL - gameTimer));
             document.querySelector('.timer-display').textContent = timeRemaining;
             if (gameTimer >= GAME_INTERVAL) {
-                const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
+                const passiveEarnings = player.money * (passiveIncome * 0.1) | 0;
                 player.money += passiveEarnings;
                 showLeaderboard();
                 Juice.postDraw();
