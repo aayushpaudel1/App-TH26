@@ -1,133 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Audio Demo</title>
-<style>
-body{margin:0;padding:20px;font-family:system-ui;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
-.container{background:rgba(255,255,255,0.95);border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:500px;width:100%}
-h1{margin:0 0 10px;color:#333;font-size:28px;text-align:center}
-.subtitle{text-align:center;color:#666;margin-bottom:30px;font-size:14px}
-.score-display{text-align:center;font-size:48px;font-weight:bold;color:#667eea;margin:20px 0;text-shadow:2px 2px 4px rgba(0,0,0,0.1)}
-.btn-group{display:flex;gap:10px;margin-bottom:20px}
-button{flex:1;padding:18px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;text-transform:uppercase;letter-spacing:0.5px}
-button:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,0.2)}
-button:active{transform:translateY(0)}
-.btn-music{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:#fff}
-.btn-jump{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:#fff}
-.btn-coin{background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);color:#fff}
-.btn-stop{background:#ff4757;color:#fff}
-.status{text-align:center;padding:15px;background:#f8f9fa;border-radius:10px;margin-top:20px;font-size:14px;color:#666}
-.status.playing{background:#e8f5e9;color:#2e7d32}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Audio Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #333;
+            font-size: 28px;
+            text-align: center
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1)
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px
+        }
+
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2)
+        }
+
+        button:active {
+            transform: translateY(0)
+        }
+
+        .btn-music {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: #fff
+        }
+
+        .btn-shop {
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            color: #fff
+        }
+
+        .btn-jump {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: #fff
+        }
+
+        .btn-coin {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: #fff
+        }
+
+        .btn-stop {
+            background: #ff4757;
+            color: #fff
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666
+        }
+
+        .status.playing {
+            background: #e8f5e9;
+            color: #2e7d32
+        }
+
+        .status.shop {
+            background: #f3e5f5;
+            color: #7b1fa2
+        }
+    </style>
 </head>
+
 <body>
-<div class="container">
-<h1>🎵 Web Audio Demo</h1>
-<div class="subtitle">Game music loop • Oscillator sound effects</div>
-<div class="score-display" id="score">Score: 0</div>
-<div class="btn-group">
-<button class="btn-music" onclick="toggleMusic()">Music Loop</button>
-<button class="btn-stop" onclick="stopAll()">Stop All</button>
-</div>
-<div class="btn-group">
-<button class="btn-jump" onclick="playJump()">Jump 🚀</button>
-<button class="btn-coin" onclick="playCoin()">Coin 💰</button>
-</div>
-<div class="status" id="status">Click Music Loop to start!</div>
-</div>
-<script>
-let ctx,musicPlaying=false,score=0,musicAudio;
-function initAudio(){
-if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();
-if(!musicAudio){
-musicAudio=new Audio();
-musicAudio.src='data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//NwwAAAAAAAAAAAAEluZm8AAAAPAAAAiAAAHHgACgsPERMWGBoeICElJyssLjI0Njk7PUFCRkhKTU9RVVdYXF5gZGVpa21wcnR4ent/gYWGiIyOkJOVl5ucnqKkp6mrr7Gytri6vb/DxcfKzM7S09XZ293g4ubo6e3v8fT2+Pz+AAAAAExhdmM2MC4zMQAAAAAAAAAAAAAAACQCSQAAAAAAABx4WFSMIgAAAAAAAAAAAAAAAAD/8yDEAAdwAupZQQACaIVu932AB8+D8Ez59MPzko7g+8H/5cTg+BDmgH+hlUNc3rSHwtZF//MixAkJuGq0AZgoAMRiKgGLP9Lq2NfgOUobhsoBhiJSXoxtOz////9v1PQLgXRcwiBzwJz/8yDECgo5sugBihAAC/8SLP+IDn/1Axbf/kU//+AEYmf///IACEOf/8hoKbKkmCgH4agI//MgxAgJsYL4Aco4AJ5YhEQOk3p7KS/b44GjnON//+dzhf////cn/9ln/6n7AaHB8j0AmP/zIMQICgHy6ABQBcB8/cgFstzHNTdguy78EQnNpMb5v/5GIb/+3/40/g//6vx+HR2VWHX/8yLEBwnp8twAaAXA+gDgV6iN9QWw3tUDQh84bfOP9beRRgP/1t/+Mv+Ff/9SKBDW1BWP5//zIMQHChny3AACWiBANtP1kv8yHqq+EENnzBvr/b6Aot9/rf/8cn/9//zB//1VAdletev/8yDEBQnJ8zpeAIoqrtQAg1uBsvgB50N85vjB33HfJ/+FCP/9//wP//f/8Sb/9Sovjpqx//MgxAQJCYbsAANOMMJurpAUdvKFvUdLT0zgQ+vpr/9A2/9/f/8ab//Lu//I1c4g0LK/BP/zIsQGCVCrCAAoxEgcnbQJ1pTpJI7K42t8e2XBkjaeRuYGGZE0xLxRH+LaFYN4wkB08IzU//MgxAgIKRcEqgpEBIs0Db5/1/Mng2/f59P9SiPlv5z/kdX932IGKUBoRwiJRfDKsBfTL//zIMQOB8mHBZACRARN/SX4Nv/6//jXv/r/t4f79VWJ162ySRj3qbCY7dWibZYj8lMkCyT/8yDEFQgopzpYQEp2LC/iueW1xkQ7O39iMDmsacQcSds2FI5tHKroMdBzZhRqamJGPN1q//MixBsIOKb+UFhEWJ34dgz8NZBorBBrj3hkKEpExADjy0AvFEBMTyNs4tNah9JJuzV1Ktv/8yDEIggILt1xTxgAXQW60bDUai4WiQAADQ1FJJsic0g97MixWc9gw/F2DAS+LRgMEKT8//MgxCgPwVdaX4sQAu870Zm/8+QhkwMD/pjQkKGW/+U7ScqTnTckwPMCihUS6XUnomhSov/zIMQQCFCq9AHNEACL//X/g2//U3xKG/y3///yuuoJjDv8GUDEABUAD1DCNBgif06a5eP/8yLEFQiwquGRUxAAb6H/6TeDL9SWp9/1flYA6BIIbGyEGTjAx4MRAqzXM1La/P/7GadqmP/zIMQaDtrezAGaOAC/qzox2lKu9j+nab/////////9v/9P6uqCOEIF/////8aVIwAFsMT/8yDEBQhKStgB1DgBHcbF4hx5F////////////////////p//jwRMBSoxIeM4qxUJDgeR//MgxAoG8Ca8AVsAAGWTyYChoLOltCJEdq2HtBJHojdw6dUd49VJ+d3f+3+P6+bl/4PCDf/zIsQVDgJW1AGZOAD4DCDf5p7jf/3mK//+efmGDT//8xn3Mt////7ZjTDGJs//6ClYSnby//MgxAUKAD8EAY8QAPC/GeIU9VSlmxFWsXcdW0yWjSw5S+6Qqe6vnNT9n//V9TfqEYB2df/zIMQECDjq+AHLEACtG0anOa0fHOuWkyv5v+nxf1//8V/6j//p/+//0crg3gtp62F0F3j/8yDECgh5RuwqecosBfoHtxr+IP4J9vv9/BP/X/1D32+s9/4oIaCwaugI6Hh9YuTzpe86//MixA8IiaLoAIAPIP5l8n//6CX/6//Dv/X/5b/7v/TVIghVVgU5RfiX+dGxTZ1/M28kPv7/8yDEFAhJSugAaAVgr7+s5/0A//iP/1t/9KomAiegA0Kc96iA6kYKfZ/N6BH7//8gF/////MgxBkH8UbsAUooAOcPfZ89/6aI2bXngsjvOC/q1trDjPL54JXuXMBFDtDeCKgb9HqSbv/zIMQgDvojBAGPEAC3+rMlDwvym/6XYhJ1tpl//9nOHRQoZQNigLgr7LkErsssBAAANHD/8yLECwhhSy25xygCtbo/vqab/8Bfla7r/8U/9G/6B/63eQU4KqiM4aZ8p5RsIbbklOqen//zIMQR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';
-musicAudio.loop=true;
-musicAudio.volume=0.5;
-musicAudio.onerror=function(e){
-console.error('Audio error:',e);
-updateStatus('❌ Error loading music');
-};
-musicAudio.oncanplay=function(){
-console.log('Music ready');
-};
-}
-return ctx;
-}
-function toggleMusic(){
-initAudio();
-if(musicPlaying){
-stopMusic();
-updateStatus('Music stopped');
-}else{
-playMusic();
-}
-}
-function playMusic(){
-initAudio();
-musicAudio.play().then(()=>{
-musicPlaying=true;
-updateStatus('🎵 Music playing','playing');
-}).catch(err=>{
-console.error('Play error:',err);
-updateStatus('❌ Click to play music');
-});
-}
-function stopMusic(){
-if(musicAudio){
-musicAudio.pause();
-musicAudio.currentTime=0;
-}
-musicPlaying=false;
-}
-function playJump(){
-initAudio();
-let osc=ctx.createOscillator();
-let gain=ctx.createGain();
-osc.connect(gain);
-gain.connect(ctx.destination);
-osc.type='sine';
-gain.gain.value=0.3;
-osc.frequency.setValueAtTime(150,ctx.currentTime);
-osc.frequency.linearRampToValueAtTime(600,ctx.currentTime+0.2);
-gain.gain.setValueAtTime(0.3,ctx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.2);
-osc.start();
-osc.stop(ctx.currentTime+0.2);
-updateStatus('🚀 Jump!');
-setTimeout(()=>updateStatus(musicPlaying?'🎵 Music playing':'Ready','playing'),1000);
-}
-function playCoin(){
-initAudio();
-let osc=ctx.createOscillator();
-let gain=ctx.createGain();
-osc.connect(gain);
-gain.connect(ctx.destination);
-osc.type='square';
-gain.gain.setValueAtTime(0.3,ctx.currentTime);
-gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.2);
-osc.frequency.setValueAtTime(988,ctx.currentTime);
-osc.frequency.setValueAtTime(1319,ctx.currentTime+0.05);
-osc.frequency.setValueAtTime(1568,ctx.currentTime+0.1);
-osc.frequency.setValueAtTime(2093,ctx.currentTime+0.15);
-osc.start();
-osc.stop(ctx.currentTime+0.2);
-score++;
-document.getElementById('score').textContent='Score: '+score;
-updateStatus('💰 Coin collected! +1');
-setTimeout(()=>updateStatus(musicPlaying?'🎵 Music playing':'Ready','playing'),1000);
-}
-function stopAll(){
-stopMusic();
-updateStatus('All sounds stopped');
-}
-function updateStatus(text,cls=''){
-let el=document.getElementById('status');
-el.textContent=text;
-el.className='status'+(cls?' '+cls:'');
-}
-</script>
+    <div class="container">
+        <h1>🎵 Web Audio Demo</h1>
+        <div class="subtitle">Procedural music • Oscillator sound effects</div>
+        <div class="score-display" id="score">Score: 0</div>
+        <div class="btn-group">
+            <button class="btn-music" onclick="toggleGameMusic()">Game Music 🎮</button>
+            <button class="btn-shop" onclick="toggleShopMusic()">Shop Music 🛒</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn-jump" onclick="playJump()">Jump 🚀</button>
+            <button class="btn-coin" onclick="playCoin()">Coin 💰</button>
+        </div>
+        <div class="btn-group">
+            <button class="btn-stop" onclick="stopAll()">Stop All</button>
+        </div>
+        <div class="status" id="status">Click a music button to start!</div>
+    </div>
+    <script>
+        let ctx, score = 0;
+        let gameNodes = [], shopNodes = [];
+        let gamePlaying = false, shopPlaying = false;
+
+        function initAudio() {
+            if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+            return ctx;
+        }
+
+        // Game music: energetic arpeggio loop
+        function startGameMusic() {
+            initAudio();
+            stopGameMusic();
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = 0.15;
+            masterGain.connect(ctx.destination);
+            gameNodes.push(masterGain);
+
+            // Bass drone
+            const bass = ctx.createOscillator();
+            const bassGain = ctx.createGain();
+            bass.type = 'sawtooth';
+            bass.frequency.value = 55; // A1
+            bassGain.gain.value = 0.3;
+            bass.connect(bassGain);
+            bassGain.connect(masterGain);
+            bass.start();
+            gameNodes.push(bass);
+
+            // Arpeggio sequence
+            const notes = [220, 277, 330, 440, 330, 277]; // A3, C#4, E4, A4...
+            let noteIndex = 0;
+
+            function playArpNote() {
+                if (!gamePlaying) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = notes[noteIndex];
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(masterGain);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+                noteIndex = (noteIndex + 1) % notes.length;
+                setTimeout(playArpNote, 150);
+            }
+
+            gamePlaying = true;
+            playArpNote();
+            updateStatus('🎮 Game music playing', 'playing');
+        }
+
+        function stopGameMusic() {
+            gamePlaying = false;
+            gameNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            gameNodes = [];
+        }
+
+        function toggleGameMusic() {
+            initAudio();
+            if (gamePlaying) {
+                stopGameMusic();
+                updateStatus('Game music stopped');
+            } else {
+                stopShopMusic();
+                startGameMusic();
+            }
+        }
+
+        // Shop music: calm ambient chords
+        function startShopMusic() {
+            initAudio();
+            stopShopMusic();
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = 0.12;
+            masterGain.connect(ctx.destination);
+            shopNodes.push(masterGain);
+
+            // Soft pad chords
+            const chords = [
+                [261, 329, 392], // C major
+                [293, 369, 440], // D major
+                [246, 311, 369], // B minor
+                [220, 277, 329]  // A minor
+            ];
+            let chordIndex = 0;
+
+            function playChord() {
+                if (!shopPlaying) return;
+                const chord = chords[chordIndex];
+                chord.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.3);
+                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.8);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 2);
+                });
+                chordIndex = (chordIndex + 1) % chords.length;
+                setTimeout(playChord, 2000);
+            }
+
+            shopPlaying = true;
+            playChord();
+            updateStatus('🛒 Shop music playing', 'shop');
+        }
+
+        function stopShopMusic() {
+            shopPlaying = false;
+            shopNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            shopNodes = [];
+        }
+
+        function toggleShopMusic() {
+            initAudio();
+            if (shopPlaying) {
+                stopShopMusic();
+                updateStatus('Shop music stopped');
+            } else {
+                stopGameMusic();
+                startShopMusic();
+            }
+        }
+
+        // Jump sound - LOUD rising sweep
+        function playJump() {
+            initAudio();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            gain.gain.value = 0.8; // Much louder!
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.8, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
+            updateStatus('🚀 Jump!');
+            setTimeout(() => {
+                if (gamePlaying) updateStatus('🎮 Game music playing', 'playing');
+                else if (shopPlaying) updateStatus('🛒 Shop music playing', 'shop');
+                else updateStatus('Ready');
+            }, 800);
+        }
+
+        // Coin sound - cheerful arpeggio
+        function playCoin() {
+            initAudio();
+            const notes = [988, 1319, 1568, 2093];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.05 + 0.1);
+                osc.start(ctx.currentTime + i * 0.05);
+                osc.stop(ctx.currentTime + i * 0.05 + 0.1);
+            });
+            score++;
+            document.getElementById('score').textContent = 'Score: ' + score;
+            updateStatus('💰 Coin collected! +1');
+            setTimeout(() => {
+                if (gamePlaying) updateStatus('🎮 Game music playing', 'playing');
+                else if (shopPlaying) updateStatus('🛒 Shop music playing', 'shop');
+                else updateStatus('Ready');
+            }, 800);
+        }
+
+        function stopAll() {
+            stopGameMusic();
+            stopShopMusic();
+            updateStatus('All sounds stopped');
+        }
+
+        function updateStatus(text, cls = '') {
+            const el = document.getElementById('status');
+            el.textContent = text;
+            el.className = 'status' + (cls ? ' ' + cls : '');
+        }
+    </script>
 </body>
+
 </html>
