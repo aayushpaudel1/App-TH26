@@ -19,6 +19,7 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: node build.js
+      - run: cp CNAME dist/CNAME 2>/dev/null || echo "ltsp.us" > dist/CNAME
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
