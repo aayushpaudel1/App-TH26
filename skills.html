@@ -1310,6 +1310,106 @@
             fill: #2c3e50;
         }
 
+        /* ========== SKILL POPUP ========== */
+        #skill-popup {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--accent-blue);
+            padding: 20px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        #skill-popup.active {
+            bottom: 0;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .popup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .popup-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .popup-close:hover {
+            color: var(--text-primary);
+        }
+
+        .popup-content {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .popup-info {
+            flex: 1;
+        }
+
+        .popup-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .popup-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .popup-buy-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+            white-space: nowrap;
+            min-width: 90px;
+        }
+
+        .popup-buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .popup-buy-btn:active {
+            transform: translateY(0);
+        }
+
         /* ========== BINARY TREE LAYOUT ========== */
         .skill-tree {
             display: flex;
@@ -1461,7 +1561,6 @@
                     </div>
                 </div>
                 <div class="icon-label">Code Rabbit</div>
-                <div class="icon-stats"><span class="buff">⚡+15% 💰+10%</span></div>
             </div>
         </div>
 
@@ -1480,7 +1579,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Velocity Demon</div>
-                <div class="icon-stats"><span class="buff">⚡+20%</span></div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-stackoverflow" title="Stack Overflow Scholar">
@@ -1502,7 +1600,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Stack Overflow</div>
-                <div class="icon-stats"><span class="buff">💰+25%</span></div>
             </div>
         </div>
 
@@ -1523,10 +1620,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Caffeine OD</div>
-                <div class="icon-stats">
-                    <span class="buff">⚡+15% 📊+10%</span>
-                    <span class="debuff">⚠️ +8% Dmg</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-turbo" title="Turbo Compiler">
@@ -1544,10 +1637,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Turbo Compiler</div>
-                <div class="icon-stats">
-                    <span class="buff">⚡+25%</span>
-                    <span class="debuff">🛡️ -15%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-passive-bot" title="Passive Income Bot">
@@ -1562,10 +1651,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Income Bot</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+20% 📊+15%</span>
-                    <span class="debuff">⚡ -10%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-api-mine" title="API Goldmine">
@@ -1579,10 +1664,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">API Goldmine</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+30%</span>
-                    <span class="debuff">⚠️ +10% Dmg</span>
-                </div>
             </div>
         </div>
     </div>
@@ -1602,10 +1683,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Starving Artist</div>
-                <div class="icon-stats">
-                    <span class="buff">📊+15% 🛡️+10%</span>
-                    <span class="debuff">💰 -10%</span>
-                </div>
             </div>
         </div>
         <div class="tier tier-2">
@@ -1622,10 +1699,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Content Machine</div>
-                <div class="icon-stats">
-                    <span class="buff">📊+25%</span>
-                    <span class="debuff">⚡ -15%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-tank-artist" title="Tank Artist">
@@ -1641,10 +1714,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Tank Artist</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+20%</span>
-                    <span class="debuff">⚠️ +8% Dmg</span>
-                </div>
             </div>
         </div>
         <div class="tier tier-3">
@@ -1659,10 +1728,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Royalty Checks</div>
-                <div class="icon-stats">
-                    <span class="buff">📊+20% 🛡️+10%</span>
-                    <span class="debuff">💰 -15%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-set-forget" title="Set It Forget It">
@@ -1673,10 +1738,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Set & Forget</div>
-                <div class="icon-stats">
-                    <span class="buff">📊+30%</span>
-                    <span class="debuff">⚡ -20%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-fortress-solitude" title="Fortress of Solitude">
@@ -1687,10 +1748,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Fortress</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+15% 📊+15%</span>
-                    <span class="debuff">💰 -20%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-immovable-object" title="Immovable Object">
@@ -1701,10 +1758,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Immovable</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+30%</span>
-                    <span class="debuff">⚡ -25%</span>
-                </div>
             </div>
         </div>
     </div>
@@ -1722,10 +1775,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Cubicle Warrior</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+15% 🛡️+10%</span>
-                    <span class="debuff">⚡ -10%</span>
-                </div>
             </div>
         </div>
         <div class="tier tier-2">
@@ -1740,10 +1789,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Promo Chaser</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+25%</span>
-                    <span class="debuff">📊 -15%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-benefits-max" title="Benefits Maximizer">
@@ -1760,10 +1805,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Benefits Max</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+20%</span>
-                    <span class="debuff">⚡ -15%</span>
-                </div>
             </div>
         </div>
         <div class="tier tier-3">
@@ -1777,10 +1818,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Bonus Hunter</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+20% 🛡️+10%</span>
-                    <span class="debuff">⚠️ +10% Dmg</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-exec-fasttrack" title="Executive Fast Track">
@@ -1797,10 +1834,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Fast Track</div>
-                <div class="icon-stats">
-                    <span class="buff">💰+30%</span>
-                    <span class="debuff">📊 -20%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-corp-fortress" title="Corporate Fortress">
@@ -1817,10 +1850,6 @@
                     </svg>
                 </div>
                 <div class="icon-label">Corp Fortress</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+15% 💰+15%</span>
-                    <span class="debuff">⚡ -20%</span>
-                </div>
             </div>
             <div class="icon-item">
                 <div class="btn btn-safety-net" title="Safety Net Supreme">
@@ -1834,61 +1863,275 @@
                     </svg>
                 </div>
                 <div class="icon-label">Safety Net</div>
-                <div class="icon-stats">
-                    <span class="buff">🛡️+25%</span>
-                    <span class="debuff">💰 -15%</span>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Restored Legend Sections -->
-    <h2>Tiers</h2>
-    <div class="section">
-        <div class="btn btn-tier tier-1" title="Tier 1"></div>
-        <div class="btn btn-tier tier-2" title="Tier 2">
-            <svg viewBox="0 0 20 20">
-                <path d="M10 18 L10 10 L4 4 M10 10 L16 4" />
-            </svg>
+    <!-- Skill Popup -->
+    <div id="skill-popup">
+        <div class="popup-header">
+            <div class="popup-title" id="popup-skill-name">Skill Name</div>
+            <button class="popup-close" onclick="closeSkillPopup()">&times;</button>
         </div>
-        <div class="btn btn-tier tier-3" title="Tier 3">
-            <svg viewBox="0 0 20 20">
-                <line x1="4" y1="4" x2="16" y2="16" />
-                <line x1="16" y1="4" x2="4" y2="16" />
-                <circle class="node-tip" cx="4" cy="4" r="1.5" />
-                <circle class="node-tip" cx="16" cy="4" r="1.5" />
-                <circle class="node-tip" cx="4" cy="16" r="1.5" />
-                <circle class="node-tip" cx="16" cy="16" r="1.5" />
-            </svg>
-        </div>
-        <div class="btn btn-tier tier-4" title="Tier 4">
-            <svg viewBox="0 0 20 20">
-                <circle class="web-core" cx="10" cy="10" r="2.5" />
-                <line class="web-lines" x1="10" y1="10" x2="10" y2="2" />
-                <line class="web-lines" x1="10" y1="10" x2="18" y2="10" />
-                <line class="web-lines" x1="10" y1="10" x2="10" y2="18" />
-                <line class="web-lines" x1="10" y1="10" x2="2" y2="10" />
-                <line class="web-lines" x1="10" y1="10" x2="16" y2="4" />
-                <line class="web-lines" x1="10" y1="10" x2="16" y2="16" />
-                <line class="web-lines" x1="10" y1="10" x2="4" y2="16" />
-                <line class="web-lines" x1="10" y1="10" x2="4" y2="4" />
-            </svg>
+        <div class="popup-content">
+            <div class="popup-info">
+                <div class="popup-description" id="popup-description">Skill description goes here</div>
+                <div class="popup-stats" id="popup-stats">
+                    <!-- Stats will be injected here -->
+                </div>
+            </div>
+            <button class="popup-buy-btn" id="popup-buy-btn" onclick="buySkill()">
+                Buy - $<span id="popup-price">0</span>
+            </button>
         </div>
     </div>
 
-    <h2>States</h2>
-    <div class="section">
-        <div class="btn btn-drawback" title="Drawback">
-            <div class="warn-tri"></div>
-        </div>
-        <div class="btn btn-locked" title="Locked">
-            <div class="lock-icon">🔒</div>
-        </div>
-        <div class="btn btn-selected" title="Selected">
-            <span style="font-size: 24px;">★</span>
-        </div>
-    </div>
+    <script>
+        // Skill data
+        const skillData = {
+            // Tech Path
+            'code-rabbit': {
+                name: 'Code Rabbit',
+                description: 'Lightning-fast coding assistant that helps you write code at breakneck speeds.',
+                buffs: ['💰 Income +10%'],
+                debuffs: [],
+                price: 500
+            },
+            'velocity-demon': {
+                name: 'Velocity Demon',
+                description: 'Push your development speed beyond mortal limits with demonic efficiency.',
+                buffs: ['💰 Income +15%'],
+                debuffs: [],
+                price: 1200
+            },
+            'stackoverflow': {
+                name: 'Stack Overflow Scholar',
+                description: 'Gain instant access to infinite knowledge and never get stuck again.',
+                buffs: ['💰 Income +25%'],
+                debuffs: [],
+                price: 1500
+            },
+            'caffeine': {
+                name: 'Caffeine Overdrive',
+                description: 'Channel the power of infinite coffee for extreme productivity.',
+                buffs: ['📊 Passive Income +10%'],
+                debuffs: ['⚠️ Damage Taken +8%'],
+                price: 2000
+            },
+            'turbo': {
+                name: 'Turbo Compiler',
+                description: 'Compile and execute code at blazing speeds, but sacrifice some stability.',
+                buffs: ['💰 Income +20%'],
+                debuffs: ['🛡️ Defense -15%'],
+                price: 2500
+            },
+            'passive-bot': {
+                name: 'Passive Income Bot',
+                description: 'Automated revenue stream that generates money while you sleep.',
+                buffs: ['💰 Income +20%', '📊 Passive Income +15%'],
+                debuffs: [],
+                price: 3000
+            },
+            'api-mine': {
+                name: 'API Goldmine',
+                description: 'Tap into lucrative API integrations but expose yourself to more risks.',
+                buffs: ['💰 Income +30%'],
+                debuffs: ['⚠️ Damage Taken +10%'],
+                price: 3500
+            },
 
+            // Creative Path
+            'starving-artist': {
+                name: 'Starving Artist',
+                description: 'Pour your soul into your craft, sacrificing income for passion and resilience.',
+                buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'],
+                debuffs: ['💰 Income -10%'],
+                price: 500
+            },
+            'content-machine': {
+                name: 'Content Machine',
+                description: 'Mass-produce creative content at the cost of personal speed.',
+                buffs: ['📊 Passive Income +25%'],
+                debuffs: [],
+                price: 1200
+            },
+            'tank-artist': {
+                name: 'Tank Artist',
+                description: 'Build thick skin from criticism and become nearly indestructible.',
+                buffs: ['🛡️ Defense +20%'],
+                debuffs: ['⚠️ Damage Taken +8%'],
+                price: 1500
+            },
+            'royalty-checks': {
+                name: 'Royalty Checks Forever',
+                description: 'Create timeless work that generates passive income indefinitely.',
+                buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'],
+                debuffs: ['💰 Income -15%'],
+                price: 2500
+            },
+            'set-forget': {
+                name: 'Set It and Forget It',
+                description: 'Automate your creative output completely, but move at a snail\'s pace.',
+                buffs: ['📊 Passive Income +30%'],
+                debuffs: [],
+                price: 3000
+            },
+            'fortress-solitude': {
+                name: 'Fortress of Solitude',
+                description: 'Isolate yourself to perfect your craft with enhanced protection.',
+                buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'],
+                debuffs: ['💰 Income -20%'],
+                price: 2800
+            },
+            'immovable-object': {
+                name: 'Immovable Object',
+                description: 'Become an unstoppable defensive force at the expense of all mobility.',
+                buffs: ['🛡️ Defense +30%'],
+                debuffs: [],
+                price: 3500
+            },
+
+            // Corporate Path
+            'cubicle-warrior': {
+                name: 'Cubicle Warrior',
+                description: 'Master the art of corporate survival with steady income and protection.',
+                buffs: ['💰 Income +15%', '🛡️ Defense +10%'],
+                debuffs: [],
+                price: 500
+            },
+            'promo-chaser': {
+                name: 'Promotion Chaser',
+                description: 'Climb the corporate ladder aggressively, sacrificing passive earnings.',
+                buffs: ['💰 Income +25%'],
+                debuffs: ['📊 Passive Income -15%'],
+                price: 1200
+            },
+            'benefits-max': {
+                name: 'Benefits Maximizer',
+                description: 'Optimize your corporate benefits package for maximum protection.',
+                buffs: ['🛡️ Defense +20%'],
+                debuffs: [],
+                price: 1500
+            },
+            'bonus-hunter': {
+                name: 'Performance Bonus Hunter',
+                description: 'Target high-risk, high-reward performance bonuses.',
+                buffs: ['💰 Income +20%', '🛡️ Defense +10%'],
+                debuffs: ['⚠️ Damage Taken +10%'],
+                price: 2500
+            },
+            'exec-fasttrack': {
+                name: 'Executive Fast Track',
+                description: 'Rocket to the top with aggressive income growth, sacrificing stability.',
+                buffs: ['💰 Income +30%'],
+                debuffs: ['📊 Passive Income -20%'],
+                price: 3000
+            },
+            'corp-fortress': {
+                name: 'Corporate Fortress',
+                description: 'Build an impenetrable corporate defense with balanced income.',
+                buffs: ['🛡️ Defense +15%', '💰 Income +15%'],
+                debuffs: [],
+                price: 3200
+            },
+            'safety-net': {
+                name: 'Safety Net Supreme',
+                description: 'Maximize job security and protection at the cost of immediate earnings.',
+                buffs: ['🛡️ Defense +25%'],
+                debuffs: ['💰 Income -15%'],
+                price: 2800
+            }
+        };
+
+        let currentSkill = null;
+
+        function showSkillPopup(skillId) {
+            const skill = skillData[skillId];
+            if (!skill) return;
+
+            currentSkill = skillId;
+
+            document.getElementById('popup-skill-name').textContent = skill.name;
+            document.getElementById('popup-description').textContent = skill.description;
+            document.getElementById('popup-price').textContent = skill.price;
+
+            const statsContainer = document.getElementById('popup-stats');
+            statsContainer.innerHTML = '';
+
+            skill.buffs.forEach(buff => {
+                const buffEl = document.createElement('span');
+                buffEl.className = 'buff';
+                buffEl.textContent = buff;
+                statsContainer.appendChild(buffEl);
+            });
+
+            skill.debuffs.forEach(debuff => {
+                const debuffEl = document.createElement('span');
+                debuffEl.className = 'debuff';
+                debuffEl.textContent = debuff;
+                statsContainer.appendChild(debuffEl);
+            });
+
+            document.getElementById('skill-popup').classList.add('active');
+        }
+
+        function closeSkillPopup() {
+            document.getElementById('skill-popup').classList.remove('active');
+            currentSkill = null;
+        }
+
+        function buySkill() {
+            if (!currentSkill) return;
+
+            const skill = skillData[currentSkill];
+            alert(`Purchased ${skill.name} for $${skill.price}!`);
+            closeSkillPopup();
+
+            // TODO: Implement actual purchase logic here
+            // This would integrate with your game's economy system
+        }
+
+        // Add click handlers to all skill buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const skillButtons = {
+                // Tech Path
+                '.btn-code-rabbit': 'code-rabbit',
+                '.btn-velocity-demon': 'velocity-demon',
+                '.btn-stackoverflow': 'stackoverflow',
+                '.btn-caffeine': 'caffeine',
+                '.btn-turbo': 'turbo',
+                '.btn-passive-bot': 'passive-bot',
+                '.btn-api-mine': 'api-mine',
+
+                // Creative Path
+                '.btn-starving-artist': 'starving-artist',
+                '.btn-content-machine': 'content-machine',
+                '.btn-tank-artist': 'tank-artist',
+                '.btn-royalty-checks': 'royalty-checks',
+                '.btn-set-forget': 'set-forget',
+                '.btn-fortress-solitude': 'fortress-solitude',
+                '.btn-immovable-object': 'immovable-object',
+
+                // Corporate Path
+                '.btn-cubicle-warrior': 'cubicle-warrior',
+                '.btn-promo-chaser': 'promo-chaser',
+                '.btn-benefits-max': 'benefits-max',
+                '.btn-bonus-hunter': 'bonus-hunter',
+                '.btn-exec-fasttrack': 'exec-fasttrack',
+                '.btn-corp-fortress': 'corp-fortress',
+                '.btn-safety-net': 'safety-net'
+            };
+
+            Object.keys(skillButtons).forEach(selector => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.addEventListener('click', function() {
+                        showSkillPopup(skillButtons[selector]);
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
