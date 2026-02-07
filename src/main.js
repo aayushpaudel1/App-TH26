@@ -169,27 +169,14 @@ function playCoin() {
 
 function playDamage() {
     initAudio();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const distortion = audioCtx.createWaveShaper();
-    const k = 50, n_samples = 44100;
-    const curve = new Float32Array(n_samples);
-    for (let i = 0; i < n_samples; i++) {
-        const x = i * 2 / n_samples - 1;
-        curve[i] = (3 + k) * x * 20 / (Math.PI + k * Math.abs(x));
-    }
-    distortion.curve = curve;
-    distortion.oversample = '4x';
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-    osc.connect(distortion);
-    distortion.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.2);
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(150, audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.4, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + 0.2);
 }
 
 function playClick() {
@@ -577,43 +564,43 @@ function updateAffordability() {
 const cardsDecisions = [
     {
         scenario: "First Paycheck!",
-        optionA: { title: "Buy New Collar", icon: "🎀", effect: "Visual cosmetic change only: no stat benefits!", result: "You look fabulous, but your future self might have preferred some savings...", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Start 401k", icon: "📈", effect: "-$100 Cash, but Passive Income +5% permanently!", result: "Smart! Your future self thanks you. Compound interest is now your best friend.", stats: { money: -100, income: 0, defense: 0, passiveIncome: 0.05 } }
+        optionA: { title: "Buy New Collar", icon: "🎀", effect: "Cosmetic only, no stats.", result: "Looks great, but no savings.", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Start 401k", icon: "📈", effect: "-$100, Passive +5%.", result: "Smart! Compound interest kicks in.", stats: { money: -100, income: 0, defense: 0, passiveIncome: 0.05 } }
     },
     {
         scenario: "Car Breaks Down",
-        optionA: { title: "Put on Credit Card", icon: "💳", effect: "Keep your cash now, but Income -10% due to interest payments!", result: "The debt trap closes in... Interest payments will haunt you for years.", stats: { money: 0, income: -0.10, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Pay Cash", icon: "💵", effect: "-$500 Cash immediately, but Defense +10% from financial security!", result: "Pain now, gain later! No debt means freedom to grow your wealth.", stats: { money: -500, income: 0, defense: 0.10, passiveIncome: 0 } }
+        optionA: { title: "Put on Credit Card", icon: "💳", effect: "Keep cash, Income -10%.", result: "Debt trap! Interest haunts you.", stats: { money: 0, income: -0.10, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Pay Cash", icon: "💵", effect: "-$500, Defense +10%.", result: "No debt = freedom to grow!", stats: { money: -500, income: 0, defense: 0.10, passiveIncome: 0 } }
     },
     {
         scenario: "Student Loans",
-        optionA: { title: "Defer Payment", icon: "⏰", effect: "Keep your cash for now, but Passive Income -15% as interest compounds!", result: "The debt grows silently. It's always watching, always growing.", stats: { money: 0, income: 0, defense: 0, passiveIncome: -0.15 } },
-        optionB: { title: "Pay Aggressively", icon: "⚔️", effect: "-75% of current Cash, but Income +20% permanently!", result: "Debt-free! With no monthly payments, your income potential skyrockets.", stats: { money: 'percent', moneyPercent: -0.75, income: 0.20, defense: 0, passiveIncome: 0 } }
+        optionA: { title: "Defer Payment", icon: "⏰", effect: "Keep cash, Passive -15%.", result: "Debt grows silently...", stats: { money: 0, income: 0, defense: 0, passiveIncome: -0.15 } },
+        optionB: { title: "Pay Aggressively", icon: "⚔️", effect: "-75% cash, Income +20%.", result: "Debt-free! Income skyrockets.", stats: { money: 'percent', moneyPercent: -0.75, income: 0.20, defense: 0, passiveIncome: 0 } }
     },
     {
         scenario: "Weekend Vibes",
-        optionA: { title: "Party All Night", icon: "🥳", effect: "+$100 Cash from networking, but Income -5% from lost productivity!", result: "YOLO! Great memories made, but money doesn't grow while you sleep it off.", stats: { money: 100, income: -0.05, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Take Online Course", icon: "🎓", effect: "-$200 Cash, but Income +15% permanently!", result: "Knowledge is power! New skills unlock higher earning potential.", stats: { money: -200, income: 0.15, defense: 0, passiveIncome: 0 } }
+        optionA: { title: "Party All Night", icon: "🥳", effect: "+$100, Income -5%.", result: "YOLO! Fun but less growth.", stats: { money: 100, income: -0.05, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Take Online Course", icon: "🎓", effect: "-$200, Income +15%.", result: "New skills = higher earnings!", stats: { money: -200, income: 0.15, defense: 0, passiveIncome: 0 } }
     },
     {
         scenario: "Tax Refund Season 💰",
-        optionA: { title: "YOLO on Crypto", icon: "🚀", effect: "50% chance to 2x your Cash... 50% chance to lose it ALL and Defense -10%!", result: "To the moon... or to the ground. Fortune favors the bold (sometimes).", stats: { money: 'gamble', income: 0, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "High Yield Savings", icon: "🛡️", effect: "+$200 Cash and Defense +20% from emergency fund security!", result: "Safe and protected! Your emergency fund shields you from life's surprises.", stats: { money: 200, income: 0, defense: 0.20, passiveIncome: 0 } }
+        optionA: { title: "YOLO on Crypto", icon: "🚀", effect: "50/50: 2× cash or lose all!", result: "Fortune favors the bold (sometimes).", stats: { money: 'gamble', income: 0, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "High Yield Savings", icon: "🛡️", effect: "+$200, Defense +20%.", result: "Emergency fund shields you!", stats: { money: 200, income: 0, defense: 0.20, passiveIncome: 0 } }
     },
     {
         scenario: "The Promotion! 🏆",
-        optionA: { title: "Buy Luxury Condo", icon: "🏠", effect: "-$1000 Cash and Income -15% from higher expenses!", result: "Living large has its costs... Your expenses grow with your income.", stats: { money: -1000, income: -0.15, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Stay in Apartment", icon: "🏢", effect: "Keep your Cash and gain +20% Passive Income from investing the difference!", result: "Humble living, wealthy building! You resist the temptation to inflate your lifestyle.", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0.20 } }
+        optionA: { title: "Buy Luxury Condo", icon: "🏠", effect: "-$1000, Income -15%.", result: "Expenses grow with income...", stats: { money: -1000, income: -0.15, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Stay in Apartment", icon: "🏢", effect: "Keep cash, Passive +20%.", result: "Humble living, wealthy building!", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0.20 } }
     },
     {
         scenario: "Market Crash! 📉",
-        optionA: { title: "Sell Everything!", icon: "😱", effect: "+$2000 Cash immediately, but Passive Income -100% (drops to 0)!", result: "Panic sold at the bottom... The market always recovers, but you won't.", stats: { money: 2000, income: 0, defense: 0, passiveIncome: -1.0 } },
-        optionB: { title: "Hold & Buy Dip", icon: "💎", effect: "-$500 Cash to buy the dip, but Passive Income +50%!", result: "Diamond hands! Buying when others panic is how millionaires are made.", stats: { money: -500, income: 0, defense: 0, passiveIncome: 0.50 } }
+        optionA: { title: "Sell Everything!", icon: "😱", effect: "+$2000, Passive drops to 0!", result: "Panic sold! Market recovers, you won't.", stats: { money: 2000, income: 0, defense: 0, passiveIncome: -1.0 } },
+        optionB: { title: "Hold & Buy Dip", icon: "💎", effect: "-$500, Passive +50%.", result: "Diamond hands! Buy the dip.", stats: { money: -500, income: 0, defense: 0, passiveIncome: 0.50 } }
     },
     {
         scenario: "Health Scare 🏥",
-        optionA: { title: "Risk It", icon: "🎲", effect: "Save your Cash, but Defense -30% from lack of coverage!", result: "Living dangerously... One wrong move and it's all over.", stats: { money: 0, income: 0, defense: -0.30, passiveIncome: 0 } },
-        optionB: { title: "Buy Insurance", icon: "❤️", effect: "-$1000 Cash, but Defense +40% from comprehensive coverage!", result: "Protected! Insurance isn't fun, but it's the adult thing to do.", stats: { money: -1000, income: 0, defense: 0.40, passiveIncome: 0 } }
+        optionA: { title: "Risk It", icon: "🎲", effect: "Keep cash, Defense -30%.", result: "Living dangerously...", stats: { money: 0, income: 0, defense: -0.30, passiveIncome: 0 } },
+        optionB: { title: "Buy Insurance", icon: "❤️", effect: "-$1000, Defense +40%.", result: "Protected! The adult thing to do.", stats: { money: -1000, income: 0, defense: 0.40, passiveIncome: 0 } }
     }
 ];
 
@@ -1387,27 +1374,27 @@ loop();
 
 // ========== SKILL DATA & HANDLERS ==========
 const skillData = {
-    'code-rabbit': { name: 'Code Rabbit', description: 'Lightning-fast coding assistant that helps you write code at breakneck speeds.', buffs: ['💰 Income +10%'], debuffs: [], price: 500 },
-    'velocity-demon': { name: 'Velocity Demon', description: 'Push your development speed beyond mortal limits with demonic efficiency.', buffs: ['💰 Income +15%'], debuffs: [], price: 1200 },
-    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Gain instant access to infinite knowledge and never get stuck again.', buffs: ['💰 Income +25%'], debuffs: [], price: 1500 },
-    'caffeine': { name: 'Caffeine Overdrive', description: 'Channel the power of infinite coffee for extreme productivity.', buffs: ['📊 Passive Income +10%'], debuffs: ['⚠️ Damage Taken +8%'], price: 2000 },
-    'turbo': { name: 'Turbo Compiler', description: 'Compile and execute code at blazing speeds, but sacrifice some stability.', buffs: ['💰 Income +20%'], debuffs: ['🛡️ Defense -15%'], price: 2500 },
-    'passive-bot': { name: 'Passive Income Bot', description: 'Automated revenue stream that generates money while you sleep.', buffs: ['💰 Income +20%', '📊 Passive Income +15%'], debuffs: [], price: 3000 },
-    'api-mine': { name: 'API Goldmine', description: 'Tap into lucrative API integrations but expose yourself to more risks.', buffs: ['💰 Income +30%'], debuffs: ['⚠️ Damage Taken +10%'], price: 3500 },
-    'starving-artist': { name: 'Starving Artist', description: 'Pour your soul into your craft, sacrificing income for passion and resilience.', buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'], debuffs: ['💰 Income -10%'], price: 500 },
-    'content-machine': { name: 'Content Machine', description: 'Mass-produce creative content at the cost of personal speed.', buffs: ['📊 Passive Income +25%'], debuffs: [], price: 1200 },
-    'tank-artist': { name: 'Tank Artist', description: 'Build thick skin from criticism and become nearly indestructible.', buffs: ['🛡️ Defense +20%'], debuffs: ['⚠️ Damage Taken +8%'], price: 1500 },
-    'royalty-checks': { name: 'Royalty Checks Forever', description: 'Create timeless work that generates passive income indefinitely.', buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'], debuffs: ['💰 Income -15%'], price: 2500 },
-    'set-forget': { name: 'Set It and Forget It', description: 'Automate your creative output completely, but move at a snail\'s pace.', buffs: ['📊 Passive Income +30%'], debuffs: [], price: 3000 },
-    'fortress-solitude': { name: 'Fortress of Solitude', description: 'Isolate yourself to perfect your craft with enhanced protection.', buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'], debuffs: ['💰 Income -20%'], price: 2800 },
-    'immovable-object': { name: 'Immovable Object', description: 'Become an unstoppable defensive force at the expense of all mobility.', buffs: ['🛡️ Defense +30%'], debuffs: [], price: 3500 },
-    'cubicle-warrior': { name: 'Cubicle Warrior', description: 'Master the art of corporate survival with steady income and protection.', buffs: ['💰 Income +15%', '🛡️ Defense +10%'], debuffs: [], price: 500 },
-    'promo-chaser': { name: 'Promotion Chaser', description: 'Climb the corporate ladder aggressively, sacrificing passive earnings.', buffs: ['💰 Income +25%'], debuffs: ['📊 Passive Income -15%'], price: 1200 },
-    'benefits-max': { name: 'Benefits Maximizer', description: 'Optimize your corporate benefits package for maximum protection.', buffs: ['🛡️ Defense +20%'], debuffs: [], price: 1500 },
-    'bonus-hunter': { name: 'Performance Bonus Hunter', description: 'Target high-risk, high-reward performance bonuses.', buffs: ['💰 Income +20%', '🛡️ Defense +10%'], debuffs: ['⚠️ Damage Taken +10%'], price: 2500 },
-    'exec-fasttrack': { name: 'Executive Fast Track', description: 'Rocket to the top with aggressive income growth, sacrificing stability.', buffs: ['💰 Income +30%'], debuffs: ['📊 Passive Income -20%'], price: 3000 },
-    'corp-fortress': { name: 'Corporate Fortress', description: 'Build an impenetrable corporate defense with balanced income.', buffs: ['🛡️ Defense +15%', '💰 Income +15%'], debuffs: [], price: 3200 },
-    'safety-net': { name: 'Safety Net Supreme', description: 'Maximize job security and protection at the cost of immediate earnings.', buffs: ['🛡️ Defense +25%'], debuffs: ['💰 Income -15%'], price: 2800 }
+    'code-rabbit': { name: 'Code Rabbit', description: 'Fast coding AI.', buffs: ['💰 Income +10%'], debuffs: [], price: 500 },
+    'velocity-demon': { name: 'Velocity Demon', description: 'Extreme dev speed.', buffs: ['💰 Income +15%'], debuffs: [], price: 1200 },
+    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Infinite knowledge.', buffs: ['💰 Income +25%'], debuffs: [], price: 1500 },
+    'caffeine': { name: 'Caffeine Overdrive', description: 'Coffee-fueled productivity.', buffs: ['📊 Passive Income +10%'], debuffs: ['⚠️ Damage Taken +8%'], price: 2000 },
+    'turbo': { name: 'Turbo Compiler', description: 'Fast but fragile.', buffs: ['💰 Income +20%'], debuffs: ['🛡️ Defense -15%'], price: 2500 },
+    'passive-bot': { name: 'Passive Income Bot', description: 'Automated income.', buffs: ['💰 Income +20%', '📊 Passive Income +15%'], debuffs: [], price: 3000 },
+    'api-mine': { name: 'API Goldmine', description: 'Risky API profits.', buffs: ['💰 Income +30%'], debuffs: ['⚠️ Damage Taken +10%'], price: 3500 },
+    'starving-artist': { name: 'Starving Artist', description: 'Passion over profit.', buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'], debuffs: ['💰 Income -10%'], price: 500 },
+    'content-machine': { name: 'Content Machine', description: 'Mass content output.', buffs: ['📊 Passive Income +25%'], debuffs: [], price: 1200 },
+    'tank-artist': { name: 'Tank Artist', description: 'Tough critic armor.', buffs: ['🛡️ Defense +20%'], debuffs: ['⚠️ Damage Taken +8%'], price: 1500 },
+    'royalty-checks': { name: 'Royalty Checks Forever', description: 'Timeless royalties.', buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'], debuffs: ['💰 Income -15%'], price: 2500 },
+    'set-forget': { name: 'Set It and Forget It', description: 'Full automation.', buffs: ['📊 Passive Income +30%'], debuffs: [], price: 3000 },
+    'fortress-solitude': { name: 'Fortress of Solitude', description: 'Isolated perfection.', buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'], debuffs: ['💰 Income -20%'], price: 2800 },
+    'immovable-object': { name: 'Immovable Object', description: 'Unstoppable defense.', buffs: ['🛡️ Defense +30%'], debuffs: [], price: 3500 },
+    'cubicle-warrior': { name: 'Cubicle Warrior', description: 'Corporate survivor.', buffs: ['💰 Income +15%', '🛡️ Defense +10%'], debuffs: [], price: 500 },
+    'promo-chaser': { name: 'Promotion Chaser', description: 'Aggressive climber.', buffs: ['💰 Income +25%'], debuffs: ['📊 Passive Income -15%'], price: 1200 },
+    'benefits-max': { name: 'Benefits Maximizer', description: 'Max benefits.', buffs: ['🛡️ Defense +20%'], debuffs: [], price: 1500 },
+    'bonus-hunter': { name: 'Performance Bonus Hunter', description: 'High-risk bonuses.', buffs: ['💰 Income +20%', '🛡️ Defense +10%'], debuffs: ['⚠️ Damage Taken +10%'], price: 2500 },
+    'exec-fasttrack': { name: 'Executive Fast Track', description: 'Fast-track exec.', buffs: ['💰 Income +30%'], debuffs: ['📊 Passive Income -20%'], price: 3000 },
+    'corp-fortress': { name: 'Corporate Fortress', description: 'Corporate defense.', buffs: ['🛡️ Defense +15%', '💰 Income +15%'], debuffs: [], price: 3200 },
+    'safety-net': { name: 'Safety Net Supreme', description: 'Max job security.', buffs: ['🛡️ Defense +25%'], debuffs: ['💰 Income -15%'], price: 2800 }
 };
 
 let currentSkill = null;
