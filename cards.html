@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doobert - Financial Decisions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0c29;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-yellow: #facc15;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Year Selector */
+        .year-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .year-btn {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .year-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .year-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Decision Card Container */
+        .card-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .decision-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: cardAppear 0.5s ease-out;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .year-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .scenario-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .lesson-tag {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-card {
+            padding: 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, transparent, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-card:hover::before {
+            opacity: 1;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* Option A - Risky/Fun */
+        .option-risky {
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.15), rgba(239, 68, 68, 0.05));
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .option-risky::before {
+            background: linear-gradient(135deg, var(--danger), #ef4444);
+        }
+
+        .option-risky:hover {
+            box-shadow: 0 20px 40px -15px rgba(248, 113, 113, 0.4);
+            border-color: var(--danger);
+        }
+
+        /* Option B - Smart */
+        .option-smart {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(34, 197, 94, 0.05));
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .option-smart::before {
+            background: linear-gradient(135deg, var(--success), #22c55e);
+        }
+
+        .option-smart:hover {
+            box-shadow: 0 20px 40px -15px rgba(74, 222, 128, 0.4);
+            border-color: var(--success);
+        }
+
+        .option-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+        }
+
+        .option-risky .option-label {
+            color: var(--danger);
+        }
+
+        .option-smart .option-label {
+            color: var(--success);
+        }
+
+        .option-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .option-effect {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .option-effect strong {
+            color: var(--text-primary);
+        }
+
+        /* Emoji Icons */
+        .option-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Selection Feedback */
+        .option-card.selected {
+            transform: scale(1.05);
+        }
+
+        .option-risky.selected {
+            box-shadow: 0 0 30px rgba(248, 113, 113, 0.6);
+            border-color: var(--danger);
+        }
+
+        .option-smart.selected {
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
+            border-color: var(--success);
+        }
+
+        /* Result Message */
+        .result-message {
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 16px;
+            animation: fadeIn 0.5s ease-out;
+            display: none;
+        }
+
+        .result-message.show {
+            display: block;
+        }
+
+        .result-message.risky {
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.2), rgba(239, 68, 68, 0.1));
+            border: 1px solid var(--danger);
+        }
+
+        .result-message.smart {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.1));
+            border: 1px solid var(--success);
+        }
+
+        .result-message h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .result-message p {
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Continue Button */
+        .continue-btn {
+            display: none;
+            margin: 30px auto 0;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-btn.show {
+            display: block;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>💰 Financial Crossroads</h1>
+    <p class="subtitle">Choose your year to preview the decision card</p>
+
+    <div class="year-selector" id="yearSelector">
+        <!-- Year buttons will be generated here -->
+    </div>
+
+    <div class="card-container" id="cardContainer">
+        <!-- Decision card will be rendered here -->
+    </div>
+
+    <script>
+        // Financial Decision Data
+        const decisions = [
+            {
+                year: 2,
+                scenario: "First Paycheck! 💵",
+                lesson: "Needs vs. Wants",
+                optionA: {
+                    title: "Buy New Collar",
+                    icon: "🎀",
+                    effect: "Visual change only — no stat benefit. Looking good, but your wallet stays the same!",
+                    result: "You look fabulous, but your future self might have preferred some savings..."
+                },
+                optionB: {
+                    title: "Start 401k",
+                    icon: "📈",
+                    effect: "-$100 Cash, but gain +5% Passive Income permanently!",
+                    result: "Smart move! Your future self thanks you. Compound interest is now your best friend."
+                }
+            },
+            {
+                year: 5,
+                scenario: "Car Breaks Down 🚗",
+                lesson: "Emergency Fund",
+                optionA: {
+                    title: "Put on Credit Card",
+                    icon: "💳",
+                    effect: "Keep your cash now, but Future Income -10% due to interest payments!",
+                    result: "The debt trap closes in... Interest payments will haunt you for years."
+                },
+                optionB: {
+                    title: "Pay Cash",
+                    icon: "💵",
+                    effect: "-$500 Cash immediately, but no penalties or interest!",
+                    result: "Pain now, gain later! No debt means freedom to grow your wealth."
+                }
+            },
+            {
+                year: 8,
+                scenario: "Student Loans 📚",
+                lesson: "Debt Avalanche",
+                optionA: {
+                    title: "Defer Payment",
+                    icon: "⏰",
+                    effect: "Keep your cash for now. Debt Bar flashes red as interest compounds!",
+                    result: "The debt grows silently... It's always watching, always growing."
+                },
+                optionB: {
+                    title: "Pay Aggressively",
+                    icon: "⚔️",
+                    effect: "-50% of current Cash, but Income Rate +20% permanently!",
+                    result: "Debt-free! With no monthly payments, your income potential skyrockets."
+                }
+            },
+            {
+                year: 12,
+                scenario: "Weekend Vibes 🎉",
+                lesson: "Investing in Self",
+                optionA: {
+                    title: "Party All Night",
+                    icon: "🥳",
+                    effect: "+1 Health/Life, but your Income pauses for this round!",
+                    result: "YOLO! Great memories made, but money doesn't grow while you sleep it off."
+                },
+                optionB: {
+                    title: "Take Online Course",
+                    icon: "🎓",
+                    effect: "-$200 Cash, but Income Rate +15% permanently!",
+                    result: "Knowledge is power! New skills unlock higher earning potential."
+                }
+            },
+            {
+                year: 15,
+                scenario: "Tax Refund Season 💰",
+                lesson: "Risk vs. Reward",
+                optionA: {
+                    title: "YOLO on Crypto",
+                    icon: "🚀",
+                    effect: "50% chance to 2x your Cash... 50% chance to lose it ALL!",
+                    result: "To the moon... or to the ground. Fortune favors the bold (sometimes)."
+                },
+                optionB: {
+                    title: "High Yield Savings",
+                    icon: "🛡️",
+                    effect: "Gain a Shield — Next obstacle deals 0 damage!",
+                    result: "Safe and protected! Your emergency fund shields you from life's surprises."
+                }
+            },
+            {
+                year: 20,
+                scenario: "The Promotion! 🏆",
+                lesson: "Lifestyle Creep",
+                optionA: {
+                    title: "Buy Luxury Condo",
+                    icon: "🏠",
+                    effect: "-$1000 Cash. Obstacles become bigger and harder to dodge!",
+                    result: "Living large has its costs... Your expenses grow with your income."
+                },
+                optionB: {
+                    title: "Stay in Apartment",
+                    icon: "🏢",
+                    effect: "Keep your Cash. Obstacles remain the same size!",
+                    result: "Humble living, wealthy building! You resist the temptation to inflate your lifestyle."
+                }
+            },
+            {
+                year: 25,
+                scenario: "Market Crash! 📉",
+                lesson: "Panic Selling",
+                optionA: {
+                    title: "Sell Everything!",
+                    icon: "😱",
+                    effect: "Gain $2000 Cash immediately, but Passive Income drops to 0!",
+                    result: "Panic sold at the bottom... The market always recovers, but you won't."
+                },
+                optionB: {
+                    title: "Hold & Buy Dip",
+                    icon: "💎",
+                    effect: "-$500 Cash to buy more, but Passive Income DOUBLES!",
+                    result: "Diamond hands! Buying when others panic is how millionaires are made."
+                }
+            },
+            {
+                year: 28,
+                scenario: "Health Scare 🏥",
+                lesson: "Insurance",
+                optionA: {
+                    title: "Risk It",
+                    icon: "🎲",
+                    effect: "Save your Cash, but next obstacle hit = INSTANT GAME OVER!",
+                    result: "Living dangerously... One wrong move and it's all over."
+                },
+                optionB: {
+                    title: "Buy Insurance",
+                    icon: "❤️",
+                    effect: "-$1000 Cash, but gain 3 extra Lives!",
+                    result: "Protected! Insurance isn't fun, but it's the adult thing to do."
+                }
+            }
+        ];
+
+        // Render year selector buttons
+        const yearSelector = document.getElementById('yearSelector');
+        decisions.forEach((decision, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'year-btn' + (index === 0 ? ' active' : '');
+            btn.textContent = `Year ${decision.year}`;
+            btn.onclick = () => selectYear(index);
+            yearSelector.appendChild(btn);
+        });
+
+        let currentIndex = 0;
+
+        function selectYear(index) {
+            currentIndex = index;
+
+            // Update active button
+            document.querySelectorAll('.year-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+
+            renderCard(decisions[index]);
+        }
+
+        function renderCard(decision) {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = `
+                <div class="decision-card">
+                    <div class="card-header">
+                        <span class="year-badge">📅 Year ${decision.year}</span>
+                        <h2 class="scenario-title">${decision.scenario}</h2>
+                        <span class="lesson-tag">📖 Lesson: ${decision.lesson}</span>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card option-risky" onclick="selectOption('A')">
+                            <span class="option-label">⚠️ Option A — The Risky Choice</span>
+                            <span class="option-icon">${decision.optionA.icon}</span>
+                            <h3 class="option-title">${decision.optionA.title}</h3>
+                            <p class="option-effect">${decision.optionA.effect}</p>
+                        </div>
+
+                        <div class="option-card option-smart" onclick="selectOption('B')">
+                            <span class="option-label">✅ Option B — The Smart Choice</span>
+                            <span class="option-icon">${decision.optionB.icon}</span>
+                            <h3 class="option-title">${decision.optionB.title}</h3>
+                            <p class="option-effect">${decision.optionB.effect}</p>
+                        </div>
+                    </div>
+
+                    <div class="result-message" id="resultMessage">
+                        <h3 id="resultTitle"></h3>
+                        <p id="resultText"></p>
+                    </div>
+
+                    <button class="continue-btn" id="continueBtn" onclick="continueGame()">
+                        Continue to Next Year →
+                    </button>
+                </div>
+            `;
+        }
+
+        function selectOption(option) {
+            const decision = decisions[currentIndex];
+            const cards = document.querySelectorAll('.option-card');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const continueBtn = document.getElementById('continueBtn');
+
+            // Remove previous selections
+            cards.forEach(card => card.classList.remove('selected'));
+
+            if (option === 'A') {
+                cards[0].classList.add('selected');
+                resultMessage.className = 'result-message show risky';
+                resultTitle.textContent = '😬 You chose the risky path!';
+                resultText.textContent = decision.optionA.result;
+            } else {
+                cards[1].classList.add('selected');
+                resultMessage.className = 'result-message show smart';
+                resultTitle.textContent = '🎉 Smart choice!';
+                resultText.textContent = decision.optionB.result;
+            }
+
+            continueBtn.classList.add('show');
+        }
+
+        function continueGame() {
+            if (currentIndex < decisions.length - 1) {
+                selectYear(currentIndex + 1);
+            } else {
+                alert('🎓 Congratulations! You\'ve completed all financial decisions!');
+                selectYear(0);
+            }
+        }
+
+        // Initial render
+        renderCard(decisions[0]);
+    </script>
+</body>
+
+</html>
