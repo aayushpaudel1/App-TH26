@@ -205,19 +205,17 @@ document.addEventListener('click', (e) => {
 
 // ========== INPUT HANDLING ==========
 function startThrust(e) {
+    const t = e.target;
+    if (t.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) return;
     if (e.type === 'touchstart') e.preventDefault();
-    if (e.type === 'mousedown' || e.type === 'touchstart') {
-        player.isThrusting = true;
-        if (gameState === 'PLAYING') playJump();
-        if (gameState === 'GAMEOVER') resetGame();
-    }
+    player.isThrusting = true;
+    if (gameState === 'PLAYING') playJump();
+    if (gameState === 'GAMEOVER') resetGame();
 }
 
 function endThrust(e) {
-    if (e.type === 'touchend') e.preventDefault();
-    if (e.type === 'mouseup' || e.type === 'touchend') {
-        player.isThrusting = false;
-    }
+    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
+    player.isThrusting = false;
 }
 
 window.addEventListener('mousedown', startThrust);
