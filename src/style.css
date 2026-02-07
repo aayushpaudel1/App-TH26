@@ -3,7 +3,7 @@ html {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: system-ui, sans-serif;
     background: #0f0c29;
     color: var(--text-color);
     position: fixed;
@@ -39,7 +39,7 @@ html {
     z-index: 15;
     display: none;
     overflow-y: auto;
-    background: rgb(15, 12, 41);
+    background: #0f0c29;
     box-sizing: border-box;
 }
 
