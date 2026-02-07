@@ -208,6 +208,10 @@ function startThrust(e) {
     const t = e.target;
     if (t.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) return;
     if (e.type === 'touchstart') e.preventDefault();
+    if (gameState === 'READY') {
+        hideHoldToPlayOverlay();
+        return;
+    }
     player.isThrusting = true;
     if (gameState === 'PLAYING') playJump();
     if (gameState === 'GAMEOVER') resetGame();
@@ -294,6 +298,16 @@ function selectPath(pathType) {
     playerPath = pathType;
     document.getElementById('path-selection').classList.remove('active');
     initializeGame();
+    showHoldToPlayOverlay();
+}
+
+function showHoldToPlayOverlay() {
+    gameState = 'READY';
+    document.getElementById('hold-to-play-overlay').classList.add('active');
+}
+
+function hideHoldToPlayOverlay() {
+    document.getElementById('hold-to-play-overlay').classList.remove('active');
     startRunner();
 }
 
@@ -376,14 +390,16 @@ function drawLeaderboard() {
         ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
         ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
         ctx.font = "bold 16px 'Segoe UI',sans-serif";
-        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 25);
+        ctx.textAlign = 'left';
+        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 23);
         ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
-        ctx.font = (ip ? 'bold ' : '600 ') + "18px 'Segoe UI',sans-serif";
-        ctx.fillText(e.name, w / 2 - cw / 2 + 80, y + 48);
+        ctx.font = (ip ? 'bold ' : '600 ') + "20px 'Segoe UI',sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(e.name, w / 2, y + 23);
         ctx.textAlign = 'right';
         ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
-        ctx.font = "bold 18px 'Segoe UI',sans-serif";
-        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 38);
+        ctx.font = "bold 16px 'Segoe UI',sans-serif";
+        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 23);
         ctx.textAlign = 'left';
     }
 }
@@ -392,7 +408,7 @@ function drawLeaderboard() {
 function showLeaderboard() {
     updateLeaderboardBots();
     gameState = 'LEADERBOARD';
-    leaderboardTimer = 180;
+    leaderboardTimer = 300;
     stopMu('game');
     startLeaderboardMusic();
 }
@@ -1010,15 +1026,11 @@ function drawUI() {
     ctx.save();
     ctx.translate(padding, padding + 60);
     ctx.fillStyle = '#ffd700';
-    ctx.font = 'bold 40px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('$', 15, 30);
-    ctx.fillStyle = '#ffd700';
     ctx.font = 'bold 32px Courier New';
     ctx.textAlign = 'left';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
-    ctx.fillText(`$${player.money}`, 40, 30);
+    ctx.fillText(`$${player.money}`, 0, 30);
     ctx.shadowBlur = 0;
     ctx.restore();
 }
@@ -1174,7 +1186,7 @@ function loop() {
     if (gameState === 'TITLE') {
         const scale = Math.min(w, h) / 40;
         drawDog((w - 16 * scale) / 2, h * 0.25, scale);
-    } else if (gameState === 'CHARACTERS' || gameState === 'PATHS') {
+    } else if (gameState === 'CHARACTERS' || gameState === 'PATHS' || gameState === 'READY') {
         Juice.postDraw();
         requestAnimationFrame(loop);
         return;
