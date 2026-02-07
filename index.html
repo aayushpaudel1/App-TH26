@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Doobert</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0c29;
+            color: var(--text-color);
+            height: 100vh;
+            width: 100vw;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #c {
+            z-index: 5;
+            /* Game layer above background */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* --- Layers --- */
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #sky-canvas {
+            z-index: 0;
+        }
+
+        #stars-canvas {
+            z-index: 1;
+        }
+
+        #aurora-canvas {
+            z-index: 2;
+            opacity: 0.8;
+            mix-blend-mode: screen;
+        }
+
+        #city-canvas {
+            z-index: 3;
+        }
+
+        #reflection-canvas {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            /* Water occupies bottom 25% */
+            z-index: 4;
+            opacity: 0.8;
+            /* Increased opacity */
+            filter: blur(1px);
+            /* Reduced blur */
+            transform: scaleY(-1);
+            /* Mirror effect */
+            pointer-events: none;
+            mix-blend-mode: lighten;
+            /* Blend with dark water base */
+        }
+
+        #water-base {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25%;
+            background: linear-gradient(to bottom, #151530, #000);
+            /* Lighter blue top */
+            z-index: 3;
+            /* Behind reflection */
+        }
+
+        #ui {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            text-shadow: 4px 4px 0 #4a0080;
+            image-rendering: pixelated;
+            font-variant-caps: small-caps;
+        }
+
+        button {
+            background: #006400;
+            /* Dark Green */
+            color: #fff;
+            border: 4px solid #004d00;
+            padding: 1.5rem 4rem;
+            font-size: 2rem;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 0 20px #00ff0066;
+            transition: transform 0.1s;
+            animation: pulse 2s infinite;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 100, 0, 0.7);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 0 20px rgba(0, 100, 0, 0);
+                transform: scale(1.05);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 100, 0, 0);
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c"></canvas>
+    <div id="ui">
+        <h1>DOOBERT</h1>
+        <button id="playBtn">PLAY</button>
+    </div>
+    <canvas id="sky-canvas" class="layer"></canvas>
+    <canvas id="stars-canvas" class="layer"></canvas>
+    <canvas id="aurora-canvas" class="layer"></canvas>
+
+    <!-- Water Base -->
+    <div id="water-base"></div>
+    <!-- City sits above water -->
+    <canvas id="city-canvas" class="layer"></canvas>
+    <!-- Reflection is a copy of city/lights inverted -->
+    <canvas id="reflection-canvas"></canvas>
+
+    <script>
+        const c = document.getElementById('c');
+        const ctx = c.getContext('2d');
+        const ui = document.getElementById('ui');
+
+        let w, h;
+
+        // Game State
+        let gameState = 'TITLE'; // TITLE, PLAYING, GAMEOVER
+        let gameTime = 0;
+        let score = 0;
+
+        // Player
+        const player = {
+            x: 50,
+            y: 0,
+            size: 30,
+            vy: 0,
+            gravity: 0.2,
+            thrust: -0.3,
+            maxVy: 12,
+            isThrusting: false,
+            health: 100,
+            maxHealth: 100,
+            money: 0
+        };
+
+        // Entities
+        let obstacles = [];
+        let coins = [];
+        let obstacleTimer = 0;
+        let coinTimer = 0;
+
+        // Resize function consolidated below
+        // window.addEventListener('resize', resize);
+        // resize();
+
+        // Input Handling
+        function startThrust(e) {
+            if (e.type === 'mousedown' || e.type === 'touchstart') {
+                player.isThrusting = true;
+                if (gameState === 'GAMEOVER') resetGame();
+            }
+        }
+
+        function endThrust(e) {
+            if (e.type === 'mouseup' || e.type === 'touchend') {
+                player.isThrusting = false;
+            }
+        }
+
+        window.addEventListener('mousedown', startThrust);
+        window.addEventListener('touchstart', startThrust);
+        window.addEventListener('mouseup', endThrust);
+        window.addEventListener('touchend', endThrust);
+
+        document.getElementById('playBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            startGame();
+        });
+
+        function startGame() {
+            gameState = 'PLAYING';
+            ui.style.display = 'none';
+            player.y = h / 2;
+            player.vy = 0;
+            player.isThrusting = false;
+            player.health = 100;
+            player.money = 0;
+            obstacles = [];
+            coins = [];
+            score = 0;
+        }
+
+        function resetGame() {
+            gameState = 'TITLE';
+            ui.style.display = 'block';
+        }
+
+        // --- Configuration ---
+        const config = {
+            cycleDuration: 120000,
+            waterLevel: 0.75 // Water starts at 75% height
+        };
+
+        let startTime = null;
+
+        const skyCvs = document.getElementById('sky-canvas');
+        const auroraCvs = document.getElementById('aurora-canvas');
+        const starsCvs = document.getElementById('stars-canvas');
+        const cityCvs = document.getElementById('city-canvas');
+        const reflectCvs = document.getElementById('reflection-canvas');
+
+        const skyCtx = skyCvs.getContext('2d');
+        const auroraCtx = auroraCvs.getContext('2d');
+        const starsCtx = starsCvs.getContext('2d');
+        const cityCtx = cityCvs.getContext('2d');
+        const reflectCtx = reflectCvs.getContext('2d');
+
+        function resize() {
+            w = c.width = window.innerWidth;
+            h = c.height = window.innerHeight;
+
+            [skyCvs, auroraCvs, starsCvs, cityCvs, reflectCvs].forEach(c => {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+            });
+
+            if (gameState === 'TITLE') player.y = h / 2;
+
+            initStars();
+            initCity();
+        }
+        window.addEventListener('resize', resize);
+
+        // --- VIBRANT NYC SUNSET GRADIENTS ---
+        const skyColors = [
+            { pos: 0.0, stops: [{ r: 44, g: 62, b: 80 }, { r: 255, g: 94, b: 77 }] }, // Integrated some reds/oranges from image
+            { pos: 0.15, stops: [{ r: 50, g: 40, b: 70 }, { r: 214, g: 50, b: 48 }] }, // Deep Red/Purple
+            { pos: 0.3, stops: [{ r: 30, g: 30, b: 60 }, { r: 150, g: 50, b: 150 }] },
+            { pos: 0.45, stops: [{ r: 10, g: 10, b: 35 }, { r: 60, g: 30, b: 80 }] },
+            { pos: 0.6, stops: [{ r: 2, g: 2, b: 10 }, { r: 20, g: 20, b: 40 }] },
+            { pos: 0.85, stops: [{ r: 20, g: 20, b: 40 }, { r: 70, g: 70, b: 100 }] },
+            { pos: 1.0, stops: [{ r: 64, g: 64, b: 92 }, { r: 138, g: 118, b: 171 }] }
+        ];
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function getInterpColor(c1, c2, t) {
+            return `rgb(${lerp(c1.r, c2.r, t)}, ${lerp(c1.g, c2.g, t)}, ${lerp(c1.b, c2.b, t)})`;
+        }
+
+        function drawSky(progress) {
+            let start = skyColors[0];
+            let end = skyColors[skyColors.length - 1];
+
+            for (let i = 0; i < skyColors.length - 1; i++) {
+                if (progress >= skyColors[i].pos && progress < skyColors[i + 1].pos) {
+                    start = skyColors[i];
+                    end = skyColors[i + 1];
+                    break;
+                }
+            }
+
+            const range = end.pos - start.pos;
+            const t = (progress - start.pos) / range;
+
+            const c1 = getInterpColor(start.stops[0], end.stops[0], t);
+            const c2 = getInterpColor(start.stops[1], end.stops[1], t);
+
+            const grd = skyCtx.createLinearGradient(0, 0, 0, skyCvs.height * config.waterLevel);
+            grd.addColorStop(0, c1);
+            grd.addColorStop(1, c2);
+            skyCtx.fillStyle = grd;
+            skyCtx.fillRect(0, 0, skyCvs.width, skyCvs.height * config.waterLevel);
+        }
+
+        // --- Stars ---
+        let bgStars = [];
+        function initStars() {
+            bgStars = [];
+            for (let i = 0; i < 300; i++) {
+                const isShiny = Math.random() < 0.1;
+                bgStars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * (window.innerHeight * config.waterLevel),
+                    size: isShiny ? Math.random() * 2 + 1 : Math.random() * 1.5,
+                    opacity: Math.random(),
+                    twinkleSpeed: (Math.random() * 0.05 + 0.01) * (isShiny ? 2000 : 1),
+                    isShiny: isShiny
+                });
+            }
+        }
+
+        function drawStars() {
+            starsCtx.clearRect(0, 0, starsCvs.width, starsCvs.height);
+            bgStars.forEach(s => {
+                s.opacity += 0.005;
+                const val = Math.abs(Math.sin(performance.now() * 0.001 * s.twinkleSpeed + s.x));
+
+                starsCtx.shadowBlur = s.isShiny ? 8 : 0;
+                starsCtx.shadowColor = 'white';
+                starsCtx.fillStyle = `rgba(255, 255, 255, ${val})`;
+                starsCtx.beginPath();
+                starsCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                starsCtx.fill();
+            });
+            starsCtx.shadowBlur = 0;
+        }
+
+        // --- City & Traffic ---
+        let buildings = [];
+        let cars = [];
+
+        function initCity() {
+            buildings = [];
+            let currentX = 0;
+            const groundY = window.innerHeight * config.waterLevel;
+
+            while (currentX < window.innerWidth) {
+                let width, height, shape = 'flattop';
+                const rand = Math.random();
+
+                // Varied Shapes inspired by NY
+                if (rand > 0.85) { shape = 'empire'; width = 80; height = 400 + Math.random() * 100; } // Empire State
+                else { shape = 'block'; width = 50 + Math.random() * 80; height = 150 + Math.random() * 300; }
+
+                if (currentX + width > window.innerWidth) width = window.innerWidth - currentX;
+                if (width < 20) break;
+
+                // Windows
+                const winW = 6, winH = 9, gapX = 4, gapY = 6;
+                const cols = Math.floor((width - 4) / (winW + gapX));
+                const rows = Math.floor((height - 10) / (winH + gapY));
+                const winArr = [];
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let isOn = Math.random() > 0.5;
+
+                        if (Math.random() > 0.3) {
+                            winArr.push({ x: 4 + c * (winW + gapX), y: 10 + r * (winH + gapY), w: winW, h: winH, on: isOn, flickerOffset: Math.random() * 10000 });
+                        }
+                    }
+                }
+
+                buildings.push({ x: currentX, y: groundY - height, w: width, h: height, shape: shape, windows: winArr, colorIdx: Math.random() });
+                currentX += width - 2;
+            }
+
+            // Init Cars
+            cars = [];
+            for (let i = 0; i < 40; i++) {
+                cars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: groundY - Math.random() * 5, // Just above water line
+                    speed: Math.random() + 0.5,
+                    dir: Math.random() > 0.5 ? 1 : -1,
+                    color: Math.random() > 0.5 ? '#ff4444' : '#ffffff' // Tail vs Headlights
+                });
+            }
+        }
+
+        function drawCity() {
+            cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
+            reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height); // Update reflection
+
+            const groundY = window.innerHeight * config.waterLevel;
+
+            buildings.forEach(b => {
+                // Gradient Body
+                const hue = 220 + b.colorIdx * 40;
+                const grad = cityCtx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+                grad.addColorStop(0, `hsl(${hue}, 30%, 20%)`);
+                grad.addColorStop(1, `hsl(${hue}, 40%, 5%)`);
+                cityCtx.fillStyle = grad;
+
+                cityCtx.beginPath();
+                if (b.shape === 'empire') {
+                    // Tapered Spire
+                    cityCtx.rect(b.x, b.y + 80, b.w, b.h - 80); // Base
+                    cityCtx.rect(b.x + b.w * 0.15, b.y + 40, b.w * 0.7, 40); // Mid
+                    cityCtx.rect(b.x + b.w * 0.35, b.y, b.w * 0.3, 40); // Top
+                    cityCtx.rect(b.x + b.w / 2 - 2, b.y - 30, 4, 30); // Mast
+                } else {
+                    cityCtx.rect(b.x, b.y, b.w, b.h);
+                }
+                cityCtx.fill();
+
+                // Windows
+                b.windows.forEach(win => {
+                    if (!win.on) return;
+                    let color = '#ffebcc';
+
+                    let alpha = Math.abs(Math.sin((performance.now() + win.flickerOffset) * 0.002)) * 0.5 + 0.3;
+
+                    cityCtx.globalAlpha = alpha;
+                    cityCtx.fillStyle = color;
+                    cityCtx.fillRect(b.x + win.x, b.y + win.y, win.w, win.h);
+                });
+                cityCtx.globalAlpha = 1;
+            });
+
+            // Street Lamps & Roads
+            cityCtx.fillStyle = '#000';
+            cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5); // Road base
+
+            // Lamps
+            for (let x = 20; x < window.innerWidth; x += 100) {
+                cityCtx.fillStyle = '#444';
+                cityCtx.fillRect(x, groundY - 40, 3, 40); // Pole
+                cityCtx.fillStyle = '#ffaa00';
+                cityCtx.shadowBlur = 10;
+                cityCtx.shadowColor = '#ffaa00';
+                cityCtx.beginPath();
+                cityCtx.arc(x + 1.5, groundY - 42, 4, 0, Math.PI * 2);
+                cityCtx.fill();
+                cityCtx.shadowBlur = 0;
+            }
+
+            // Traffic
+            cars.forEach(car => {
+                car.x += car.speed * car.dir;
+                if (car.x > window.innerWidth) car.x = -20;
+                if (car.x < -20) car.x = window.innerWidth;
+
+                cityCtx.fillStyle = car.color;
+                cityCtx.shadowBlur = 5;
+                cityCtx.shadowColor = car.color;
+                cityCtx.fillRect(car.x, car.y, 8, 3);
+                cityCtx.shadowBlur = 0;
+            });
+
+            // Capture City for Reflection
+            // We just draw the city canvas onto the reflection canvas
+            // Use drawImage
+            reflectCtx.drawImage(cityCvs, 0, 0);
+        }
+
+        // --- Aurora & Meteors ---
+        let auroraTime = 0;
+        function drawAurora() {
+            auroraCtx.clearRect(0, 0, auroraCvs.width, auroraCvs.height);
+            auroraTime += 0.002;
+            const bands = 2;
+            for (let i = 0; i < bands; i++) {
+                auroraCtx.beginPath();
+                const baseY = 150 + i * 80;
+                for (let x = 0; x <= auroraCvs.width; x += 15) {
+                    const noise = Math.sin(x * 0.001 + auroraTime) * 1.2 + Math.sin(x * 0.003 - auroraTime) * 0.5;
+                    const y = baseY + noise * 40;
+                    if (x === 0) auroraCtx.moveTo(x, y); else auroraCtx.lineTo(x, y);
+                }
+                auroraCtx.lineTo(auroraCvs.width, 0); auroraCtx.lineTo(0, 0); auroraCtx.closePath();
+                const grad = auroraCtx.createLinearGradient(0, 0, 0, auroraCvs.height / 2);
+                grad.addColorStop(0, 'rgba(0, 255, 128, 0)'); grad.addColorStop(1, 'rgba(0, 255, 128, 0.2)');
+                auroraCtx.fillStyle = grad; auroraCtx.filter = 'blur(20px)'; auroraCtx.fill(); auroraCtx.filter = 'none';
+            }
+        }
+
+        class Meteor {
+            constructor() { this.reset(); }
+            reset() { this.active = false; this.spawnTime = performance.now() + Math.random() * 10000 + 2000; this.speed = 15; }
+            activate() { this.active = true; this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight * 0.3; this.size = Math.random() * 2 + 1; const angle = Math.PI / 4 + (Math.random() - 0.5); this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed; this.alpha = 1; }
+            update() { if (!this.active) { if (performance.now() > this.spawnTime) this.activate(); return; } this.x += this.vx; this.y += this.vy; this.alpha -= 0.05; if (this.alpha <= 0) this.reset(); }
+            draw() { if (!this.active || this.alpha <= 0) return; starsCtx.strokeStyle = `rgba(255,255,255,${this.alpha})`; starsCtx.lineWidth = this.size; starsCtx.beginPath(); starsCtx.moveTo(this.x, this.y); starsCtx.lineTo(this.x - this.vx * 2, this.y - this.vy * 2); starsCtx.stroke(); }
+        }
+        const meteors = [new Meteor(), new Meteor()];
+
+        function frame(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = (elapsed % config.cycleDuration) / config.cycleDuration;
+
+            drawSky(progress);
+            drawCity(); // Handles reflection & traffic
+            drawStars();
+            meteors.forEach(m => { m.update(); m.draw(); });
+            drawAurora();
+
+            requestAnimationFrame(frame);
+        }
+
+        resize();
+        initCity();
+        requestAnimationFrame(frame);
+
+        // Obstacle Class
+        class Obstacle {
+            constructor() {
+                // Type: 0 = floating block, 1 = top wall, 2 = bottom wall
+                this.type = Math.floor(Math.random() * 3);
+                this.w = 50 + Math.random() * 30;
+                this.x = w;
+                this.color = '#ff4444';
+                this.markedForDeletion = false;
+
+                if (this.type === 0) { // Block
+                    this.h = 40 + Math.random() * 40;
+                    this.y = Math.random() * (h - this.h);
+                } else if (this.type === 1) { // Top Wall
+                    this.h = h * 0.2 + Math.random() * (h * 0.4); // 20-60% height
+                    this.y = 0;
+                } else { // Bottom Wall
+                    this.h = h * 0.2 + Math.random() * (h * 0.4);
+                    this.y = h - this.h;
+                }
+            }
+            update() {
+                this.x -= 2; // Speed
+                if (this.x + this.w < 0) this.markedForDeletion = true;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+            }
+        }
+
+        // Coin Class
+        class Coin {
+            constructor() {
+                this.size = 15;
+                this.x = w;
+                this.y = 50 + Math.random() * (h - 100);
+                this.markedForDeletion = false;
+                this.waffleOffset = Math.random() * 100;
+            }
+            update() {
+                this.x -= 6;
+                this.waffleOffset += 0.1;
+                this.y += Math.sin(this.waffleOffset) * 0.5;
+                if (this.x + this.size < 0) this.markedForDeletion = true;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x + this.size, this.y + this.size);
+
+                // Outer Gold
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700';
+                ctx.fill();
+                ctx.strokeStyle = '#DAA520';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Shine
+                ctx.beginPath();
+                ctx.arc(-4, -4, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.fill();
+
+                // Inner Symbol
+                ctx.fillStyle = '#DAA520';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('$', 0, 1);
+
+                ctx.restore();
+            }
+        }
+
+        // UI Drawing
+        function drawUI() {
+            const padding = 20;
+            const barHeight = 20;
+            const barWidth = 200;
+
+            // Health Bar
+            ctx.save();
+            ctx.translate(padding, padding);
+
+            // Heart Icon
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.moveTo(10, 10);
+            ctx.bezierCurveTo(10, 3, 5, 0, 0, 0);
+            ctx.bezierCurveTo(-5, 0, -10, 3, -10, 10);
+            ctx.bezierCurveTo(-10, 20, 0, 30, 10, 40);
+            ctx.bezierCurveTo(20, 30, 30, 20, 30, 10);
+            ctx.bezierCurveTo(30, 3, 25, 0, 20, 0);
+            ctx.bezierCurveTo(15, 0, 10, 3, 10, 10);
+            ctx.fill();
+
+            // Bar Background
+            ctx.fillStyle = '#550000';
+            ctx.fillRect(40, 5, barWidth, barHeight);
+
+            // Health Fill
+            ctx.fillStyle = '#ff0000';
+            const healthPercent = Math.max(0, player.health / player.maxHealth);
+            ctx.fillRect(40, 5, barWidth * healthPercent, barHeight);
+
+            // Border
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(40, 5, barWidth, barHeight);
+
+            ctx.restore();
+
+            // Balance Bar
+            ctx.save();
+            ctx.translate(padding, padding + 60);
+
+            // Money Icon ($)
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 40px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('$', 15, 30);
+
+            // Balance Text
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 32px Courier New';
+            ctx.textAlign = 'left';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 4;
+            ctx.fillText(`$${player.money}`, 40, 30);
+            ctx.shadowBlur = 0;
+
+            ctx.restore();
+        }
+
+        // Collision Logic
+        function checkCollisions() {
+            // Obstacles
+            for (let i = 0; i < obstacles.length; i++) {
+                const obs = obstacles[i];
+                if (
+                    player.x < obs.x + obs.w &&
+                    player.x + player.size > obs.x &&
+                    player.y < obs.y + obs.h &&
+                    player.y + player.size > obs.y
+                ) {
+                    player.health -= 20;
+                    obs.markedForDeletion = true;
+                    if (player.health <= 0) gameState = 'GAMEOVER';
+                }
+            }
+
+            // Coins
+            for (let i = 0; i < coins.length; i++) {
+                const c = coins[i];
+                const coinSize = c.size * 2;
+                if (
+                    player.x < c.x + coinSize &&
+                    player.x + player.size > c.x &&
+                    player.y < c.y + coinSize &&
+                    player.y + player.size > c.y
+                ) {
+                    player.money += 1;
+                    c.markedForDeletion = true;
+                }
+            }
+        }
+
+        // Scotty Dog (Title Screen Only)
+        // ... (Keep existing dogSprite and drawDog)
+        const dogSprite = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+            [0, 0, 0, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0]
+        ];
+
+        function drawDog(x, y, scale) {
+            ctx.save();
+            ctx.translate(x, y + Math.sin(Date.now() / 300) * 10);
+            for (let r = 0; r < dogSprite.length; r++) {
+                for (let c = 0; c < dogSprite[r].length; c++) {
+                    const val = dogSprite[r][c];
+                    if (val === 0) continue;
+                    ctx.fillStyle = val === 1 ? '#111' : (val === 2 ? '#d00' : '#fff');
+                    ctx.fillRect(c * scale, r * scale, scale, scale);
+                }
+            }
+            ctx.restore();
+        }
+
+        // Loop
+        function loop() {
+            // clearRect to let background show through
+            ctx.clearRect(0, 0, w, h);
+
+            if (gameState === 'TITLE') {
+                const scale = Math.min(w, h) / 40;
+                const dogW = 16 * scale;
+                drawDog((w - dogW) / 2, h * 0.25, scale);
+
+            } else if (gameState === 'PLAYING') {
+                // Player Physics
+                if (player.isThrusting) player.vy += player.thrust;
+                else player.vy += player.gravity;
+
+                if (player.vy > player.maxVy) player.vy = player.maxVy;
+                if (player.vy < -player.maxVy) player.vy = -player.maxVy;
+                player.y += player.vy;
+
+                if (player.y < 0) { player.y = 0; player.vy = 0; }
+                if (player.y > h - player.size) { player.y = h - player.size; player.vy = 0; }
+
+                // Spawning
+                obstacleTimer++;
+                if (obstacleTimer > 60) {
+                    obstacles.push(new Obstacle());
+                    obstacleTimer = 0;
+                }
+
+                coinTimer++;
+                if (coinTimer > 40) {
+                    if (Math.random() > 0.5) coins.push(new Coin());
+                    coinTimer = 0;
+                }
+
+                // Update & Draw Entities
+                obstacles.forEach(o => { o.update(); o.draw(); });
+                obstacles = obstacles.filter(o => !o.markedForDeletion);
+
+                coins.forEach(c => { c.update(); c.draw(); });
+                coins = coins.filter(c => !c.markedForDeletion);
+
+                checkCollisions();
+
+                // Draw Player
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(player.x, player.y, player.size, player.size);
+
+                drawUI();
+
+            } else if (gameState === 'GAMEOVER') {
+                ctx.fillStyle = '#fff';
+                ctx.font = '40px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', w / 2, h / 2);
+                ctx.font = '20px Courier New';
+                ctx.fillText(`Final Money: $${player.money}`, w / 2, h / 2 + 40);
+                ctx.fillText('Click to Title', w / 2, h / 2 + 80);
+            }
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+
+</html>
