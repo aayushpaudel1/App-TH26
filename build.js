@@ -3,6 +3,7 @@ const { minify } = require('terser');
 const { Packer } = require('roadroller');
 const { minify: htmlMinify } = require('html-minifier-terser');
 const zlib = require('zlib');
+const tar = require('tar-stream');
 
 // --- CONFIGURATION ---
 const JS_FILE = 'src/main.js';
@@ -135,15 +136,27 @@ async function build() {
     if (!fs.existsSync('dist')) fs.mkdirSync('dist');
     fs.writeFileSync(OUTPUT_FILE, finalHtml);
 
-    // 6. BROTLI COMPRESS (max quality) + write to dist
-    const buffer = Buffer.from(finalHtml);
-    const compressed = zlib.brotliCompressSync(buffer, {
+    // 6. CREATE TAR ARCHIVE + BROTLI COMPRESS
+    // Create tar archive containing index.html
+    const pack = tar.pack();
+    const chunks = [];
+    pack.on('data', chunk => chunks.push(chunk));
+
+    const tarReady = new Promise(resolve => pack.on('end', resolve));
+    pack.entry({ name: 'index.html' }, finalHtml);
+    pack.finalize();
+    await tarReady;
+
+    const tarBuffer = Buffer.concat(chunks);
+
+    // Brotli compress the tar archive
+    const compressed = zlib.brotliCompressSync(tarBuffer, {
         params: {
-            [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
+            [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_GENERIC,
             [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
         }
     });
-    fs.writeFileSync('dist/index.html.br', compressed);
+    fs.writeFileSync('script/index.tar.br', compressed);
 
     const LIMIT = 15360;
     const size = compressed.length;
