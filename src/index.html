@@ -13,7 +13,8 @@
     <div id="ui">
         <h1>CAPITAL K9</h1>
         <button id="playBtn">PLAY</button>
-        <p style="color:#fbbf24;font-size:1.1rem;margin-top:1.2rem;text-shadow:0 0 10px rgba(251,191,36,.5)">🔊 Unmute for sound!</p>
+        <p style="color:#fbbf24;font-size:1.1rem;margin-top:1.2rem;text-shadow:0 0 10px rgba(251,191,36,.5)">🔊 Unmute
+            for sound!</p>
     </div>
     <div class="timer-display">15</div>
 
@@ -251,7 +252,14 @@
 
     <!-- Character selection -->
     <div id="character-selection">
-        <svg width="0" height="0"><defs><linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#00f3ff" /><stop offset="100%" stop-color="#d400ff" /></linearGradient></defs></svg>
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#00f3ff" />
+                    <stop offset="100%" stop-color="#d400ff" />
+                </linearGradient>
+            </defs>
+        </svg>
 
         <h2>Character Selection</h2>
         <div class="container">
@@ -259,48 +267,21 @@
             <div class="char-card" onclick="selectCharacter('scotty')">
                 <div class="char-btn">
                     <svg class="scotty-svg" viewBox="0 0 100 100">
-                        <!-- Body -->
                         <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
-
-                        <!-- Legs -->
-                        <rect x="30" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
-                            rx="6" />
-                        <rect x="60" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
-                            rx="6" />
-
-                        <!-- Tartan Bandana -->
+                        <path d="M30 75h12v15h-12zM60 75h12v15h-12z" fill="#0d0d0d" stroke="#333" stroke-width="2" />
                         <path d="M30 50 L 70 50 L 50 78 Z" fill="#cc0000" stroke="#000" stroke-width="1" />
-
-                        <!-- Head (black, shaggy) -->
                         <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
-
-                        <!-- Pointed Ears -->
-                        <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
-                        <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
-                        <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
-                        <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
-
-                        <!-- Shaggy fur texture -->
-                        <path d="M32 38 Q 28 42, 30 46" class="shaggy-fur" />
-                        <path d="M68 38 Q 72 42, 70 46" class="shaggy-fur" />
-                        <path d="M35 50 Q 32 54, 34 58" class="shaggy-fur" />
-                        <path d="M65 50 Q 68 54, 66 58" class="shaggy-fur" />
-
-                        <!-- Distinctive Beard -->
+                        <path d="M35 30 L 32 15 L 40 28 Z M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
+                        <path d="M36 28 L 34 20 L 39 28 Z M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
+                        <path
+                            d="M32 38 Q 28 42, 30 46 M68 38 Q 72 42, 70 46 M35 50 Q 32 54, 34 58 M65 50 Q 68 54, 66 58 M40 58 Q 38 62, 40 64 M60 58 Q 62 62, 60 64"
+                            class="shaggy-fur" />
                         <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
-                        <path d="M40 58 Q 38 62, 40 64" class="shaggy-fur" />
-                        <path d="M60 58 Q 62 62, 60 64" class="shaggy-fur" />
-
-                        <!-- Snout -->
                         <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
-
-                        <!-- Eyes -->
                         <circle cx="43" cy="42" r="3" class="scotty-eye" />
                         <circle cx="57" cy="42" r="3" class="scotty-eye" />
                         <circle cx="43" cy="42" r="1.5" fill="#fff" />
                         <circle cx="57" cy="42" r="1.5" fill="#fff" />
-
-                        <!-- Nose -->
                         <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
                     </svg>
                 </div>
@@ -316,7 +297,8 @@
                             class="stat-value">120%</span></div>
                     <div class="special-ability">
                         <div class="ability-name">SCOTTISH SAVINGS</div>
-                        <div class="ability-desc">• Auto-banks 10% yearly<br>• +15% passive, locked 2yr<br>• Early exit burns 20%</div>
+                        <div class="ability-desc">• Auto-banks 10% yearly<br>• +15% passive, locked 2yr<br>• Early exit
+                            burns 20%</div>
                     </div>
                 </div>
             </div>
@@ -328,18 +310,14 @@
                         <path class="husky-fur"
                             d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
                         <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
-                        <path class="husky-fur" d="M40 30 L 50 50 L 60 30" /> <!-- Forehead blaze -->
-                        <!-- Sunglasses -->
+                        <path class="husky-fur" d="M40 30 L 50 50 L 60 30" />
                         <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
-                        <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
-                        <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
-                        <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" /> <!-- Bridge -->
-                        <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" /> <!-- Glint -->
-                        <!-- Snout -->
-                        <ellipse cx="50" cy="58" rx="10" ry="8" fill="#e0e0e0" /> <!-- Muzzle base -->
+                        <path class="glasses-lens" d="M27 47 h20 v6 h-20 Z M53 47 h20 v6 h-20 Z" />
+                        <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" />
+                        <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" />
+                        <ellipse cx="50" cy="58" rx="10" ry="8" fill="#e0e0e0" />
                         <path d="M42 55 Q 50 52, 58 55" fill="none" stroke="#ddd" stroke-width="1" />
-                        <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" /> <!-- Nose -->
-                        <!-- Confident Smirk -->
+                        <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" />
                         <path d="M45 62 Q 50 64, 55 61" fill="none" stroke="#111" stroke-width="1.5" />
                     </svg>
                 </div>
@@ -354,7 +332,8 @@
                             class="stat-value">75%</span></div>
                     <div class="special-ability">
                         <div class="ability-name">MOON SHOT</div>
-                        <div class="ability-desc">• Coins: $65–$160 volatile<br>• Boom: 2× coins<br>• Crash: −30% balance, stacks</div>
+                        <div class="ability-desc">• Coins: $65–$160 volatile<br>• Boom: 2× coins<br>• Crash: −30%
+                            balance, stacks</div>
                     </div>
                 </div>
             </div>
@@ -363,39 +342,31 @@
             <div class="char-card" onclick="selectCharacter('golden')">
                 <div class="char-btn">
                     <svg class="golden-svg" viewBox="0 0 100 120">
-                        <!-- Tail (Wagging) -->
                         <path d="M65 95 Q 80 85, 75 75" stroke="#d4af37" stroke-width="6" fill="none"
                             stroke-linecap="round">
                             <animate attributeName="d"
                                 values="M65 95 Q 80 85, 75 75; M65 95 Q 80 105, 85 95; M65 95 Q 80 85, 75 75" dur="1s"
                                 repeatCount="indefinite" />
                         </path>
-
-                        <!-- Body (Sitting) -->
-                        <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" class="golden-fur" />
-
-                        <!-- Paws -->
-                        <ellipse cx="35" cy="110" rx="8" ry="5" class="golden-fur" />
-                        <ellipse cx="65" cy="110" rx="8" ry="5" class="golden-fur" />
-                        <ellipse cx="40" cy="100" rx="6" ry="10" class="golden-fur" />
-                        <ellipse cx="60" cy="100" rx="6" ry="10" class="golden-fur" />
-
-                        <!-- Head -->
+                        <g class="golden-fur">
+                            <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" />
+                            <ellipse cx="35" cy="110" rx="8" ry="5" />
+                            <ellipse cx="65" cy="110" rx="8" ry="5" />
+                            <ellipse cx="40" cy="100" rx="6" ry="10" />
+                            <ellipse cx="60" cy="100" rx="6" ry="10" />
+                            <ellipse cx="50" cy="55" rx="22" ry="25" />
+                            <ellipse cx="30" cy="50" rx="8" ry="15" />
+                            <ellipse cx="70" cy="50" rx="8" ry="15" />
+                        </g>
                         <g transform="translate(0, 10)">
-                            <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
-                            <!-- Ears -->
-                            <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
-                            <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
-                            <!-- Snout/Face -->
                             <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
                             <circle cx="42" cy="42" r="3" fill="#000" />
                             <circle cx="58" cy="42" r="3" fill="#000" />
                             <circle cx="50" cy="55" r="3" fill="#000" />
-                            <!-- Glasses -->
-                            <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5"
-                                fill="rgba(255,255,255,0.2)" />
-                            <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5"
-                                fill="rgba(255,255,255,0.2)" />
+                            <g class="glass-lens-clear">
+                                <circle cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5" />
+                                <circle cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5" />
+                            </g>
                             <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
                         </g>
                     </svg>
@@ -411,7 +382,8 @@
                             class="stat-value">165%</span></div>
                     <div class="special-ability">
                         <div class="ability-name">COMPOUND MAGIC</div>
-                        <div class="ability-desc">• +10% yearly growth<br>• Passives unlock early<br>• 70% balance locked</div>
+                        <div class="ability-desc">• +10% yearly growth<br>• Passives unlock early<br>• 70% balance
+                            locked</div>
                     </div>
                 </div>
             </div>
@@ -420,35 +392,31 @@
             <div class="char-card" onclick="selectCharacter('shiba')">
                 <div class="char-btn">
                     <svg class="shiba-svg" viewBox="0 0 100 120">
-                        <!-- Curled Tail - Moved Closer & Down -->
                         <path d="M72 85 Q 85 75, 80 65" stroke="#d4834f" stroke-width="6" fill="none"
                             stroke-linecap="round" />
-
-                        <!-- Body -->
-                        <rect x="30" y="60" width="40" height="40" rx="10" class="fur-orange" />
+                        <g class="fur-orange">
+                            <rect x="30" y="60" width="40" height="40" rx="10" />
+                            <rect x="32" y="90" width="8" height="20" rx="3" />
+                            <rect x="60" y="90" width="8" height="20" rx="3" />
+                            <ellipse cx="50" cy="60" rx="22" ry="24" />
+                            <path d="M35 35 L 30 20 L 40 30 Z" />
+                            <path d="M65 35 L 70 20 L 60 30 Z" />
+                        </g>
                         <rect x="35" y="65" width="30" height="30" rx="8" class="fur-cream" opacity="0.6" />
-
-                        <!-- Legs -->
-                        <rect x="32" y="90" width="8" height="20" rx="3" class="fur-orange" />
-                        <rect x="60" y="90" width="8" height="20" rx="3" class="fur-orange" />
-
-                        <!-- Head -->
+                        <g class="fur-cream">
+                            <path d="M35 32 L 32 22 L 38 30 Z" />
+                            <path d="M65 32 L 68 22 L 62 30 Z" />
+                            <ellipse cx="50" cy="68" rx="14" ry="10" />
+                        </g>
                         <g transform="translate(0, 10)">
-                            <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
-                            <!-- Ears -->
-                            <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
-                            <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
-                            <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
-                            <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
-                            <!-- Face -->
-                            <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
                             <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
                             <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
                             <circle cx="50" cy="60" r="3" fill="#000" />
                             <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
-                            <!-- Helmet -->
-                            <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
-                            <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
+                            <g class="helmet-yellow">
+                                <ellipse cx="50" cy="28" rx="18" ry="10" />
+                                <rect x="32" y="34" width="36" height="4" rx="2" />
+                            </g>
                         </g>
                     </svg>
                 </div>
@@ -464,7 +432,8 @@
                             class="stat-value">95%</span></div>
                     <div class="special-ability">
                         <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
-                        <div class="ability-desc">• 3 Guard Tokens/yr<br>• Negate obstacles<br>• Penalties −40%<br>• Skills +10%, no risk bonus</div>
+                        <div class="ability-desc">• 3 Guard Tokens/yr<br>• Negate obstacles<br>• Penalties −40%<br>•
+                            Skills +10%, no risk bonus</div>
                     </div>
                 </div>
             </div>

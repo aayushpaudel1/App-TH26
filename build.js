@@ -40,7 +40,7 @@ async function build() {
     // 3. PRE-MINIFY CSS
     console.log('🧹 Pre-minifying CSS...');
     const miniCssHtml = await htmlMinify(`<style>${cssCode}</style>`, {
-        minifyCSS: true,
+        minifyCSS: { level: 2 },
         collapseWhitespace: true,
     });
     const minifiedCss = miniCssHtml.replace(/^<style>/, '').replace(/<\/style>$/, '');
@@ -100,6 +100,8 @@ async function build() {
             pure_getters: true,
             unsafe_arrows: true,
             unsafe_math: true,
+            unsafe_methods: true,
+            unsafe_proto: true,
         },
         mangle: {
             reserved: reserved,
@@ -126,11 +128,12 @@ async function build() {
     console.log(`📊 Packed JS: ${packedJs.length} chars`);
 
     // 8. MINIMAL HTML SHELL — the packed script does everything
-    const finalHtml = '<!DOCTYPE html><html lang=en><head>'
+    // Removed DOCTYPE, lang, long viewport, long title.
+    const finalHtml = '<html><head>'
         + '<meta charset=UTF-8>'
-        + '<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">'
-        + '<title>Capital K9</title></head>'
-        + `<body><script>${packedJs}</script></body></html>`;
+        + '<meta name=viewport content="width=device-width">'
+        + '<title>K9</title></head>'
+        + `<body><script>${packedJs}</script>`;
 
     // Ensure dist exists
     if (!fs.existsSync('dist')) fs.mkdirSync('dist');
