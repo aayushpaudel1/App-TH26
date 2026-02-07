@@ -30,6 +30,637 @@
             left: 0;
         }
 
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --neon-blue: #00f3ff;
+            --neon-pink: #d400ff;
+            --gold: #ffd700;
+            --tartan-red: #cc0000;
+            --tartan-green: #006600;
+            --tech-blue: #00d4ff;
+            --muted-gold: #d4af37;
+        }
+
+        /* this is for character selection */
+        #character-selection {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            display: none;
+            overflow-y: auto;
+            background: rgb(15, 12, 41);
+        }
+
+        #character-selection.active {
+            display: block;
+        }
+
+        #path-selection {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            display: none;
+            overflow-y: auto;
+            background: rgb(15, 12, 41);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #path-selection.active {
+            display: flex;
+        }
+
+        #path-selection h2 {
+            color: #fff;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        .path-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .path-label {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        char-body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            gap: 40px;
+        }
+
+        h2 {
+            font-weight: 300;
+            opacity: 0.7;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .char-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 280px;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #333;
+        }
+
+        .char-btn {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            background: #222;
+            border: 4px solid #444;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .char-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .char-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .char-desc {
+            font-size: 12px;
+            opacity: 0.6;
+            text-align: center;
+        }
+
+        .char-stats {
+            width: 100%;
+            background: #0a0a0a;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .special-ability {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #333;
+        }
+
+        .ability-name {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 4px;
+        }
+
+        .ability-desc {
+            font-size: 10px;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        /* --- Scotty: Terrier, Tartan --- */
+        .btn-scotty {
+            background: #1a1a1a;
+            border-color: #3a3a3a;
+        }
+
+        /* Plaid Background Effect */
+        .scotty-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.3;
+            background-image:
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(204, 0, 0, 0.2) 10px, rgba(204, 0, 0, 0.2) 20px),
+                repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0, 100, 0, 0.2) 10px, rgba(0, 100, 0, 0.2) 20px);
+        }
+
+        .scotty-svg {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .terrier-head {
+            fill: #1a1a1a;
+            stroke: #333;
+            stroke-width: 2;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        .terrier-body {
+            fill: #0d0d0d;
+            stroke: #2a2a2a;
+            stroke-width: 1.5;
+        }
+
+        .shaggy-fur {
+            stroke: #3a3a3a;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .bowtie {
+            fill: url(#tartanGradient);
+            stroke: #000;
+            stroke-width: 1;
+        }
+
+        .tartan-coat {
+            fill: url(#tartanGradient);
+            opacity: 0.9;
+        }
+
+        .ear-highlight {
+            fill: none;
+            stroke: #444;
+            stroke-width: 2;
+        }
+
+        .scotty-eye {
+            fill: #000;
+            stroke: #fff;
+            stroke-width: 0.5;
+        }
+
+        .scotty-snout {
+            fill: #2a2a2a;
+        }
+
+        .scotty-beard {
+            fill: #1a1a1a;
+            stroke: #3a3a3a;
+            stroke-width: 1;
+        }
+
+        /* --- Husky: Neon, Sunglasses --- */
+        .btn-husky {
+            background: linear-gradient(135deg, #102030, #000);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .husky-svg {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            top: 5%;
+            left: 5%;
+        }
+
+        .husky-fur {
+            fill: #e0e0e0;
+        }
+
+        .husky-mask {
+            fill: #304050;
+        }
+
+        .glasses-frame {
+            fill: #111;
+            stroke: var(--neon-pink);
+            stroke-width: 1;
+        }
+
+        .glasses-lens {
+            fill: url(#lensGradient);
+            opacity: 0.8;
+        }
+
+        .crypto-glint {
+            fill: #fff;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 2px #fff);
+        }
+
+        /* --- Golden: Glasses, Charts --- */
+        .btn-golden {
+            background: #2a2010;
+            border-color: var(--gold);
+        }
+
+        .chart-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            background-image: linear-gradient(0deg, transparent 95%, rgba(0, 255, 0, 0.5) 95%);
+            background-size: 10px 10px;
+        }
+
+        .golden-chart-line {
+            position: absolute;
+            inset: 0;
+            stroke: #00ff00;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.3;
+            transform: scaleY(0.5) translateY(30px);
+        }
+
+        .golden-svg {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            top: 10%;
+            left: 7.5%;
+        }
+
+        .golden-fur {
+            fill: #d4af37;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+        }
+
+        .golden-snoot {
+            fill: #ffeebb;
+        }
+
+        .reading-glasses {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1.5;
+        }
+
+        .glass-lens-clear {
+            fill: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- Corgi: Crown, Royal --- */
+        .btn-corgi {
+            background: #2a1505;
+            border-color: #ff8800;
+            box-shadow: 0 0 15px rgba(255, 136, 0, 0.3);
+        }
+
+        .corgi-svg {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            top: 12%;
+            left: 7.5%;
+        }
+
+        .corgi-fur-orange {
+            fill: #d67828;
+        }
+
+        .corgi-fur-white {
+            fill: #fff;
+        }
+
+        .crown {
+            fill: var(--gold);
+            stroke: #b8860b;
+            stroke-width: 1;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+            transform-origin: 50% 10%;
+            animation: crown-tilt 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes crown-tilt {
+            from {
+                transform: rotate(-5deg);
+            }
+
+            to {
+                transform: rotate(5deg);
+            }
+        }
+
+        .gem {
+            fill: #ff0000;
+        }
+
+        /* --- Shiba Inu: Safety Helmet, Shield --- */
+        .btn-shiba {
+            background: #2a1a10;
+            border-color: #4488ff;
+            box-shadow: 0 0 10px rgba(68, 136, 255, 0.4) inset;
+        }
+
+        .shiba-svg {
+            position: relative;
+            width: 90%;
+            height: 90%;
+            top: 10%;
+            left: 5%;
+        }
+
+        .fur-orange {
+            fill: #d4834f;
+        }
+
+        .fur-cream {
+            fill: #f5deb3;
+        }
+
+        .helmet-yellow {
+            fill: #ffcc00;
+            stroke: #b8860b;
+            stroke-width: 1;
+        }
+
+        .helmet-stripe {
+            fill: #fff;
+            opacity: 0.8;
+        }
+
+        .safety-shield-aura {
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 2px solid rgba(68, 136, 255, 0.5);
+            box-shadow: 0 0 15px rgba(68, 136, 255, 0.3);
+            animation: shield-pulse 3s infinite;
+        }
+
+        @keyframes shield-pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        /* --- Pitbull: Hard Hat, Hustle --- */
+        .btn-pitbull {
+            background: #222222;
+            border-color: #888;
+        }
+
+        .pitbull-svg {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            top: 10%;
+            left: 7.5%;
+        }
+
+        .fur-grey {
+            fill: #777;
+        }
+
+        .fur-white-patch {
+            fill: #ddd;
+        }
+
+        .hard-hat {
+            fill: #ffaa00;
+            stroke: #cc8800;
+            stroke-width: 1;
+        }
+
+        .collar-blue {
+            fill: #0044ff;
+            stroke: #002288;
+            stroke-width: 1;
+        }
+
+        .muscle-line {
+            fill: none;
+            stroke: #555;
+            stroke-width: 1;
+            opacity: 0.5;
+        }
+
+        .btn-tech {
+            width: 150px;
+            height: 130px;
+            background: #000;
+            border: 2px solid var(--tech-blue);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px var(--tech-blue) inset;
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 1;
+            }
+
+            96% {
+                opacity: 0.8;
+            }
+
+            97% {
+                opacity: 1;
+            }
+
+            98% {
+                opacity: 0.9;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .btn-tech svg {
+            width: 70px;
+            height: 70px;
+            stroke: var(--tech-blue);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* Creative Path: Rounded, Paper texture, Ink splatters */
+        .btn-creative {
+            width: 150px;
+            height: 130px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #fdfbf7 0%, #ffe4c4 100%);
+            border: none;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-creative::after {
+            /* Splatter */
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ff6b6b 0%, transparent 70%);
+            opacity: 0.4;
+            border-radius: 50%;
+        }
+
+        .icon-creative {
+            font-size: 70px;
+            filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.1));
+        }
+
+        /* Corporate Path: Square, briefcase, grid */
+        .btn-corporate {
+            width: 150px;
+            height: 130px;
+            border-radius: 2px;
+            border: 2px solid #555;
+            background: #2c2f33;
+            background-image:
+                linear-gradient(#ffffff03 1px, transparent 1px),
+                linear-gradient(90deg, #ffffff03 1px, transparent 1px);
+            background-size: 15px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-briefcase {
+            width: 70px;
+            height: 55px;
+            background: #777;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .icon-briefcase::before {
+            /* Handle */
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 22px;
+            width: 26px;
+            height: 10px;
+            border: 3px solid #777;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .icon-briefcase::after {
+            /* Lock */
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 28px;
+            width: 14px;
+            height: 14px;
+            background: var(--muted-gold);
+            border-radius: 2px;
+        }
+
         /* --- Layers --- */
         .layer {
             position: absolute;
@@ -263,6 +894,7 @@
         <button id="playBtn">PLAY</button>
     </div>
     <div class="timer-display">15</div>
+
     <div id="shop-ui">
         <button id="closeShop">RESUME</button>
         <div id="skills-tab" class="tab-content active">
@@ -276,6 +908,7 @@
             <button class="nav-tab" data-tab="shop">SHOP</button>
         </div>
     </div>
+    
     <canvas id="sky-canvas" class="layer"></canvas>
     <canvas id="stars-canvas" class="layer"></canvas>
     <canvas id="aurora-canvas" class="layer"></canvas>
@@ -286,6 +919,330 @@
     <canvas id="city-canvas" class="layer"></canvas>
     <!-- Reflection is a copy of city/lights inverted -->
     <canvas id="reflection-canvas"></canvas>
+
+    <!-- Character selection -->
+    <div id="character-selection">
+    <svg width="0" height="0">
+        <defs>
+            <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#cc0000" />
+                <stop offset="25%" stop-color="#006600" />
+                <stop offset="50%" stop-color="#000066" />
+                <stop offset="75%" stop-color="#ffff00" />
+                <stop offset="100%" stop-color="#cc0000" />
+            </linearGradient>
+            <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00f3ff" />
+                <stop offset="100%" stop-color="#d400ff" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <h2>Character Selection</h2>
+    <div class="container char-body">
+        <!-- Scotty -->
+        <div class="char-card">
+            <div class="char-btn btn-scotty" title="Scotty" onclick="selectCharacter('scotty')">
+                <div class="scotty-bg"></div>
+                <svg class="scotty-svg" viewBox="0 0 100 100">
+                    <!-- Body with Tartan Coat -->
+                    <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
+                    <rect x="28" y="50" width="44" height="25" class="tartan-coat" rx="3" />
+
+                    <!-- Head (black, shaggy) -->
+                    <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
+
+                    <!-- Pointed Ears -->
+                    <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
+                    <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
+                    <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
+                    <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
+
+                    <!-- Shaggy fur texture -->
+                    <path d="M32 38 Q 28 42, 30 46" class="shaggy-fur" />
+                    <path d="M68 38 Q 72 42, 70 46" class="shaggy-fur" />
+                    <path d="M35 50 Q 32 54, 34 58" class="shaggy-fur" />
+                    <path d="M65 50 Q 68 54, 66 58" class="shaggy-fur" />
+
+                    <!-- Distinctive Beard (Scottish Terrier feature) -->
+                    <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
+                    <path d="M40 58 Q 38 62, 40 64" class="shaggy-fur" />
+                    <path d="M60 58 Q 62 62, 60 64" class="shaggy-fur" />
+
+                    <!-- Snout -->
+                    <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
+
+                    <!-- Eyes (bright for contrast) -->
+                    <circle cx="43" cy="42" r="3" class="scotty-eye" />
+                    <circle cx="57" cy="42" r="3" class="scotty-eye" />
+                    <circle cx="43" cy="42" r="1.5" fill="#fff" />
+                    <circle cx="57" cy="42" r="1.5" fill="#fff" />
+
+                    <!-- Nose -->
+                    <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
+                </svg>
+            </div>
+            <div class="char-name">Scotty</div>
+            <div class="char-desc">Thrifty, Steady, Risk-Averse</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">95%</span></div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">130%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">120%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">SCOTTISH SAVINGS</div>
+                    <div class="ability-desc">• Auto-banks 10% of year-end balance<br>• Locked for 2 years, +15% passive
+                        income<br>• Early withdrawal burns 20%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Husky -->
+        <div class="char-card">
+            <div class="char-btn btn-husky" title="Husky" onclick="selectCharacter('husky')">
+                <svg class="husky-svg" viewBox="0 0 100 100">
+                    <path class="husky-fur"
+                        d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
+                    <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
+                    <path class="husky-fur" d="M40 30 L 50 50 L 60 30" /> <!-- Forehead blaze -->
+                    <!-- Sunglasses -->
+                    <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
+                    <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
+                    <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
+                    <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" /> <!-- Bridge -->
+                    <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" /> <!-- Glint -->
+                </svg>
+            </div>
+            <div class="char-name">Husky</div>
+            <div class="char-desc">High Risk, Crypto Bro Energy</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">140%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">65%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">75%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">MOON SHOT</div>
+                    <div class="ability-desc">• Coin value: $65–$160 (volatile)<br>• Boom: +2× coin value<br>• Crash:
+                        −30% year-end balance<br>• Consecutive crashes stack</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Golden -->
+        <div class="char-card">
+            <div class="char-btn btn-golden" title="Golden Retriever" onclick="selectCharacter('golden')">
+                <div class="chart-bg"></div>
+                <!-- Background Chart Line -->
+                <svg class="golden-chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <polyline points="0,80 20,70 40,75 60,50 80,40 100,20" />
+                </svg>
+                <svg class="golden-svg" viewBox="0 0 100 100">
+                    <!-- Head -->
+                    <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
+                    <!-- Ears -->
+                    <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
+                    <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
+                    <!-- Snout -->
+                    <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
+                    <!-- Eyes -->
+                    <circle cx="42" cy="42" r="3" fill="#000" />
+                    <circle cx="58" cy="42" r="3" fill="#000" />
+                    <!-- Nose -->
+                    <circle cx="50" cy="55" r="3" fill="#000" />
+                    <!-- Reading Glasses -->
+                    <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                        fill="rgba(255,255,255,0.2)" />
+                    <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                        fill="rgba(255,255,255,0.2)" />
+                    <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
+                </svg>
+            </div>
+            <div class="char-name">Golden Retriever</div>
+            <div class="char-desc">Patient, Compound Interest</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">75%</span></div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">95%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">165%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">COMPOUND MAGIC</div>
+                    <div class="ability-desc">• Year-end balance +10% growth<br>• Passive skills unlock 1 year
+                        early<br>• 70% balance locked each year</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corgi -->
+        <div class="char-card">
+            <div class="char-btn btn-corgi" title="Corgi" onclick="selectCharacter('corgi')">
+                <svg class="corgi-svg" viewBox="0 0 100 100">
+                    <!-- Head -->
+                    <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
+                    <!-- Ears -->
+                    <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                    <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                    <!-- White Blaze -->
+                    <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
+                    <!-- Eyes (properly centered) -->
+                    <circle cx="42" cy="47" r="3" fill="#000" />
+                    <circle cx="58" cy="47" r="3" fill="#000" />
+                    <!-- Nose -->
+                    <circle cx="50" cy="58" r="3" fill="#000" />
+                    <!-- Smile -->
+                    <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
+                    <!-- Crown -->
+                    <g class="crown">
+                        <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
+                        <circle class="gem" cx="50" cy="24" r="2" />
+                    </g>
+                </svg>
+            </div>
+            <div class="char-name">Corgi</div>
+            <div class="char-desc">Royalty, Born with Advantages</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">120%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">110%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">135%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">INHERITANCE</div>
+                    <div class="ability-desc">• Starts Year 1 with 500 coins ($50K)<br>• Random windfalls (+100–300
+                        coins)<br>• Skill costs +15% yearly<br>• Lifestyle siphons 5% balance yearly</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shiba Inu -->
+        <div class="char-card">
+            <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
+                <div class="safety-shield-aura"></div>
+                <svg class="shiba-svg" viewBox="0 0 100 100">
+                    <!-- Head (round, fox-like) -->
+                    <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
+
+                    <!-- Pointed Ears (characteristic feature) -->
+                    <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
+                    <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
+                    <!-- Ear inner (cream) -->
+                    <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
+                    <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
+
+                    <!-- Cream cheeks/muzzle area -->
+                    <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
+
+                    <!-- Eyes (small, alert) -->
+                    <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
+                    <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
+
+                    <!-- Nose -->
+                    <circle cx="50" cy="60" r="3" fill="#000" />
+
+                    <!-- Smile (characteristic Shiba smile) -->
+                    <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
+
+                    <!-- Safety Helmet -->
+                    <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
+                    <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
+                    <rect x="49" y="22" width="2" height="10" class="helmet-stripe" />
+                </svg>
+            </div>
+            <div class="char-name">Shiba Inu</div>
+            <div class="char-desc">Cautious, Emergency Fund</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">85%</span></div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">150%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">95%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
+                    <div class="ability-desc">• Starts with 3 Guard Tokens yearly<br>• Tokens negate
+                        obstacles/events<br>• Debt/penalties reduced 40%<br>• Skill costs +10%, no high-risk bonuses
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pitbull -->
+        <div class="char-card">
+            <div class="char-btn btn-pitbull" title="Pitbull" onclick="selectCharacter('pitbull')">
+                <svg class="pitbull-svg" viewBox="0 0 100 100">
+                    <!-- Head (wide and muscular) -->
+                    <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
+                    <!-- Ears (small, folded) -->
+                    <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
+                    <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
+                    <!-- White chest patch -->
+                    <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
+                    <!-- Eyes -->
+                    <circle cx="42" cy="48" r="3" fill="#000" />
+                    <circle cx="58" cy="48" r="3" fill="#000" />
+                    <!-- Nose -->
+                    <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
+                    <!-- Mouth -->
+                    <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
+                    <!-- Hard Hat -->
+                    <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
+                    <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
+                    <!-- Collar -->
+                    <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
+                    <circle cx="50" cy="68" r="3" fill="#ffd700" />
+                </svg>
+            </div>
+            <div class="char-name">Pitbull</div>
+            <div class="char-desc">Pure Hustle, No Shortcuts</div>
+            <div class="char-stats">
+                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">105%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">90%</span>
+                </div>
+                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                        class="stat-value">65%</span></div>
+                <div class="special-ability">
+                    <div class="ability-name">OVERTIME GRIND</div>
+                    <div class="ability-desc">• Active collection +25% coin value<br>• High combos boost income
+                        permanently<br>• Missed runs reduce combo bonuses<br>• No passive scaling bonuses</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Path selection -->
+    <div id="path-selection">
+        <h2>Choose Your Path</h2>
+        <div class="section">
+            <div class="path-option">
+                <div class="btn btn-tech" title="Tech Path" onclick="selectPath('tech')">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                        <path d="M2 10h4v4h-4z" opacity="0.5" />
+                    </svg>
+                </div>
+                <p class="path-label">Tech</p>
+            </div>
+
+            <div class="path-option">
+                <div class="btn btn-creative" title="Creative Path" onclick="selectPath('creative')">
+                    <div class="icon-creative">🎨</div>
+                </div>
+                <p class="path-label">Creative</p>
+            </div>
+
+            <div class="path-option">
+                <div class="btn btn-corporate" title="Corporate Path" onclick="selectPath('corporate')">
+                    <div class="icon-briefcase"></div>
+                </div>
+                <p class="path-label">Corporate</p>
+            </div>
+        </div>
+    </div>
 
     <script>
         const c = document.getElementById('c');
@@ -298,97 +1255,21 @@
         let w, h;
 
         // Game State
-        let gameState = 'TITLE'; // TITLE, PLAYING, GAMEOVER, SHOP
+        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, GAMEOVER, SHOP
         let gameTime = 0;
         let score = 0;
         let gameTimer = 0;
         const GAME_INTERVAL = 15; // 15 seconds
 
-        // Initialize Shop Grid
-        function initShopGrid() {
-            const shopGrid = document.getElementById('shopGrid');
-            shopGrid.innerHTML = '';
-            for (let i = 0; i < 18; i++) {
-                const item = document.createElement('button');
-                item.className = 'shop-item';
-                shopGrid.appendChild(item);
-            }
-        }
+        // Player Class Stats
+        let playerClass = null;
+        let income = 1.0;
+        let defense = 1.0;
+        let passiveIncome = 1.0;
 
-        // Draw Skills Tree
-        function drawSkillsTree() {
-            const canvas = document.getElementById('skills-canvas');
-            const ctx = canvas.getContext('2d');
-            const parent = canvas.parentElement;
-            canvas.width = parent.clientWidth;
-            canvas.height = parent.clientHeight;
+        // Player Path
+        let playerPath = null;
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const layers = [1, 2, 4, 8];
-            const nodeRadius = 30;
-            const layerHeight = canvas.height / (layers.length + 1);
-            const nodes = [];
-
-            ctx.strokeStyle = '#aaa';
-            ctx.lineWidth = 2;
-
-            for (let layer = 0; layer < layers.length; layer++) {
-                const nodeCount = layers[layer];
-                const spacing = canvas.width / (nodeCount + 1);
-                for (let i = 0; i < nodeCount; i++) {
-                    const x = spacing * (i + 1);
-                    const y = layerHeight * (layer + 1);
-                    nodes.push({ x, y, layer, index: i });
-
-                    if (layer < layers.length - 1) {
-                        const childLayer = layer + 1;
-                        const childSpacing = canvas.width / (layers[childLayer] + 1);
-                        for (let c = 0; c < 2; c++) {
-                            const childIndex = i * 2 + c;
-                            const childX = childSpacing * (childIndex + 1);
-                            const childY = layerHeight * (childLayer + 1);
-                            ctx.beginPath();
-                            ctx.moveTo(x, y);
-                            ctx.lineTo(childX, childY);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            nodes.forEach(node => {
-                ctx.fillStyle = '#ddd';
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#777';
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeRadius - 4, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-
-        // UI Event Listeners
-        document.getElementById('closeShop').addEventListener('click', () => {
-            document.getElementById('shop-ui').classList.remove('active');
-            gameState = 'PLAYING';
-            gameTimer = 0;
-        });
-
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-                tab.classList.add('active');
-                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
-
-                if (tab.dataset.tab === 'skills') drawSkillsTree();
-            });
-        });
-
-        initShopGrid();
         // Player
         const player = {
             x: 50,
@@ -401,7 +1282,8 @@
             isThrusting: false,
             health: 100,
             maxHealth: 100,
-            money: 0
+            money: 0,
+            character: null
         };
 
         // Entities
@@ -435,14 +1317,75 @@
 
         document.getElementById('playBtn').addEventListener('click', (e) => {
             e.stopPropagation();
-            startGame();
+            showCharacterSelection();
         });
 
-        function startGame() {
-            gameState = 'PLAYING';
+        function showCharacterSelection() {
+            gameState = 'CHARACTERS';
             ui.style.display = 'none';
-            document.querySelector('.timer-display').style.display = 'block';
+            document.querySelector('.timer-display').style.display = 'none';
+            document.getElementById('character-selection').classList.add('active');
+        }
 
+        function selectCharacter(characterType) {
+            // Store selected character
+            player.character = characterType;
+            playerClass = characterType;
+
+            // Set stats based on character
+            switch(characterType) {
+                case 'scotty':
+                    income = 0.95;
+                    defense = 1.30;
+                    passiveIncome = 1.20;
+                    break;
+                case 'husky':
+                    income = 1.40;
+                    defense = 0.65;
+                    passiveIncome = 0.75;
+                    break;
+                case 'golden':
+                    income = 0.75;
+                    defense = 0.95;
+                    passiveIncome = 1.65;
+                    break;
+                case 'corgi':
+                    income = 1.20;
+                    defense = 1.10;
+                    passiveIncome = 1.35;
+                    break;
+                case 'shiba':
+                    income = 0.85;
+                    defense = 1.50;
+                    passiveIncome = 0.95;
+                    break;
+                case 'pitbull':
+                    income = 1.05;
+                    defense = 0.90;
+                    passiveIncome = 0.65;
+                    break;
+            }
+
+            document.getElementById('character-selection').classList.remove('active');
+            showPathSelection();
+        }
+
+        function showPathSelection() {
+            gameState = 'PATHS';
+            ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'none';
+            const pathDiv = document.getElementById('path-selection');
+            pathDiv.classList.add('active');
+        }
+
+        function selectPath(pathType) {
+            playerPath = pathType;
+            document.getElementById('path-selection').classList.remove('active');
+            initializeGame();
+            startRunner();
+        }
+
+        function initializeGame() {
             player.y = h / 2;
             player.vy = 0;
             player.isThrusting = false;
@@ -454,12 +1397,115 @@
             gameTimer = 0;
         }
 
+        function startRunner() {
+            gameState = 'PLAYING';
+            ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'block';
+        }
+
         function resetGame() {
             gameState = 'TITLE';
             ui.style.display = 'block';
             document.querySelector('.timer-display').style.display = 'none';
             document.getElementById('shop-ui').classList.remove('active');
+            document.getElementById('character-selection').classList.remove('active');
+            document.getElementById('path-selection').classList.remove('active');
         }
+
+        // Initialize Shop Grid
+        function initShopGrid() {
+            const shopGrid = document.getElementById('shopGrid');
+            shopGrid.innerHTML = '';
+            for (let i = 0; i < 18; i++) {
+                const item = document.createElement('button');
+                item.className = 'shop-item';
+                shopGrid.appendChild(item);
+            }
+        }
+
+        // Draw Skills Tree
+        function drawSkillsTree() {
+            const canvas = document.getElementById('skills-canvas');
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Display selected path at the top
+            if (playerPath) {
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 32px Arial';
+                ctx.textAlign = 'center';
+                const pathName = playerPath.charAt(0).toUpperCase() + playerPath.slice(1);
+                ctx.fillText(`${pathName} Path`, canvas.width / 2, 50);
+            }
+
+            const layers = [1, 2, 4, 8];
+            const nodeRadius = 30;
+            const layerHeight = (canvas.height - 80) / (layers.length + 1);
+            const nodes = [];
+
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 2;
+
+            for (let layer = 0; layer < layers.length; layer++) {
+                const nodeCount = layers[layer];
+                const spacing = canvas.width / (nodeCount + 1);
+                for (let i = 0; i < nodeCount; i++) {
+                    const x = spacing * (i + 1);
+                    const y = 80 + layerHeight * (layer + 1);
+                    nodes.push({ x, y, layer, index: i });
+
+                    if (layer < layers.length - 1) {
+                        const childLayer = layer + 1;
+                        const childSpacing = canvas.width / (layers[childLayer] + 1);
+                        for (let c = 0; c < 2; c++) {
+                            const childIndex = i * 2 + c;
+                            const childX = childSpacing * (childIndex + 1);
+                            const childY = 80 + layerHeight * (childLayer + 1);
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(childX, childY);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            nodes.forEach(node => {
+                ctx.fillStyle = '#ddd';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#777';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius - 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // UI Event Listeners
+        document.getElementById('closeShop').addEventListener('click', () => {
+            document.getElementById('shop-ui').classList.remove('active');
+            gameTimer = 0;
+            startRunner();
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+
+                if (tab.dataset.tab === 'skills') drawSkillsTree();
+            });
+        });
+
+        initShopGrid();
 
         // --- Configuration ---
         const config = {
@@ -775,7 +1821,7 @@
                 }
             }
             update() {
-                this.x -= 2; // Speed
+                this.x -= 3; // Speed
                 if (this.x + this.w < 0) this.markedForDeletion = true;
             }
             draw() {
@@ -903,7 +1949,8 @@
                     player.y < obs.y + obs.h &&
                     player.y + player.size > obs.y
                 ) {
-                    player.health -= 20;
+                    const damage = Math.floor(20 / defense);
+                    player.health -= damage;
                     obs.markedForDeletion = true;
                     if (player.health <= 0) gameState = 'GAMEOVER';
                 }
@@ -919,29 +1966,12 @@
                     player.y < c.y + coinSize &&
                     player.y + player.size > c.y
                 ) {
-                    player.money += 100;
+                    player.money += Math.floor(100 * income);
                     c.markedForDeletion = true;
                 }
             }
         }
 
-        // Event Listeners
-        const playBtn = document.getElementById('playBtn');
-        playBtn.addEventListener('click', () => {
-            startGame();
-        });
-
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                if (gameState === 'TITLE' || gameState === 'GAMEOVER') startGame();
-                else player.isThrusting = true;
-            }
-            if (e.code === 'KeyR' && gameState === 'GAMEOVER') startGame();
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') player.isThrusting = false;
-        });
 
         // Scotty Dog (Title Screen Only)
         // ... (Keep existing dogSprite and drawDog)
@@ -986,6 +2016,18 @@
                 const dogW = 16 * scale;
                 drawDog((w - dogW) / 2, h * 0.25, scale);
 
+            } else if (gameState === 'CHARACTERS') {
+                // Pause game updates during character selection
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
+
+            } else if (gameState === 'PATHS') {
+                // Pause game updates during path selection
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
+
             } else if (gameState === 'PLAYING') {
                 // Timer Logic
                 gameTimer += 1 / 60; // Assuming 60fps
@@ -993,10 +2035,15 @@
                 document.querySelector('.timer-display').textContent = timeRemaining;
 
                 if (gameTimer >= GAME_INTERVAL) {
+                    // Generate passive income
+                    const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
+                    player.money += passiveEarnings;
+
                     gameState = 'SHOP';
                     document.getElementById('shop-ui').classList.add('active');
                     // Draw the first tab's content
                     drawSkillsTree();
+                    requestAnimationFrame(loop);
                     return; // Pause game updates
                 }
 
@@ -1038,6 +2085,12 @@
                 ctx.fillRect(player.x, player.y, player.size, player.size);
 
                 drawUI();
+
+            } else if (gameState === 'SHOP') {
+                // Pause game updates while in shop
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
 
             } else if (gameState === 'GAMEOVER') {
                 ctx.fillStyle = '#fff';
