@@ -128,10 +128,6 @@ function startDilemmaMusic() {
     }});
 }
 
-function stopGameMusic() { stopMu('game'); }
-function stopShopMusic() { stopMu('shop'); }
-function stopLeaderboardMusic() { stopMu('lb'); }
-function stopDilemmaMusic() { stopMu('dil'); }
 function stopAllAudio() { Object.keys(muState).forEach(stopMu); }
 
 // SFX
@@ -169,27 +165,14 @@ function playCoin() {
 
 function playDamage() {
     initAudio();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const distortion = audioCtx.createWaveShaper();
-    const k = 50, n_samples = 44100;
-    const curve = new Float32Array(n_samples);
-    for (let i = 0; i < n_samples; i++) {
-        const x = i * 2 / n_samples - 1;
-        curve[i] = (3 + k) * x * 20 / (Math.PI + k * Math.abs(x));
-    }
-    distortion.curve = curve;
-    distortion.oversample = '4x';
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-    osc.connect(distortion);
-    distortion.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.2);
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(150, audioCtx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
+    g.gain.setValueAtTime(0.4, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + 0.2);
 }
 
 function playClick() {
@@ -222,19 +205,17 @@ document.addEventListener('click', (e) => {
 
 // ========== INPUT HANDLING ==========
 function startThrust(e) {
+    const t = e.target;
+    if (t.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) return;
     if (e.type === 'touchstart') e.preventDefault();
-    if (e.type === 'mousedown' || e.type === 'touchstart') {
-        player.isThrusting = true;
-        if (gameState === 'PLAYING') playJump();
-        if (gameState === 'GAMEOVER') resetGame();
-    }
+    player.isThrusting = true;
+    if (gameState === 'PLAYING') playJump();
+    if (gameState === 'GAMEOVER') resetGame();
 }
 
 function endThrust(e) {
-    if (e.type === 'touchend') e.preventDefault();
-    if (e.type === 'mouseup' || e.type === 'touchend') {
-        player.isThrusting = false;
-    }
+    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
+    player.isThrusting = false;
 }
 
 window.addEventListener('mousedown', startThrust);
@@ -264,9 +245,7 @@ function selectCharacter(characterType) {
         case 'scotty': income = 0.95; defense = 1.30; passiveIncome = 1.20; break;
         case 'husky': income = 1.40; defense = 0.65; passiveIncome = 0.75; break;
         case 'golden': income = 0.75; defense = 0.95; passiveIncome = 1.65; break;
-        case 'corgi': income = 1.20; defense = 1.10; passiveIncome = 1.35; break;
         case 'shiba': income = 0.85; defense = 1.50; passiveIncome = 0.95; break;
-        case 'pitbull': income = 1.05; defense = 0.90; passiveIncome = 0.65; break;
     }
 
     // Serialize SVG to Image
@@ -371,111 +350,40 @@ function updateLeaderboardBots() {
     }
 }
 
-function lbRoundRect(ctx, x, y, rw, rh, r) {
-    if (rw < 2 * r) r = rw / 2;
-    if (rh < 2 * r) r = rh / 2;
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + rw, y, x + rw, y + rh, r);
-    ctx.arcTo(x + rw, y + rh, x, y + rh, r);
-    ctx.arcTo(x, y + rh, x, y, r);
-    ctx.arcTo(x, y, x + rw, y, r);
-    ctx.closePath();
-}
-
 function drawLeaderboard() {
-    const playerEntry = {
-        name: 'YOU', netWorth: player.money, alive: true, isPlayer: true
-    };
-    const allEntities = [...lbBots, playerEntry];
-    allEntities.sort((a, b) => b.netWorth - a.netWorth);
-    const rank = allEntities.indexOf(playerEntry);
-
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, 'rgba(15, 12, 41, 0.95)');
-    grad.addColorStop(1, 'rgba(48, 43, 99, 0.98)');
-    ctx.fillStyle = grad;
+    const pe = { name: 'YOU', netWorth: player.money, alive: true, isPlayer: true };
+    const all = [...lbBots, pe].sort((a, b) => b.netWorth - a.netWorth);
+    const rank = all.indexOf(pe);
+    ctx.fillStyle = 'rgba(15,12,41,0.95)';
     ctx.fillRect(0, 0, w, h);
-
-    const cardW = Math.min(600, w - 40);
-    const cardH = w < 400 ? 60 : 80;
-    const gap = 15;
-    const headerBottom = 230;
-    const totalH = 5 * (cardH + gap);
-    let startY = (h - totalH) / 2 + 40;
-    if (startY < headerBottom) startY = headerBottom;
-
-    ctx.shadowBlur = 0;
     ctx.textAlign = 'center';
     ctx.fillStyle = '#facc15';
-    ctx.font = "bold 20px 'Segoe UI', sans-serif";
+    ctx.font = "bold 20px 'Segoe UI',sans-serif";
     ctx.fillText(`ROUND ${lbRoundNumber} ENDED`, w / 2, 80);
     ctx.fillStyle = '#fff';
-    const titleSize = w < 400 ? '36px' : '48px';
-    ctx.font = `800 ${titleSize} 'Segoe UI', sans-serif`;
+    ctx.font = "800 48px 'Segoe UI',sans-serif";
     ctx.fillText('LEADERBOARD', w / 2, 130);
     ctx.fillStyle = lbBankruptMsg.includes('\u2705') ? '#4ade80' : '#ef4444';
-    ctx.font = "bold 20px 'Segoe UI', sans-serif";
+    ctx.font = "bold 20px 'Segoe UI',sans-serif";
     ctx.fillText(lbBankruptMsg, w / 2, 170);
-
-    let startIndex = Math.max(0, rank - 2);
-    let endIndex = Math.min(allEntities.length, rank + 3);
-    if (endIndex - startIndex < 5) {
-        if (startIndex === 0) endIndex = Math.min(allEntities.length, 5);
-        else startIndex = Math.max(0, allEntities.length - 5);
-    }
-
+    let si = Math.max(0, rank - 2), ei = Math.min(all.length, rank + 3);
+    if (ei - si < 5) { if (si === 0) ei = Math.min(all.length, 5); else si = Math.max(0, all.length - 5); }
+    const cw = Math.min(600, w - 40), ch = 60, gap = 12;
     ctx.textAlign = 'left';
-    for (let i = startIndex; i < endIndex; i++) {
-        const entity = allEntities[i];
-        const y = startY + (i - startIndex) * (cardH + gap);
-        const isPlayer = entity.isPlayer;
-
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 10;
-        if (isPlayer) {
-            const hl = ctx.createLinearGradient(w / 2 - cardW / 2, y, w / 2 + cardW / 2, y + cardH);
-            hl.addColorStop(0, 'rgba(250, 204, 21, 0.2)');
-            hl.addColorStop(1, 'rgba(250, 204, 21, 0.05)');
-            ctx.fillStyle = hl;
-            ctx.strokeStyle = '#facc15';
-        } else if (!entity.alive) {
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
-            ctx.strokeStyle = 'rgba(239, 68, 68, 0.3)';
-        } else {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        }
-        lbRoundRect(ctx, w / 2 - cardW / 2, y, cardW, cardH, 15);
-        ctx.fill();
-        ctx.lineWidth = isPlayer ? 2 : 1;
-        ctx.stroke();
-        ctx.restore();
-
-        const nameSize = w < 400 ? '16px' : '24px';
-        const rankSize = w < 400 ? '14px' : '20px';
-        const moneySize = w < 400 ? '16px' : '24px';
-
-        ctx.fillStyle = isPlayer ? '#facc15' : '#94a3b8';
-        ctx.font = `bold ${rankSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(`#${i + 1}`, w / 2 - cardW / 2 + 20, y + cardH * 0.3);
-
-        ctx.fillStyle = isPlayer ? '#fff' : (entity.alive ? '#e2e8f0' : '#ef4444');
-        ctx.font = isPlayer ? `bold ${nameSize} 'Segoe UI', sans-serif` : `600 ${nameSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(entity.name, w / 2 - cardW / 2 + 20, y + cardH * 0.7);
-
+    for (let i = si; i < ei; i++) {
+        const e = all[i], y = 200 + (i - si) * (ch + gap), ip = e.isPlayer;
+        ctx.fillStyle = ip ? 'rgba(250,204,21,0.15)' : !e.alive ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)';
+        ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
+        ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
+        ctx.font = "bold 16px 'Segoe UI',sans-serif";
+        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 25);
+        ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
+        ctx.font = (ip ? 'bold ' : '600 ') + "18px 'Segoe UI',sans-serif";
+        ctx.fillText(e.name, w / 2 - cw / 2 + 15, y + 48);
         ctx.textAlign = 'right';
-        if (!entity.alive) {
-            ctx.font = `bold ${moneySize} 'Segoe UI', sans-serif`;
-            ctx.fillStyle = '#ef4444';
-            ctx.fillText('BANKRUPT', w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
-        } else {
-            ctx.font = isPlayer ? `bold ${moneySize} 'Segoe UI', sans-serif` : `${moneySize} 'Segoe UI', sans-serif`;
-            ctx.fillStyle = '#4ade80';
-            ctx.fillText(`$${Math.floor(entity.netWorth).toLocaleString()}`, w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
-        }
+        ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
+        ctx.font = "bold 18px 'Segoe UI',sans-serif";
+        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 38);
         ctx.textAlign = 'left';
     }
 }
@@ -485,13 +393,13 @@ function showLeaderboard() {
     updateLeaderboardBots();
     gameState = 'LEADERBOARD';
     leaderboardTimer = 180;
-    stopGameMusic();
+    stopMu('game');
     startLeaderboardMusic();
 }
 
 function leaderboardToDialemma() {
     gameState = 'DILEMMA';
-    stopLeaderboardMusic();
+    stopMu('lb');
     startDilemmaMusic();
     document.getElementById('shop-ui').classList.add('active');
     document.querySelector('.nav-bar').style.display = 'none';
@@ -505,7 +413,7 @@ function startRunner() {
     gameState = 'PLAYING';
     ui.style.display = 'none';
     document.querySelector('.timer-display').style.display = 'block';
-    stopShopMusic();
+    stopMu('shop');
     startGameMusic();
 }
 
@@ -516,8 +424,6 @@ function resetGame() {
     document.getElementById('shop-ui').classList.remove('active');
     document.getElementById('character-selection').classList.remove('active');
     document.getElementById('path-selection').classList.remove('active');
-    const overlay = document.getElementById('game-overlay');
-    if (overlay) overlay.innerHTML = '';
     purchasedSkills.clear();
     currentSkill = null;
     stopAllAudio();
@@ -577,43 +483,43 @@ function updateAffordability() {
 const cardsDecisions = [
     {
         scenario: "First Paycheck!",
-        optionA: { title: "Buy New Collar", icon: "🎀", effect: "Visual cosmetic change only: no stat benefits!", result: "You look fabulous, but your future self might have preferred some savings...", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Start 401k", icon: "📈", effect: "-$100 Cash, but Passive Income +5% permanently!", result: "Smart! Your future self thanks you. Compound interest is now your best friend.", stats: { money: -100, income: 0, defense: 0, passiveIncome: 0.05 } }
+        optionA: { title: "Buy New Collar", icon: "🎀", effect: "Cosmetic only, no stats.", result: "Looks great, but no savings.", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Start 401k", icon: "📈", effect: "-$100, Passive +5%.", result: "Smart! Compound interest kicks in.", stats: { money: -100, income: 0, defense: 0, passiveIncome: 0.05 } }
     },
     {
         scenario: "Car Breaks Down",
-        optionA: { title: "Put on Credit Card", icon: "💳", effect: "Keep your cash now, but Income -10% due to interest payments!", result: "The debt trap closes in... Interest payments will haunt you for years.", stats: { money: 0, income: -0.10, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Pay Cash", icon: "💵", effect: "-$500 Cash immediately, but Defense +10% from financial security!", result: "Pain now, gain later! No debt means freedom to grow your wealth.", stats: { money: -500, income: 0, defense: 0.10, passiveIncome: 0 } }
+        optionA: { title: "Put on Credit Card", icon: "💳", effect: "Keep cash, Income -10%.", result: "Debt trap! Interest haunts you.", stats: { money: 0, income: -0.10, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Pay Cash", icon: "💵", effect: "-$500, Defense +10%.", result: "No debt = freedom to grow!", stats: { money: -500, income: 0, defense: 0.10, passiveIncome: 0 } }
     },
     {
         scenario: "Student Loans",
-        optionA: { title: "Defer Payment", icon: "⏰", effect: "Keep your cash for now, but Passive Income -15% as interest compounds!", result: "The debt grows silently. It's always watching, always growing.", stats: { money: 0, income: 0, defense: 0, passiveIncome: -0.15 } },
-        optionB: { title: "Pay Aggressively", icon: "⚔️", effect: "-75% of current Cash, but Income +20% permanently!", result: "Debt-free! With no monthly payments, your income potential skyrockets.", stats: { money: 'percent', moneyPercent: -0.75, income: 0.20, defense: 0, passiveIncome: 0 } }
+        optionA: { title: "Defer Payment", icon: "⏰", effect: "Keep cash, Passive -15%.", result: "Debt grows silently...", stats: { money: 0, income: 0, defense: 0, passiveIncome: -0.15 } },
+        optionB: { title: "Pay Aggressively", icon: "⚔️", effect: "-75% cash, Income +20%.", result: "Debt-free! Income skyrockets.", stats: { money: 'percent', moneyPercent: -0.75, income: 0.20, defense: 0, passiveIncome: 0 } }
     },
     {
         scenario: "Weekend Vibes",
-        optionA: { title: "Party All Night", icon: "🥳", effect: "+$100 Cash from networking, but Income -5% from lost productivity!", result: "YOLO! Great memories made, but money doesn't grow while you sleep it off.", stats: { money: 100, income: -0.05, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Take Online Course", icon: "🎓", effect: "-$200 Cash, but Income +15% permanently!", result: "Knowledge is power! New skills unlock higher earning potential.", stats: { money: -200, income: 0.15, defense: 0, passiveIncome: 0 } }
+        optionA: { title: "Party All Night", icon: "🥳", effect: "+$100, Income -5%.", result: "YOLO! Fun but less growth.", stats: { money: 100, income: -0.05, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Take Online Course", icon: "🎓", effect: "-$200, Income +15%.", result: "New skills = higher earnings!", stats: { money: -200, income: 0.15, defense: 0, passiveIncome: 0 } }
     },
     {
         scenario: "Tax Refund Season 💰",
-        optionA: { title: "YOLO on Crypto", icon: "🚀", effect: "50% chance to 2x your Cash... 50% chance to lose it ALL and Defense -10%!", result: "To the moon... or to the ground. Fortune favors the bold (sometimes).", stats: { money: 'gamble', income: 0, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "High Yield Savings", icon: "🛡️", effect: "+$200 Cash and Defense +20% from emergency fund security!", result: "Safe and protected! Your emergency fund shields you from life's surprises.", stats: { money: 200, income: 0, defense: 0.20, passiveIncome: 0 } }
+        optionA: { title: "YOLO on Crypto", icon: "🚀", effect: "50/50: 2× cash or lose all!", result: "Fortune favors the bold (sometimes).", stats: { money: 'gamble', income: 0, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "High Yield Savings", icon: "🛡️", effect: "+$200, Defense +20%.", result: "Emergency fund shields you!", stats: { money: 200, income: 0, defense: 0.20, passiveIncome: 0 } }
     },
     {
         scenario: "The Promotion! 🏆",
-        optionA: { title: "Buy Luxury Condo", icon: "🏠", effect: "-$1000 Cash and Income -15% from higher expenses!", result: "Living large has its costs... Your expenses grow with your income.", stats: { money: -1000, income: -0.15, defense: 0, passiveIncome: 0 } },
-        optionB: { title: "Stay in Apartment", icon: "🏢", effect: "Keep your Cash and gain +20% Passive Income from investing the difference!", result: "Humble living, wealthy building! You resist the temptation to inflate your lifestyle.", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0.20 } }
+        optionA: { title: "Buy Luxury Condo", icon: "🏠", effect: "-$1000, Income -15%.", result: "Expenses grow with income...", stats: { money: -1000, income: -0.15, defense: 0, passiveIncome: 0 } },
+        optionB: { title: "Stay in Apartment", icon: "🏢", effect: "Keep cash, Passive +20%.", result: "Humble living, wealthy building!", stats: { money: 0, income: 0, defense: 0, passiveIncome: 0.20 } }
     },
     {
         scenario: "Market Crash! 📉",
-        optionA: { title: "Sell Everything!", icon: "😱", effect: "+$2000 Cash immediately, but Passive Income -100% (drops to 0)!", result: "Panic sold at the bottom... The market always recovers, but you won't.", stats: { money: 2000, income: 0, defense: 0, passiveIncome: -1.0 } },
-        optionB: { title: "Hold & Buy Dip", icon: "💎", effect: "-$500 Cash to buy the dip, but Passive Income +50%!", result: "Diamond hands! Buying when others panic is how millionaires are made.", stats: { money: -500, income: 0, defense: 0, passiveIncome: 0.50 } }
+        optionA: { title: "Sell Everything!", icon: "😱", effect: "+$2000, Passive drops to 0!", result: "Panic sold! Market recovers, you won't.", stats: { money: 2000, income: 0, defense: 0, passiveIncome: -1.0 } },
+        optionB: { title: "Hold & Buy Dip", icon: "💎", effect: "-$500, Passive +50%.", result: "Diamond hands! Buy the dip.", stats: { money: -500, income: 0, defense: 0, passiveIncome: 0.50 } }
     },
     {
         scenario: "Health Scare 🏥",
-        optionA: { title: "Risk It", icon: "🎲", effect: "Save your Cash, but Defense -30% from lack of coverage!", result: "Living dangerously... One wrong move and it's all over.", stats: { money: 0, income: 0, defense: -0.30, passiveIncome: 0 } },
-        optionB: { title: "Buy Insurance", icon: "❤️", effect: "-$1000 Cash, but Defense +40% from comprehensive coverage!", result: "Protected! Insurance isn't fun, but it's the adult thing to do.", stats: { money: -1000, income: 0, defense: 0.40, passiveIncome: 0 } }
+        optionA: { title: "Risk It", icon: "🎲", effect: "Keep cash, Defense -30%.", result: "Living dangerously...", stats: { money: 0, income: 0, defense: -0.30, passiveIncome: 0 } },
+        optionB: { title: "Buy Insurance", icon: "❤️", effect: "-$1000, Defense +40%.", result: "Protected! The adult thing to do.", stats: { money: -1000, income: 0, defense: 0.40, passiveIncome: 0 } }
     }
 ];
 
@@ -725,7 +631,7 @@ function selectCardOption(option) {
 }
 
 function continueCardGame() {
-    stopDilemmaMusic();
+    stopMu('dil');
     startShopMusic();
     gameState = 'SHOP';
     document.querySelector('.nav-bar').style.display = '';
@@ -776,17 +682,15 @@ const skyCvs = document.getElementById('sky-canvas');
 const auroraCvs = document.getElementById('aurora-canvas');
 const starsCvs = document.getElementById('stars-canvas');
 const cityCvs = document.getElementById('city-canvas');
-const reflectCvs = document.getElementById('reflection-canvas');
 const skyCtx = skyCvs.getContext('2d');
 const auroraCtx = auroraCvs.getContext('2d');
 const starsCtx = starsCvs.getContext('2d');
 const cityCtx = cityCvs.getContext('2d');
-const reflectCtx = reflectCvs.getContext('2d');
 
 function resize() {
     w = c.width = window.innerWidth;
     h = c.height = window.innerHeight;
-    [skyCvs, auroraCvs, starsCvs, cityCvs, reflectCvs].forEach(cvs => {
+    [skyCvs, auroraCvs, starsCvs, cityCvs].forEach(cvs => {
         cvs.width = window.innerWidth;
         cvs.height = window.innerHeight;
     });
@@ -926,7 +830,6 @@ function drawStaticCity() {
 
 function drawCity() {
     cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
-    reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height);
     cityScroll -= 2;
     if (cityScroll <= -w) cityScroll += w;
     cityCtx.drawImage(staticCityCvs, cityScroll, 0);
@@ -970,7 +873,6 @@ function drawCity() {
         cityCtx.fillRect(car.x, car.y, 8, 3);
         cityCtx.shadowBlur = 0;
     });
-    reflectCtx.drawImage(cityCvs, 0, 0);
 }
 
 let auroraTime = 0;
@@ -998,15 +900,6 @@ function drawAurora() {
     }
 }
 
-class Meteor {
-    constructor() { this.reset(); }
-    reset() { this.active = false; this.spawnTime = performance.now() + Math.random() * 10000 + 2000; this.speed = 15; }
-    activate() { this.active = true; this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight * 0.3; this.size = Math.random() * 2 + 1; const angle = Math.PI / 4 + (Math.random() - 0.5); this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed; this.alpha = 1; }
-    update() { if (!this.active) { if (performance.now() > this.spawnTime) this.activate(); return; } this.x += this.vx; this.y += this.vy; this.alpha -= 0.05; if (this.alpha <= 0) this.reset(); }
-    draw() { if (!this.active || this.alpha <= 0) return; starsCtx.strokeStyle = `rgba(255,255,255,${this.alpha})`; starsCtx.lineWidth = this.size; starsCtx.beginPath(); starsCtx.moveTo(this.x, this.y); starsCtx.lineTo(this.x - this.vx * 2, this.y - this.vy * 2); starsCtx.stroke(); }
-}
-const meteors = [new Meteor(), new Meteor()];
-
 function frame(timestamp) {
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
@@ -1014,7 +907,6 @@ function frame(timestamp) {
     drawSky(progress);
     drawCity();
     drawStars();
-    meteors.forEach(m => { m.update(); m.draw(); });
     drawAurora();
     requestAnimationFrame(frame);
 }
@@ -1023,49 +915,31 @@ resize();
 requestAnimationFrame(frame);
 
 // ========== OBSTACLES & COINS ==========
-const OBSTACLE_TYPES = [
-    { name: 'credit', html: '<div class="credit-card"><div class="card-stripe"></div><div class="card-chip"></div></div>', width: 60, height: 36 },
-    { name: 'house', html: '<div class="house"><div class="house-door"></div></div>', width: 50, height: 50 },
-    { name: 'latte', html: '<div class="coffee-cup"><div class="coffee-lid"></div><div class="coffee-handle"></div></div>', width: 40, height: 50 },
-    { name: 'phone', html: '<div class="phone"><div class="phone-screen"></div><div class="phone-button"></div></div>', width: 45, height: 75 },
-    { name: 'student', html: '<div class="grad-cap"><div class="cap-board"></div><div class="cap-top"></div><div class="cap-base"></div><div class="tassel"><div class="tassel-end"></div></div></div>', width: 60, height: 60 },
-    { name: 'gamble', html: '<div class="poker-chip"><div class="chip-center">$</div></div>', width: 60, height: 60 },
-    { name: 'health', html: '<div class="health-cross"><div class="cross-vertical"></div><div class="cross-horizontal"></div></div>', width: 60, height: 60 }
-];
+const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
 
 class Obstacle {
     constructor() {
-        const typeIdx = Math.floor(Math.random() * OBSTACLE_TYPES.length);
-        const cfg = OBSTACLE_TYPES[typeIdx];
-        this.type = cfg.name;
+        this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
         this.scale = 0.8 + Math.random() * 0.5;
-        this.w = cfg.width * this.scale;
-        this.h = cfg.height * this.scale;
+        this.w = 50 * this.scale;
+        this.h = 50 * this.scale;
         this.x = w;
         const groundY = h * 0.75;
         this.y = 50 + Math.random() * (groundY - 50 - this.h);
         this.markedForDeletion = false;
-        this.element = document.createElement('div');
-        this.element.className = 'obstacle-sprite';
-        this.element.innerHTML = cfg.html;
-        this.element.style.transform = `scale(${this.scale})`;
-        document.getElementById('game-overlay').appendChild(this.element);
-        this.updatePosition();
     }
-    updatePosition() {
-        this.element.style.left = `${this.x}px`;
-        this.element.style.top = `${this.y}px`;
-    }
-    remove() {
-        this.markedForDeletion = true;
-        if (this.element && this.element.parentNode) this.element.parentNode.removeChild(this.element);
-    }
+    remove() { this.markedForDeletion = true; }
     update() {
         this.x -= 3;
-        this.updatePosition();
         if (this.x + this.w < -100) this.remove();
     }
-    draw() { }
+    draw() {
+        if (this.markedForDeletion) return;
+        ctx.font = `${Math.round(40 * this.scale)}px serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(this.emoji, this.x, this.y);
+    }
 }
 
 class Coin {
@@ -1387,27 +1261,27 @@ loop();
 
 // ========== SKILL DATA & HANDLERS ==========
 const skillData = {
-    'code-rabbit': { name: 'Code Rabbit', description: 'Lightning-fast coding assistant that helps you write code at breakneck speeds.', buffs: ['💰 Income +10%'], debuffs: [], price: 500 },
-    'velocity-demon': { name: 'Velocity Demon', description: 'Push your development speed beyond mortal limits with demonic efficiency.', buffs: ['💰 Income +15%'], debuffs: [], price: 1200 },
-    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Gain instant access to infinite knowledge and never get stuck again.', buffs: ['💰 Income +25%'], debuffs: [], price: 1500 },
-    'caffeine': { name: 'Caffeine Overdrive', description: 'Channel the power of infinite coffee for extreme productivity.', buffs: ['📊 Passive Income +10%'], debuffs: ['⚠️ Damage Taken +8%'], price: 2000 },
-    'turbo': { name: 'Turbo Compiler', description: 'Compile and execute code at blazing speeds, but sacrifice some stability.', buffs: ['💰 Income +20%'], debuffs: ['🛡️ Defense -15%'], price: 2500 },
-    'passive-bot': { name: 'Passive Income Bot', description: 'Automated revenue stream that generates money while you sleep.', buffs: ['💰 Income +20%', '📊 Passive Income +15%'], debuffs: [], price: 3000 },
-    'api-mine': { name: 'API Goldmine', description: 'Tap into lucrative API integrations but expose yourself to more risks.', buffs: ['💰 Income +30%'], debuffs: ['⚠️ Damage Taken +10%'], price: 3500 },
-    'starving-artist': { name: 'Starving Artist', description: 'Pour your soul into your craft, sacrificing income for passion and resilience.', buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'], debuffs: ['💰 Income -10%'], price: 500 },
-    'content-machine': { name: 'Content Machine', description: 'Mass-produce creative content at the cost of personal speed.', buffs: ['📊 Passive Income +25%'], debuffs: [], price: 1200 },
-    'tank-artist': { name: 'Tank Artist', description: 'Build thick skin from criticism and become nearly indestructible.', buffs: ['🛡️ Defense +20%'], debuffs: ['⚠️ Damage Taken +8%'], price: 1500 },
-    'royalty-checks': { name: 'Royalty Checks Forever', description: 'Create timeless work that generates passive income indefinitely.', buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'], debuffs: ['💰 Income -15%'], price: 2500 },
-    'set-forget': { name: 'Set It and Forget It', description: 'Automate your creative output completely, but move at a snail\'s pace.', buffs: ['📊 Passive Income +30%'], debuffs: [], price: 3000 },
-    'fortress-solitude': { name: 'Fortress of Solitude', description: 'Isolate yourself to perfect your craft with enhanced protection.', buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'], debuffs: ['💰 Income -20%'], price: 2800 },
-    'immovable-object': { name: 'Immovable Object', description: 'Become an unstoppable defensive force at the expense of all mobility.', buffs: ['🛡️ Defense +30%'], debuffs: [], price: 3500 },
-    'cubicle-warrior': { name: 'Cubicle Warrior', description: 'Master the art of corporate survival with steady income and protection.', buffs: ['💰 Income +15%', '🛡️ Defense +10%'], debuffs: [], price: 500 },
-    'promo-chaser': { name: 'Promotion Chaser', description: 'Climb the corporate ladder aggressively, sacrificing passive earnings.', buffs: ['💰 Income +25%'], debuffs: ['📊 Passive Income -15%'], price: 1200 },
-    'benefits-max': { name: 'Benefits Maximizer', description: 'Optimize your corporate benefits package for maximum protection.', buffs: ['🛡️ Defense +20%'], debuffs: [], price: 1500 },
-    'bonus-hunter': { name: 'Performance Bonus Hunter', description: 'Target high-risk, high-reward performance bonuses.', buffs: ['💰 Income +20%', '🛡️ Defense +10%'], debuffs: ['⚠️ Damage Taken +10%'], price: 2500 },
-    'exec-fasttrack': { name: 'Executive Fast Track', description: 'Rocket to the top with aggressive income growth, sacrificing stability.', buffs: ['💰 Income +30%'], debuffs: ['📊 Passive Income -20%'], price: 3000 },
-    'corp-fortress': { name: 'Corporate Fortress', description: 'Build an impenetrable corporate defense with balanced income.', buffs: ['🛡️ Defense +15%', '💰 Income +15%'], debuffs: [], price: 3200 },
-    'safety-net': { name: 'Safety Net Supreme', description: 'Maximize job security and protection at the cost of immediate earnings.', buffs: ['🛡️ Defense +25%'], debuffs: ['💰 Income -15%'], price: 2800 }
+    'code-rabbit': { name: 'Code Rabbit', description: 'Fast coding AI.', buffs: ['💰 Income +10%'], debuffs: [], price: 500 },
+    'velocity-demon': { name: 'Velocity Demon', description: 'Extreme dev speed.', buffs: ['💰 Income +15%'], debuffs: [], price: 1200 },
+    'stackoverflow': { name: 'Stack Overflow Scholar', description: 'Infinite knowledge.', buffs: ['💰 Income +25%'], debuffs: [], price: 1500 },
+    'caffeine': { name: 'Caffeine Overdrive', description: 'Coffee-fueled productivity.', buffs: ['📊 Passive Income +10%'], debuffs: ['⚠️ Damage Taken +8%'], price: 2000 },
+    'turbo': { name: 'Turbo Compiler', description: 'Fast but fragile.', buffs: ['💰 Income +20%'], debuffs: ['🛡️ Defense -15%'], price: 2500 },
+    'passive-bot': { name: 'Passive Income Bot', description: 'Automated income.', buffs: ['💰 Income +20%', '📊 Passive Income +15%'], debuffs: [], price: 3000 },
+    'api-mine': { name: 'API Goldmine', description: 'Risky API profits.', buffs: ['💰 Income +30%'], debuffs: ['⚠️ Damage Taken +10%'], price: 3500 },
+    'starving-artist': { name: 'Starving Artist', description: 'Passion over profit.', buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'], debuffs: ['💰 Income -10%'], price: 500 },
+    'content-machine': { name: 'Content Machine', description: 'Mass content output.', buffs: ['📊 Passive Income +25%'], debuffs: [], price: 1200 },
+    'tank-artist': { name: 'Tank Artist', description: 'Tough critic armor.', buffs: ['🛡️ Defense +20%'], debuffs: ['⚠️ Damage Taken +8%'], price: 1500 },
+    'royalty-checks': { name: 'Royalty Checks Forever', description: 'Timeless royalties.', buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'], debuffs: ['💰 Income -15%'], price: 2500 },
+    'set-forget': { name: 'Set It and Forget It', description: 'Full automation.', buffs: ['📊 Passive Income +30%'], debuffs: [], price: 3000 },
+    'fortress-solitude': { name: 'Fortress of Solitude', description: 'Isolated perfection.', buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'], debuffs: ['💰 Income -20%'], price: 2800 },
+    'immovable-object': { name: 'Immovable Object', description: 'Unstoppable defense.', buffs: ['🛡️ Defense +30%'], debuffs: [], price: 3500 },
+    'cubicle-warrior': { name: 'Cubicle Warrior', description: 'Corporate survivor.', buffs: ['💰 Income +15%', '🛡️ Defense +10%'], debuffs: [], price: 500 },
+    'promo-chaser': { name: 'Promotion Chaser', description: 'Aggressive climber.', buffs: ['💰 Income +25%'], debuffs: ['📊 Passive Income -15%'], price: 1200 },
+    'benefits-max': { name: 'Benefits Maximizer', description: 'Max benefits.', buffs: ['🛡️ Defense +20%'], debuffs: [], price: 1500 },
+    'bonus-hunter': { name: 'Performance Bonus Hunter', description: 'High-risk bonuses.', buffs: ['💰 Income +20%', '🛡️ Defense +10%'], debuffs: ['⚠️ Damage Taken +10%'], price: 2500 },
+    'exec-fasttrack': { name: 'Executive Fast Track', description: 'Fast-track exec.', buffs: ['💰 Income +30%'], debuffs: ['📊 Passive Income -20%'], price: 3000 },
+    'corp-fortress': { name: 'Corporate Fortress', description: 'Corporate defense.', buffs: ['🛡️ Defense +15%', '💰 Income +15%'], debuffs: [], price: 3200 },
+    'safety-net': { name: 'Safety Net Supreme', description: 'Max job security.', buffs: ['🛡️ Defense +25%'], debuffs: ['💰 Income -15%'], price: 2800 }
 };
 
 let currentSkill = null;
