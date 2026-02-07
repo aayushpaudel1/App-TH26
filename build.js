@@ -157,9 +157,10 @@ async function build() {
 
     if (size > LIMIT) {
         console.error(`⚠️  OVER LIMIT by ${size - LIMIT} bytes! Cut some text!`);
+        if (process.argv.includes('--strict')) process.exit(1);
     } else {
         console.log(`🎉 YOU ARE SAFE! (${LIMIT - size} bytes remaining)`);
     }
 }
 
-build();
+build().catch(err => { console.error('❌ Build failed:', err); process.exit(1); });
