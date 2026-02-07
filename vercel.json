@@ -1,4 +1,6 @@
 {
+  "outputDirectory": "dist",
+  "buildCommand": "node build.js",
   "rewrites": [
     {
       "source": "/(.*)",
