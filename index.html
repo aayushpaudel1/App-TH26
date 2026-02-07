@@ -57,6 +57,7 @@
             max-width: 100%;
             overflow-x: hidden;
         }
+
         #skills-tab .tree-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -64,18 +65,22 @@
             padding: 10px 30px;
             border-radius: 12px;
         }
+
         #skills-tab .tree-title.tech {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(34, 211, 238, 0.2));
             border: 1px solid var(--accent-blue);
         }
+
         #skills-tab .tree-title.creative {
             background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(244, 114, 182, 0.2));
             border: 1px solid var(--accent-purple);
         }
+
         #skills-tab .tree-title.corporate {
             background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(251, 191, 36, 0.2));
             border: 1px solid var(--accent-yellow);
         }
+
         #skills-tab .tier {
             display: flex;
             justify-content: center;
@@ -85,15 +90,18 @@
             padding: 15px 10px;
             width: 100%;
         }
+
         #skills-tab .tier .icon-item {
             position: relative;
             width: 100px;
             margin-bottom: 10px;
         }
+
         #skills-tab .tier .icon-item .btn {
             width: 70px;
             height: 70px;
         }
+
         #skills-tab .connector-down::after {
             content: '';
             position: absolute;
@@ -105,6 +113,7 @@
             background: var(--accent-blue);
             opacity: 0.6;
         }
+
         #skills-tab .tier-2::before,
         #skills-tab .tier-3::before {
             content: '';
@@ -116,6 +125,7 @@
             background: linear-gradient(to right, transparent, var(--accent-blue) 20%, var(--accent-blue) 80%, transparent);
             opacity: 0.4;
         }
+
         #skills-tab .tier-2 .icon-item::before,
         #skills-tab .tier-3 .icon-item::before {
             content: '';
@@ -128,6 +138,7 @@
             background: var(--accent-blue);
             opacity: 0.5;
         }
+
         #skills-tab .path-divider {
             width: 90%;
             height: 1px;
@@ -151,18 +162,24 @@
             overflow-y: auto;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        #skill-popup.active { bottom: 0; }
+
+        #skill-popup.active {
+            bottom: 0;
+        }
+
         #skill-popup .popup-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
+
         #skill-popup .popup-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: #f8fafc;
         }
+
         #skill-popup .popup-close {
             background: transparent;
             border: none;
@@ -177,25 +194,35 @@
             justify-content: center;
             transition: color 0.2s;
         }
-        #skill-popup .popup-close:hover { color: #f8fafc; }
+
+        #skill-popup .popup-close:hover {
+            color: #f8fafc;
+        }
+
         #skill-popup .popup-content {
             display: flex;
             gap: 15px;
             align-items: flex-start;
         }
-        #skill-popup .popup-info { flex: 1; }
+
+        #skill-popup .popup-info {
+            flex: 1;
+        }
+
         #skill-popup .popup-description {
             color: #94a3b8;
             font-size: 0.9rem;
             margin-bottom: 12px;
             line-height: 1.5;
         }
+
         #skill-popup .popup-stats {
             display: flex;
             flex-direction: column;
             gap: 6px;
             font-size: 0.85rem;
         }
+
         #skill-popup .popup-buy-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -210,6 +237,7 @@
             white-space: nowrap;
             min-width: 90px;
         }
+
         #skill-popup .popup-buy-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
@@ -222,26 +250,36 @@
             overflow: hidden;
             position: relative;
         }
+
         #skills-tab .code-bg {
             position: absolute;
             inset: 0;
             background: repeating-linear-gradient(180deg, transparent 0, transparent 4px, rgba(34, 211, 238, 0.1) 4px, rgba(34, 211, 238, 0.1) 5px);
             animation: skills-scroll-code 3s linear infinite;
         }
+
         @keyframes skills-scroll-code {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 20px; }
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 20px;
+            }
         }
+
         #skills-tab .rabbit-svg {
             width: 100%;
             height: 100%;
             fill: #e0e0e0;
             filter: drop-shadow(0 0 2px var(--accent-cyan));
         }
+
         #skills-tab .rabbit-eye {
             fill: var(--accent-cyan);
             filter: drop-shadow(0 0 5px var(--accent-cyan));
         }
+
         #skills-tab .speed-lines {
             stroke: rgba(34, 211, 238, 0.6);
             stroke-width: 2;
@@ -255,13 +293,29 @@
             overflow: hidden;
             animation: skills-vibrate 0.1s infinite;
         }
+
         @keyframes skills-vibrate {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
-            75% { transform: translate(1px, -1px); }
-            100% { transform: translate(-1px, 1px); }
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(1px, 1px);
+            }
+
+            50% {
+                transform: translate(-1px, -1px);
+            }
+
+            75% {
+                transform: translate(1px, -1px);
+            }
+
+            100% {
+                transform: translate(-1px, 1px);
+            }
         }
+
         #skills-tab .demon-blur {
             position: absolute;
             background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), rgba(255, 255, 0, 0.5));
@@ -271,6 +325,7 @@
             filter: blur(4px);
             opacity: 0.6;
         }
+
         #skills-tab .demon-svg {
             width: 100%;
             height: 100%;
@@ -278,10 +333,12 @@
             stroke: var(--accent-yellow);
             stroke-width: 1;
         }
+
         #skills-tab .demon-eyes {
             fill: #fff;
             filter: drop-shadow(0 0 4px var(--danger));
         }
+
         #skills-tab .demon-grin {
             fill: none;
             stroke: #fff;
@@ -294,11 +351,30 @@
             border: 1px solid #f48024;
             box-shadow: 0 0 10px rgba(244, 128, 36, 0.2);
         }
-        #skills-tab .book-browser-svg { width: 100%; height: 100%; }
-        #skills-tab .browser-frame { fill: #fff; opacity: 0.1; }
-        #skills-tab .book-spine { fill: #f48024; }
-        #skills-tab .book-page { fill: #eee; }
-        #skills-tab .sticky-note { fill: #ffeb3b; stroke: rgba(0, 0, 0, 0.1); }
+
+        #skills-tab .book-browser-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        #skills-tab .browser-frame {
+            fill: #fff;
+            opacity: 0.1;
+        }
+
+        #skills-tab .book-spine {
+            fill: #f48024;
+        }
+
+        #skills-tab .book-page {
+            fill: #eee;
+        }
+
+        #skills-tab .sticky-note {
+            fill: #ffeb3b;
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+
         #skills-tab .cursor-pointer {
             fill: #fff;
             stroke: #000;
@@ -306,9 +382,17 @@
             filter: drop-shadow(0 0 4px #f48024);
             animation: skills-bounce 2s infinite;
         }
+
         @keyframes skills-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-3px);
+            }
         }
 
         /* ===== Tech Tier 3: Caffeine Overdrive ===== */
@@ -318,19 +402,31 @@
             overflow: hidden;
             box-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
         }
+
         #skills-tab .mug-shake {
             animation: skills-vibrate-heavy 0.2s infinite;
             transform-origin: center bottom;
         }
+
         @keyframes skills-vibrate-heavy {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(2deg); }
-            75% { transform: rotate(-2deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(2deg);
+            }
+
+            75% {
+                transform: rotate(-2deg);
+            }
         }
+
         #skills-tab .liquid-glow {
             fill: var(--success);
             filter: drop-shadow(0 0 5px var(--success));
         }
+
         #skills-tab .steam-jagged {
             stroke: #fff;
             stroke-width: 2;
@@ -338,7 +434,12 @@
             stroke-dasharray: 100;
             animation: skills-dash 2s linear infinite;
         }
-        @keyframes skills-dash { to { stroke-dashoffset: -200; } }
+
+        @keyframes skills-dash {
+            to {
+                stroke-dashoffset: -200;
+            }
+        }
 
         /* ===== Tech Tier 3: Turbo Compiler ===== */
         #skills-tab .btn-turbo {
@@ -346,16 +447,34 @@
             border: 1px solid #f43f5e;
             box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
         }
-        #skills-tab .progress-frame { fill: #000; stroke: #555; stroke-width: 2; }
-        #skills-tab .progress-fill { fill: #f43f5e; filter: drop-shadow(0 0 5px #f43f5e); }
+
+        #skills-tab .progress-frame {
+            fill: #000;
+            stroke: #555;
+            stroke-width: 2;
+        }
+
+        #skills-tab .progress-fill {
+            fill: #f43f5e;
+            filter: drop-shadow(0 0 5px #f43f5e);
+        }
+
         #skills-tab .sparks {
             fill: #ffff00;
             animation: skills-fly-sparks 0.5s linear infinite;
             opacity: 0;
         }
+
         @keyframes skills-fly-sparks {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(10px, -10px) scale(0); opacity: 0; }
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(10px, -10px) scale(0);
+                opacity: 0;
+            }
         }
 
         /* ===== Tech Tier 3: Passive Income Bot ===== */
@@ -363,14 +482,26 @@
             background: #101520;
             border: 1px solid var(--accent-blue);
         }
-        #skills-tab .bot-body { fill: var(--accent-blue); }
+
+        #skills-tab .bot-body {
+            fill: var(--accent-blue);
+        }
+
         #skills-tab .coin-drip {
             fill: var(--accent-yellow);
             animation: skills-drip 2s infinite;
         }
+
         @keyframes skills-drip {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(20px); opacity: 0; }
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
         }
 
         /* ===== Tech Tier 3: API Goldmine ===== */
@@ -378,16 +509,30 @@
             background: #0a0a0a;
             border: 1px solid var(--accent-yellow);
         }
-        #skills-tab .server-frame { fill: #222; stroke: #444; }
+
+        #skills-tab .server-frame {
+            fill: #222;
+            stroke: #444;
+        }
+
         #skills-tab .gold-core {
             fill: var(--accent-yellow);
             filter: drop-shadow(0 0 8px var(--accent-yellow));
             animation: skills-pulse-gold 2s infinite;
         }
+
         @keyframes skills-pulse-gold {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
+
         #skills-tab .cable-vine {
             stroke: var(--accent-yellow);
             fill: none;
@@ -401,26 +546,37 @@
             position: relative;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
         }
+
         #skills-tab .cracked-frame {
             position: absolute;
             inset: 0;
             border: 1px dashed #553311;
             opacity: 0.5;
         }
+
         #skills-tab .paintbrush-taped {
             transform: rotate(-45deg);
             transform-origin: center;
             filter: drop-shadow(2px 2px 2px #000);
         }
+
         #skills-tab .brush-glow {
             fill: var(--accent-yellow);
             filter: blur(2px);
             opacity: 0.6;
             animation: skills-pulse-glow 2s infinite;
         }
+
         @keyframes skills-pulse-glow {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
         }
 
         /* ===== Creative Tier 2: Content Machine ===== */
@@ -429,6 +585,7 @@
             border: 1px solid var(--text-secondary);
             overflow: hidden;
         }
+
         #skills-tab .conveyor-belt {
             fill: none;
             stroke: #444;
@@ -436,24 +593,39 @@
             stroke-dasharray: 10, 5;
             animation: skills-conveyor-move 1s linear infinite;
         }
-        @keyframes skills-conveyor-move { to { stroke-dashoffset: -15; } }
+
+        @keyframes skills-conveyor-move {
+            to {
+                stroke-dashoffset: -15;
+            }
+        }
 
         /* ===== Creative Tier 2: Tank Artist ===== */
         #skills-tab .btn-tank-artist {
             background: #2a2a2a;
             border: 1px solid var(--success);
         }
+
         #skills-tab .palette-shield {
             fill: #8d6e63;
             stroke: #5d4037;
             stroke-width: 1;
         }
+
         #skills-tab .paint-splat {
             animation: skills-splat-pop 3s infinite;
         }
+
         @keyframes skills-splat-pop {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
         }
 
         /* ===== Creative Tier 3: Royalty Checks ===== */
@@ -462,19 +634,32 @@
             border: 1px solid var(--accent-yellow);
             border-radius: 50%;
         }
+
         #skills-tab .vinyl-record {
             transform-origin: 25px 25px;
             animation: skills-spin-slow 5s linear infinite;
         }
-        @keyframes skills-spin-slow { to { transform: rotate(360deg); } }
+
+        @keyframes skills-spin-slow {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         #skills-tab .orbiting-coin {
             fill: var(--accent-yellow);
             animation: skills-orbit-reverse 3s linear infinite;
             transform-origin: 25px 25px;
         }
+
         @keyframes skills-orbit-reverse {
-            from { transform: rotate(360deg) translateX(18px) rotate(-360deg); }
-            to { transform: rotate(0deg) translateX(18px) rotate(0deg); }
+            from {
+                transform: rotate(360deg) translateX(18px) rotate(-360deg);
+            }
+
+            to {
+                transform: rotate(0deg) translateX(18px) rotate(0deg);
+            }
         }
 
         /* ===== Creative Tier 3: Set It Forget It ===== */
@@ -482,39 +667,76 @@
             background: #222;
             border: 1px solid var(--text-secondary);
         }
-        #skills-tab .toggle-switch-base { fill: #333; stroke: #555; }
-        #skills-tab .toggle-switch-on { fill: var(--success); filter: drop-shadow(0 0 2px var(--success)); }
-        #skills-tab .dust-layer { fill: #aaa; opacity: 0.3; }
+
+        #skills-tab .toggle-switch-base {
+            fill: #333;
+            stroke: #555;
+        }
+
+        #skills-tab .toggle-switch-on {
+            fill: var(--success);
+            filter: drop-shadow(0 0 2px var(--success));
+        }
+
+        #skills-tab .dust-layer {
+            fill: #aaa;
+            opacity: 0.3;
+        }
 
         /* ===== Creative Tier 3: Fortress of Solitude ===== */
         #skills-tab .btn-fortress-solitude {
             background: #1e293b;
             border: 1px solid var(--text-secondary);
         }
-        #skills-tab .concrete-walls { fill: #636e72; }
-        #skills-tab .warm-window-light { fill: #fdcb6e; filter: drop-shadow(0 0 5px #fdcb6e); }
+
+        #skills-tab .concrete-walls {
+            fill: #636e72;
+        }
+
+        #skills-tab .warm-window-light {
+            fill: #fdcb6e;
+            filter: drop-shadow(0 0 5px #fdcb6e);
+        }
 
         /* ===== Creative Tier 3: Immovable Object ===== */
         #skills-tab .btn-immovable-object {
             background: #1e293b;
             border: 1px solid #cbd5e1;
         }
-        #skills-tab .stone-block { fill: #636e72; stroke: #2d3436; }
-        #skills-tab .impact-cracks { stroke: #b2bec3; fill: none; stroke-width: 0.5; }
+
+        #skills-tab .stone-block {
+            fill: #636e72;
+            stroke: #2d3436;
+        }
+
+        #skills-tab .impact-cracks {
+            stroke: #b2bec3;
+            fill: none;
+            stroke-width: 0.5;
+        }
 
         /* ===== Corporate Tier 1: Cubicle Warrior ===== */
         #skills-tab .btn-cubicle-warrior {
             background: #dcdde1;
             border: 1px solid var(--text-secondary);
         }
-        #skills-tab .desk-shield { fill: #bdc3c7; stroke: var(--text-secondary); stroke-width: 1; }
-        #skills-tab .keyboard-weapon { fill: #2c3e50; }
+
+        #skills-tab .desk-shield {
+            fill: #bdc3c7;
+            stroke: var(--text-secondary);
+            stroke-width: 1;
+        }
+
+        #skills-tab .keyboard-weapon {
+            fill: #2c3e50;
+        }
 
         /* ===== Corporate Tier 2: Promotion Chaser ===== */
         #skills-tab .btn-promo-chaser {
             background: #ecf0f1;
             border: 1px solid var(--accent-blue);
         }
+
         #skills-tab .staircase {
             fill: none;
             stroke: #95a5a6;
@@ -522,13 +744,20 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+
         #skills-tab .arrow-upward {
             fill: var(--accent-blue);
             animation: skills-climb-stairs 2s steps(4) infinite;
         }
+
         @keyframes skills-climb-stairs {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(20px, -20px); }
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(20px, -20px);
+            }
         }
 
         /* ===== Corporate Tier 2: Benefits Maximizer ===== */
@@ -536,16 +765,33 @@
             background: #fff;
             border: 1px solid #27ae60;
         }
-        #skills-tab .checklist-shield { fill: #fff; stroke: #27ae60; stroke-width: 1.5; }
-        #skills-tab .check-mark { fill: #27ae60; }
-        #skills-tab .med-cross { fill: var(--danger); }
+
+        #skills-tab .checklist-shield {
+            fill: #fff;
+            stroke: #27ae60;
+            stroke-width: 1.5;
+        }
+
+        #skills-tab .check-mark {
+            fill: #27ae60;
+        }
+
+        #skills-tab .med-cross {
+            fill: var(--danger);
+        }
 
         /* ===== Corporate Tier 3: Bonus Hunter ===== */
         #skills-tab .btn-bonus-hunter {
             background: #2c3e50;
             border: 1px solid var(--accent-yellow);
         }
-        #skills-tab .target-ring { fill: none; stroke: #ecf0f1; stroke-width: 2; }
+
+        #skills-tab .target-ring {
+            fill: none;
+            stroke: #ecf0f1;
+            stroke-width: 2;
+        }
+
         #skills-tab .dollar-bullseye {
             fill: var(--accent-yellow);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -554,7 +800,11 @@
             text-anchor: middle;
             dominant-baseline: middle;
         }
-        #skills-tab .arrow-pierce { stroke: var(--danger); stroke-width: 2; }
+
+        #skills-tab .arrow-pierce {
+            stroke: var(--danger);
+            stroke-width: 2;
+        }
 
         /* ===== Corporate Tier 3: Executive Fast Track ===== */
         #skills-tab .btn-exec-fasttrack {
@@ -562,15 +812,26 @@
             border: 1px solid var(--accent-blue);
             overflow: hidden;
         }
-        #skills-tab .elevator-box { fill: #95a5a6; stroke: #7f8c8d; }
+
+        #skills-tab .elevator-box {
+            fill: #95a5a6;
+            stroke: #7f8c8d;
+        }
+
         #skills-tab .floor-numbers {
             fill: #ecf0f1;
             font-size: 10px;
             animation: skills-floor-blur 0.5s linear infinite;
         }
+
         @keyframes skills-floor-blur {
-            from { transform: translateY(0); }
-            to { transform: translateY(20px); }
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(20px);
+            }
         }
 
         /* ===== Corporate Tier 3: Corporate Fortress ===== */
@@ -578,24 +839,56 @@
             background: #2c3e50;
             border: 1px solid #bdc3c7;
         }
-        #skills-tab .skyscraper { fill: #34495e; stroke: #2c3e50; }
-        #skills-tab .windows-lit { fill: var(--accent-yellow); }
+
+        #skills-tab .skyscraper {
+            fill: #34495e;
+            stroke: #2c3e50;
+        }
+
+        #skills-tab .windows-lit {
+            fill: var(--accent-yellow);
+        }
 
         /* ===== Corporate Tier 3: Safety Net Supreme ===== */
         #skills-tab .btn-safety-net {
             background: #ecf0f1;
             border: 1px solid var(--warning);
         }
-        #skills-tab .golden-net { stroke: var(--warning); stroke-width: 1; fill: none; }
-        #skills-tab .figure-safe { fill: #2c3e50; }
+
+        #skills-tab .golden-net {
+            stroke: var(--warning);
+            stroke-width: 1;
+            fill: none;
+        }
+
+        #skills-tab .figure-safe {
+            fill: #2c3e50;
+        }
 
         /* ===== Mobile Responsive ===== */
         @media (max-width: 600px) {
-            #skills-tab .tier { gap: 10px; padding: 10px 5px; }
-            #skills-tab .tier .icon-item { width: 80px; }
-            #skills-tab .tier .icon-item .btn { width: 60px; height: 60px; }
-            #skills-tab .tree-title { font-size: 1.2rem; padding: 8px 20px; }
-            #skills-tab .icon-label { font-size: 0.7rem; }
+            #skills-tab .tier {
+                gap: 10px;
+                padding: 10px 5px;
+            }
+
+            #skills-tab .tier .icon-item {
+                width: 80px;
+            }
+
+            #skills-tab .tier .icon-item .btn {
+                width: 60px;
+                height: 60px;
+            }
+
+            #skills-tab .tree-title {
+                font-size: 1.2rem;
+                padding: 8px 20px;
+            }
+
+            #skills-tab .icon-label {
+                font-size: 0.7rem;
+            }
         }
 
         /* ===== Too Expensive Grayed Out ===== */
@@ -605,6 +898,7 @@
             filter: grayscale(100%);
             cursor: not-allowed;
         }
+
         #skill-popup .popup-buy-btn.too-expensive {
             opacity: 0.35;
             pointer-events: none;
@@ -664,7 +958,8 @@
                             <div class="btn btn-velocity-demon" title="Velocity Demon">
                                 <div class="demon-blur"></div>
                                 <svg class="demon-svg" viewBox="0 0 50 50">
-                                    <path d="M15 40 L 25 25 L 35 20 Q 45 15, 40 10 L 35 5 Q 30 10, 25 10 L 10 30 Z" transform="rotate(15 25 25)" />
+                                    <path d="M15 40 L 25 25 L 35 20 Q 45 15, 40 10 L 35 5 Q 30 10, 25 10 L 10 30 Z"
+                                        transform="rotate(15 25 25)" />
                                     <path d="M35 5 L 32 -5 L 38 0 Z" fill="var(--danger)" />
                                     <path d="M40 10 L 45 0 L 42 5 Z" fill="var(--danger)" />
                                     <circle class="demon-eyes" cx="35" cy="12" r="2" />
@@ -681,11 +976,15 @@
                                     <circle cx="10" cy="10" r="2" fill="#ff5f56" />
                                     <circle cx="16" cy="10" r="2" fill="#ffbd2e" />
                                     <circle cx="22" cy="10" r="2" fill="#27c93f" />
-                                    <path class="book-page" d="M10 20 Q 20 20, 30 25 Q 40 20, 50 20 L 50 40 Q 40 40, 30 45 Q 20 40, 10 40 Z" />
+                                    <path class="book-page"
+                                        d="M10 20 Q 20 20, 30 25 Q 40 20, 50 20 L 50 40 Q 40 40, 30 45 Q 20 40, 10 40 Z" />
                                     <path class="book-spine" d="M29 25 L 31 25 L 31 45 L 29 45 Z" />
-                                    <rect class="sticky-note" x="42" y="15" width="6" height="8" rx="1" transform="rotate(10 45 19)" />
-                                    <rect class="sticky-note" x="48" y="28" width="6" height="8" rx="1" transform="rotate(-5 51 32)" />
-                                    <path class="cursor-pointer" d="M35 15 L 42 22 L 35 29 Z" transform="rotate(-90 35 15) translate(5, 5)" />
+                                    <rect class="sticky-note" x="42" y="15" width="6" height="8" rx="1"
+                                        transform="rotate(10 45 19)" />
+                                    <rect class="sticky-note" x="48" y="28" width="6" height="8" rx="1"
+                                        transform="rotate(-5 51 32)" />
+                                    <path class="cursor-pointer" d="M35 15 L 42 22 L 35 29 Z"
+                                        transform="rotate(-90 35 15) translate(5, 5)" />
                                 </svg>
                             </div>
                             <div class="icon-label">Stack Overflow</div>
@@ -695,10 +994,14 @@
                         <div class="icon-item">
                             <div class="btn btn-caffeine" title="Caffeine Overdrive">
                                 <svg class="mug-shake" viewBox="0 0 50 50">
-                                    <path d="M10 10 L 12 40 Q 12 45, 17 45 L 33 45 Q 38 45, 38 40 L 40 10" fill="none" stroke="var(--text-secondary)" stroke-width="3" />
-                                    <path d="M40 15 Q 48 15, 48 25 Q 48 35, 40 35" fill="none" stroke="var(--text-secondary)" stroke-width="3" />
-                                    <path class="liquid-glow" d="M12 25 L 13 40 Q 13 43, 17 43 L 33 43 Q 37 43, 37 40 L 38 25 Q 25 30, 12 25 Z" />
-                                    <path class="steam-jagged" d="M15 5 L 20 10 L 15 15 M 25 2 L 30 8 L 25 14 M 35 5 L 40 10 L 35 15" />
+                                    <path d="M10 10 L 12 40 Q 12 45, 17 45 L 33 45 Q 38 45, 38 40 L 40 10" fill="none"
+                                        stroke="var(--text-secondary)" stroke-width="3" />
+                                    <path d="M40 15 Q 48 15, 48 25 Q 48 35, 40 35" fill="none"
+                                        stroke="var(--text-secondary)" stroke-width="3" />
+                                    <path class="liquid-glow"
+                                        d="M12 25 L 13 40 Q 13 43, 17 43 L 33 43 Q 37 43, 37 40 L 38 25 Q 25 30, 12 25 Z" />
+                                    <path class="steam-jagged"
+                                        d="M15 5 L 20 10 L 15 15 M 25 2 L 30 8 L 25 14 M 35 5 L 40 10 L 35 15" />
                                     <path d="M20 20 L 25 30 L 30 15" fill="none" stroke="#fff" stroke-width="2" />
                                 </svg>
                             </div>
@@ -707,11 +1010,16 @@
                         <div class="icon-item">
                             <div class="btn btn-turbo" title="Turbo Compiler">
                                 <svg viewBox="0 0 60 40">
-                                    <rect class="progress-frame" x="2" y="15" width="56" height="10" rx="2" transform="rotate(-2 30 20)" />
-                                    <rect class="progress-fill" x="4" y="17" width="52" height="6" rx="1" transform="rotate(-2 30 20)" />
-                                    <circle class="sparks" cx="55" cy="15" r="1.5" style="animation-duration: 0.4s; animation-delay: 0s;" />
-                                    <circle class="sparks" cx="57" cy="20" r="1" style="animation-duration: 0.6s; animation-delay: 0.1s;" />
-                                    <circle class="sparks" cx="53" cy="18" r="2" style="animation-duration: 0.5s; animation-delay: 0.2s;" />
+                                    <rect class="progress-frame" x="2" y="15" width="56" height="10" rx="2"
+                                        transform="rotate(-2 30 20)" />
+                                    <rect class="progress-fill" x="4" y="17" width="52" height="6" rx="1"
+                                        transform="rotate(-2 30 20)" />
+                                    <circle class="sparks" cx="55" cy="15" r="1.5"
+                                        style="animation-duration: 0.4s; animation-delay: 0s;" />
+                                    <circle class="sparks" cx="57" cy="20" r="1"
+                                        style="animation-duration: 0.6s; animation-delay: 0.1s;" />
+                                    <circle class="sparks" cx="53" cy="18" r="2"
+                                        style="animation-duration: 0.5s; animation-delay: 0.2s;" />
                                 </svg>
                             </div>
                             <div class="icon-label">Turbo Compiler</div>
@@ -722,7 +1030,8 @@
                                     <rect class="bot-body" x="15" y="10" width="20" height="25" rx="2" />
                                     <circle class="bot-body" cx="25" cy="-5" r="8" />
                                     <line x1="15" y1="20" x2="5" y2="25" stroke="var(--accent-blue)" stroke-width="3" />
-                                    <line x1="35" y1="20" x2="45" y2="15" stroke="var(--accent-blue)" stroke-width="3" />
+                                    <line x1="35" y1="20" x2="45" y2="15" stroke="var(--accent-blue)"
+                                        stroke-width="3" />
                                     <rect x="22" y="15" width="6" height="2" fill="#000" />
                                     <circle class="coin-drip" cx="25" cy="18" r="2" />
                                     <circle class="coin-drip" cx="25" cy="25" r="2" style="animation-delay: 0.5s;" />
@@ -754,8 +1063,10 @@
                             <div class="btn btn-starving-artist" title="Starving Artist">
                                 <div class="cracked-frame"></div>
                                 <svg viewBox="0 0 50 50">
-                                    <rect class="paintbrush-taped" x="22" y="15" width="6" height="20" fill="#a0522d" rx="1" />
-                                    <rect class="paintbrush-taped" x="21" y="22" width="8" height="4" fill="#ddd" rx="0.5" />
+                                    <rect class="paintbrush-taped" x="22" y="15" width="6" height="20" fill="#a0522d"
+                                        rx="1" />
+                                    <rect class="paintbrush-taped" x="21" y="22" width="8" height="4" fill="#ddd"
+                                        rx="0.5" />
                                     <path class="paintbrush-taped" d="M22 15 L 20 5 L 30 5 L 28 15 Z" fill="#d3d3d3" />
                                     <circle class="brush-glow" cx="25" cy="5" r="3" />
                                 </svg>
@@ -781,11 +1092,15 @@
                         <div class="icon-item">
                             <div class="btn btn-tank-artist" title="Tank Artist">
                                 <svg viewBox="0 0 50 50">
-                                    <path class="palette-shield" d="M10 25 Q 10 5, 25 5 Q 40 5, 40 25 Q 40 45, 25 45 Q 10 45, 10 25 Z" />
+                                    <path class="palette-shield"
+                                        d="M10 25 Q 10 5, 25 5 Q 40 5, 40 25 Q 40 45, 25 45 Q 10 45, 10 25 Z" />
                                     <circle cx="18" cy="20" r="3" fill="#2a2a2a" />
-                                    <circle class="paint-splat" cx="30" cy="15" r="3" fill="#f44336" style="animation-delay: 0s;" />
-                                    <circle class="paint-splat" cx="35" cy="25" r="3" fill="#2196f3" style="animation-delay: 0.5s;" />
-                                    <circle class="paint-splat" cx="28" cy="35" r="3" fill="#ffeb3b" style="animation-delay: 1s;" />
+                                    <circle class="paint-splat" cx="30" cy="15" r="3" fill="#f44336"
+                                        style="animation-delay: 0s;" />
+                                    <circle class="paint-splat" cx="35" cy="25" r="3" fill="#2196f3"
+                                        style="animation-delay: 0.5s;" />
+                                    <circle class="paint-splat" cx="28" cy="35" r="3" fill="#ffeb3b"
+                                        style="animation-delay: 1s;" />
                                     <line x1="15" y1="30" x2="20" y2="35" stroke="#5d4037" stroke-width="1" />
                                 </svg>
                             </div>
@@ -796,7 +1111,8 @@
                         <div class="icon-item">
                             <div class="btn btn-royalty-checks" title="Royalty Checks">
                                 <svg viewBox="0 0 50 50">
-                                    <circle class="vinyl-record" cx="25" cy="25" r="20" fill="#111" stroke="#333" stroke-width="1" />
+                                    <circle class="vinyl-record" cx="25" cy="25" r="20" fill="#111" stroke="#333"
+                                        stroke-width="1" />
                                     <circle class="vinyl-record" cx="25" cy="25" r="8" fill="#e91e63" />
                                     <circle cx="25" cy="25" r="2" fill="#000" />
                                     <circle class="orbiting-coin" cx="25" cy="25" r="3" />
@@ -856,8 +1172,10 @@
                         <div class="icon-item">
                             <div class="btn btn-promo-chaser" title="Promotion Chaser">
                                 <svg viewBox="0 0 50 50">
-                                    <path class="staircase" d="M10 40 L 20 40 L 20 30 L 30 30 L 30 20 L 40 20 L 40 10" />
-                                    <path class="arrow-upward" d="M15 40 L 15 30 L 10 35 M 15 30 L 20 35" stroke="#3498db" stroke-width="2" />
+                                    <path class="staircase"
+                                        d="M10 40 L 20 40 L 20 30 L 30 30 L 30 20 L 40 20 L 40 10" />
+                                    <path class="arrow-upward" d="M15 40 L 15 30 L 10 35 M 15 30 L 20 35"
+                                        stroke="#3498db" stroke-width="2" />
                                     <text x="12" y="38" font-size="6" fill="#7f8c8d">Jr</text>
                                     <text x="32" y="18" font-size="6" fill="#7f8c8d">CEO</text>
                                 </svg>
@@ -868,9 +1186,12 @@
                             <div class="btn btn-benefits-max" title="Benefits Maximizer">
                                 <svg viewBox="0 0 50 50">
                                     <rect class="checklist-shield" x="15" y="10" width="20" height="30" rx="2" />
-                                    <path class="check-mark" d="M20 18 L 23 21 L 28 16" fill="none" stroke="#27ae60" stroke-width="2" />
-                                    <path class="check-mark" d="M20 25 L 23 28 L 28 23" fill="none" stroke="#27ae60" stroke-width="2" />
-                                    <path class="check-mark" d="M20 32 L 23 35 L 28 30" fill="none" stroke="#27ae60" stroke-width="2" />
+                                    <path class="check-mark" d="M20 18 L 23 21 L 28 16" fill="none" stroke="#27ae60"
+                                        stroke-width="2" />
+                                    <path class="check-mark" d="M20 25 L 23 28 L 28 23" fill="none" stroke="#27ae60"
+                                        stroke-width="2" />
+                                    <path class="check-mark" d="M20 32 L 23 35 L 28 30" fill="none" stroke="#27ae60"
+                                        stroke-width="2" />
                                     <rect x="30" y="32" width="6" height="6" fill="#e74c3c" />
                                     <path d="M33 33 L 33 37 M 31 35 L 35 35" stroke="#fff" stroke-width="1.5" />
                                 </svg>
@@ -1431,11 +1752,12 @@
         let w, h;
 
         // Game State
-        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, DILEMMA, SHOP, GAMEOVER
+        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, LEADERBOARD, DILEMMA, SHOP, GAMEOVER
         let gameTime = 0;
         let score = 0;
         let gameTimer = 0;
         const GAME_INTERVAL = 15; // 15 seconds
+        let leaderboardTimer = 0; // Frames remaining to show leaderboard (3s = 180 frames)
 
         // Player Class Stats
         let playerClass = null;
@@ -1474,10 +1796,334 @@
         // window.addEventListener('resize', resize);
         // resize();
 
+        // ========== AUDIO ENGINE ==========
+        let audioCtx;
+        let gameNodes = [], shopNodes = [], leaderboardNodes = [], dilemmaNodes = [];
+        let gameMusicPlaying = false, shopMusicPlaying = false, leaderboardMusicPlaying = false, dilemmaMusicPlaying = false;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        // Game music: energetic arpeggio loop
+        function startGameMusic() {
+            initAudio();
+            stopGameMusic();
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.15;
+            masterGain.connect(audioCtx.destination);
+            gameNodes.push(masterGain);
+
+            const notes = [220, 277, 330, 440, 554, 440, 330, 277];
+            let noteTick = 0;
+
+            function playArpNote() {
+                if (!gameMusicPlaying) return;
+                const measure = Math.floor(noteTick / 16) % 4;
+                let semitoneShift = 0;
+                if (measure === 1) semitoneShift = -1;
+                if (measure === 2) semitoneShift = -3;
+                if (measure === 3) semitoneShift = -4;
+
+                const multiplier = Math.pow(2, semitoneShift / 12);
+                const noteIndex = noteTick % notes.length;
+                const freq = notes[noteIndex] * multiplier;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                osc.detune.value = Math.random() * 10 - 5;
+
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
+                osc.connect(gain);
+                gain.connect(masterGain);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+
+                noteTick++;
+                setTimeout(playArpNote, 130);
+            }
+
+            gameMusicPlaying = true;
+            playArpNote();
+        }
+
+        function stopGameMusic() {
+            gameMusicPlaying = false;
+            gameNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            gameNodes = [];
+        }
+
+        // Shop music: calm ambient chords
+        function startShopMusic() {
+            initAudio();
+            stopShopMusic();
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.12;
+            masterGain.connect(audioCtx.destination);
+            shopNodes.push(masterGain);
+
+            const chords = [
+                [261, 329, 392],
+                [293, 369, 440],
+                [246, 311, 369],
+                [220, 277, 329]
+            ];
+            let chordIndex = 0;
+
+            function playChord() {
+                if (!shopMusicPlaying) return;
+                const chord = chords[chordIndex];
+                chord.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.3);
+                    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.8);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 2);
+                });
+                chordIndex = (chordIndex + 1) % chords.length;
+                setTimeout(playChord, 2000);
+            }
+
+            shopMusicPlaying = true;
+            playChord();
+        }
+
+        function stopShopMusic() {
+            shopMusicPlaying = false;
+            shopNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            shopNodes = [];
+        }
+
+        // Leaderboard music: triumphant fanfare with brass-like tones
+        function startLeaderboardMusic() {
+            initAudio();
+            stopLeaderboardMusic();
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.15;
+            masterGain.connect(audioCtx.destination);
+            leaderboardNodes.push(masterGain);
+
+            const fanfareNotes = [
+                [523, 659, 784],
+                [587, 740, 880],
+                [659, 831, 988],
+                [698, 880, 1047]
+            ];
+            let noteIndex = 0;
+
+            function playFanfare() {
+                if (!leaderboardMusicPlaying) return;
+                const chord = fanfareNotes[noteIndex];
+                chord.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = freq;
+                    osc.detune.value = Math.random() * 6 - 3;
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.1);
+                    gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.4);
+                    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.9);
+                });
+                noteIndex = (noteIndex + 1) % fanfareNotes.length;
+                setTimeout(playFanfare, 800);
+            }
+
+            leaderboardMusicPlaying = true;
+            playFanfare();
+        }
+
+        function stopLeaderboardMusic() {
+            leaderboardMusicPlaying = false;
+            leaderboardNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            leaderboardNodes = [];
+        }
+
+        // Dilemma music: tense, mysterious atmosphere
+        function startDilemmaMusic() {
+            initAudio();
+            stopDilemmaMusic();
+
+            const masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.12;
+            masterGain.connect(audioCtx.destination);
+            dilemmaNodes.push(masterGain);
+
+            const tenseChords = [
+                [220, 233, 311],
+                [196, 233, 294],
+                [185, 220, 277],
+                [208, 247, 311]
+            ];
+            let chordIdx = 0;
+
+            function playTenseChord() {
+                if (!dilemmaMusicPlaying) return;
+                const chord = tenseChords[chordIdx];
+                chord.forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    const lfo = audioCtx.createOscillator();
+                    const lfoGain = audioCtx.createGain();
+                    lfo.frequency.value = 4 + Math.random() * 2;
+                    lfoGain.gain.value = 3;
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(osc.frequency);
+                    lfo.start();
+                    lfo.stop(audioCtx.currentTime + 2.5);
+
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.5);
+                    gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 1.5);
+                    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2.2);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 2.5);
+                });
+                chordIdx = (chordIdx + 1) % tenseChords.length;
+                setTimeout(playTenseChord, 2200);
+            }
+
+            dilemmaMusicPlaying = true;
+            playTenseChord();
+        }
+
+        function stopDilemmaMusic() {
+            dilemmaMusicPlaying = false;
+            dilemmaNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            dilemmaNodes = [];
+        }
+
+        function stopAllAudio() {
+            stopGameMusic();
+            stopShopMusic();
+            stopLeaderboardMusic();
+            stopDilemmaMusic();
+        }
+
+        // SFX: Jump - rising sweep
+        function playJump() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            gain.gain.value = 0.3;
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        // SFX: Coin - cheerful arpeggio
+        function playCoin() {
+            initAudio();
+            const coinNotes = [988, 1319, 1568, 2093];
+            coinNotes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime + i * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.05 + 0.1);
+                osc.start(audioCtx.currentTime + i * 0.05);
+                osc.stop(audioCtx.currentTime + i * 0.05 + 0.1);
+            });
+        }
+
+        // SFX: Damage - harsh distorted hit
+        function playDamage() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const distortion = audioCtx.createWaveShaper();
+
+            const k = 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            for (let i = 0; i < n_samples; i++) {
+                const x = i * 2 / n_samples - 1;
+                curve[i] = (3 + k) * x * 20 / (Math.PI + k * Math.abs(x));
+            }
+            distortion.curve = curve;
+            distortion.oversample = '4x';
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.15);
+
+            gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+
+            osc.connect(distortion);
+            distortion.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        // SFX: Click - UI interaction
+        function playClick() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        // Add global click listener for all interactive elements
+        document.addEventListener('click', (e) => {
+            const t = e.target;
+            if (t.tagName === 'BUTTON' || t.closest('button') ||
+                t.classList.contains('btn') || t.classList.contains('shop-item') ||
+                t.classList.contains('char-btn') || t.closest('.char-btn') ||
+                t.classList.contains('nav-tab') || t.classList.contains('skill-node') ||
+                t.closest('.skill-node') || t.classList.contains('option-card') ||
+                t.closest('.option-card') || t.closest('.shop-item') ||
+                t.closest('.path-option')) {
+                playClick();
+            }
+        });
+
         // Input Handling
         function startThrust(e) {
             if (e.type === 'mousedown' || e.type === 'touchstart') {
                 player.isThrusting = true;
+                if (gameState === 'PLAYING') playJump();
                 if (gameState === 'GAMEOVER') resetGame();
             }
         }
@@ -1495,6 +2141,8 @@
 
         document.getElementById('playBtn').addEventListener('click', (e) => {
             e.stopPropagation();
+            initAudio();
+            startShopMusic();
             showCharacterSelection();
         });
 
@@ -1634,10 +2282,402 @@
             drawStaticCity();
         }
 
+        // ========== LEADERBOARD SYSTEM ==========
+        const LB_SVG_DEFS = `
+            <defs>
+                <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#cc0000" />
+                    <stop offset="25%" stop-color="#006600" />
+                    <stop offset="50%" stop-color="#000066" />
+                    <stop offset="75%" stop-color="#ffff00" />
+                    <stop offset="100%" stop-color="#cc0000" />
+                </linearGradient>
+                <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#00f3ff" />
+                    <stop offset="100%" stop-color="#d400ff" />
+                </linearGradient>
+            </defs>
+        `;
+
+        const LB_SVG_STYLE = `
+            <style>
+                .terrier-head { fill: #1a1a1a; stroke: #333; stroke-width: 2; }
+                .terrier-body { fill: #0d0d0d; stroke: #2a2a2a; stroke-width: 1.5; }
+                .shaggy-fur { stroke: #3a3a3a; stroke-width: 1.5; fill: none; }
+                .ear-highlight { fill: none; stroke: #444; stroke-width: 2; }
+                .scotty-eye { fill: #000; stroke: #fff; stroke-width: 0.5; }
+                .scotty-snout { fill: #2a2a2a; }
+                .scotty-beard { fill: #1a1a1a; stroke: #3a3a3a; stroke-width: 1; }
+                .husky-fur { fill: #e0e0e0; }
+                .husky-mask { fill: #304050; }
+                .glasses-frame { fill: #111; stroke: #ff00ff; stroke-width: 1; }
+                .glasses-lens { fill: url(#lensGradient); opacity: 0.8; }
+                .crypto-glint { fill: #fff; opacity: 0.8; }
+                .golden-fur { fill: #d4af37; }
+                .golden-snoot { fill: #ffeebb; }
+                .glass-lens-clear { fill: rgba(255, 255, 255, 0.2); }
+                .corgi-fur-orange { fill: #d67828; }
+                .corgi-fur-white { fill: #fff; }
+                .crown { fill: #ffd700; stroke: #b8860b; stroke-width: 1; }
+                .gem { fill: #ff0000; }
+                .fur-orange { fill: #d4834f; }
+                .fur-cream { fill: #f5deb3; }
+                .helmet-yellow { fill: #ffcc00; stroke: #b8860b; stroke-width: 1; }
+                .fur-grey { fill: #777; }
+                .fur-white-patch { fill: #ddd; }
+                .hard-hat { fill: #ffaa00; stroke: #cc8800; stroke-width: 1; }
+                .collar-blue { fill: #0044ff; stroke: #002288; stroke-width: 1; }
+                .muscle-line { fill: none; stroke: #555; stroke-width: 1; opacity: 0.5; }
+            </style>
+        `;
+
+        function lbWrapSVG(content) {
+            const fixed = content.replace(/url\(#tartanPattern\)/g, 'url(#tartanGradient)');
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${LB_SVG_DEFS}${LB_SVG_STYLE}${fixed}</svg>`;
+        }
+
+        const LB_DOG_SVGS = {
+            scotty: lbWrapSVG(`
+                <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
+                <rect x="30" y="75" width="12" height="15" class="terrier-body" rx="6" />
+                <rect x="60" y="75" width="12" height="15" class="terrier-body" rx="6" />
+                <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanGradient)" stroke="#000" stroke-width="1" />
+                <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
+                <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
+                <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
+                <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
+                <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
+                <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
+                <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
+                <circle cx="43" cy="42" r="3" class="scotty-eye" />
+                <circle cx="57" cy="42" r="3" class="scotty-eye" />
+                <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
+            `),
+            husky: lbWrapSVG(`
+                <path class="husky-fur" d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
+                <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
+                <path class="husky-fur" d="M40 30 L 50 50 L 60 30" />
+                <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
+                <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
+                <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
+                <ellipse cx="50" cy="58" rx="10" ry="8" class="husky-fur" />
+                <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" />
+                <path d="M45 62 Q 50 64, 55 61" fill="none" stroke="#111" stroke-width="1.5" />
+            `),
+            golden: lbWrapSVG(`
+                <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" class="golden-fur" />
+                <ellipse cx="35" cy="110" rx="8" ry="5" class="golden-fur" />
+                <ellipse cx="65" cy="110" rx="8" ry="5" class="golden-fur" />
+                <g transform="translate(0, 10)">
+                    <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
+                    <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
+                    <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
+                    <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
+                    <circle cx="42" cy="42" r="3" fill="#000" />
+                    <circle cx="58" cy="42" r="3" fill="#000" />
+                    <circle cx="50" cy="55" r="3" fill="#000" />
+                    <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5" />
+                    <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5" />
+                    <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
+                </g>
+            `),
+            corgi: lbWrapSVG(`
+                <path d="M30 60 L 70 60 L 80 110 L 20 110 Z" fill="#990000" stroke="#ffd700" stroke-width="1" />
+                <rect x="25" y="70" width="50" height="30" rx="10" class="corgi-fur-orange" />
+                <rect x="35" y="70" width="30" height="30" rx="10" class="corgi-fur-white" opacity="0.5" />
+                <rect x="25" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+                <rect x="67" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+                <g transform="translate(0, 15)">
+                    <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
+                    <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                    <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                    <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
+                    <circle cx="42" cy="47" r="3" fill="#000" />
+                    <circle cx="58" cy="47" r="3" fill="#000" />
+                    <circle cx="50" cy="58" r="3" fill="#000" />
+                    <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
+                    <g class="crown">
+                        <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
+                        <circle class="gem" cx="50" cy="24" r="2" />
+                    </g>
+                </g>
+            `),
+            shiba: lbWrapSVG(`
+                <rect x="30" y="60" width="40" height="40" rx="10" class="fur-orange" />
+                <rect x="35" y="65" width="30" height="30" rx="8" class="fur-cream" opacity="0.6" />
+                <rect x="32" y="90" width="8" height="20" rx="3" class="fur-orange" />
+                <rect x="60" y="90" width="8" height="20" rx="3" class="fur-orange" />
+                <g transform="translate(0, 10)">
+                    <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
+                    <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
+                    <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
+                    <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
+                    <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
+                    <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
+                    <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
+                    <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
+                    <circle cx="50" cy="60" r="3" fill="#000" />
+                    <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
+                    <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
+                    <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
+                </g>
+            `),
+            pitbull: lbWrapSVG(`
+                <rect x="25" y="60" width="50" height="40" rx="10" class="fur-grey" />
+                <path d="M30 65 L 70 65" class="muscle-line" />
+                <rect x="25" y="90" width="12" height="20" rx="3" class="fur-grey" />
+                <rect x="63" y="90" width="12" height="20" rx="3" class="fur-grey" />
+                <g transform="translate(0, 10)">
+                    <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
+                    <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
+                    <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
+                    <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
+                    <circle cx="42" cy="48" r="3" fill="#000" />
+                    <circle cx="58" cy="48" r="3" fill="#000" />
+                    <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
+                    <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
+                    <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
+                    <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
+                    <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
+                    <circle cx="50" cy="68" r="3" fill="#ffd700" />
+                </g>
+            `)
+        };
+
+        // Load leaderboard icons as images
+        const lbLoadedIcons = {};
+        const lbIconKeys = Object.keys(LB_DOG_SVGS);
+        Object.keys(LB_DOG_SVGS).forEach(key => {
+            const img = new Image();
+            img.src = 'data:image/svg+xml;base64,' + btoa(LB_DOG_SVGS[key].trim());
+            img.onload = () => { lbLoadedIcons[key] = img; };
+        });
+
+        // Bot names
+        const botNames = [
+            "DogeCoin", "BarkCuban", "ElonTusk", "WarrenBuffet", "SnoopDogg",
+            "BezosBark", "GateKeeper", "ZuckerBone", "BuffetDog", "CryptoShiba",
+            "NFTerrier", "BlockchainBully", "StonkHound", "DiamondPaws", "HodlHusky",
+            "PaperHandsPug", "MoonMoon", "RocketRover", "TeslaTerrier", "AmazonAlta",
+            "GoogleGolden", "AppleAiredale", "MetaMutt", "NetflixNewfie", "SpotifySpaniel",
+            "UberUnderdog", "LyftLab", "AirbnbAkita", "DoorDashDoxie", "InstacartIggy",
+            "RobinhoodRetriever", "FidelityFox", "VanguardVizsla", "SchwabSheepdog", "ChaseChihuahua",
+            "WellsFargoWestie", "CitiCorgi", "AmexAlsatian", "VisaVizsla", "MastercardMastiff",
+            "PayPalPointer", "VenmoVizsla", "CashAppCorgi", "SquareSchnauzer", "StripeSetter",
+            "ShopifyShiba", "EtsyEskimo", "ZoomZuchon", "SlackSheepdog", "TrelloTerrier"
+        ];
+        while (botNames.length < 99) botNames.push("Bot" + botNames.length);
+
+        let lbBots = [];
+        let lbRoundNumber = 0;
+        let lbBankruptMsg = '';
+
+        // Generate / update bot money as a randomized function of player money
+        function updateLeaderboardBots() {
+            lbRoundNumber++;
+            const playerMoney = player.money;
+
+            if (lbBots.length === 0) {
+                // First round: initialize bots
+                lbBots = botNames.slice(0, 99).map(name => ({
+                    name: name,
+                    netWorth: Math.floor(playerMoney * (0.3 + Math.random() * 1.4)),
+                    alive: true,
+                    icon: lbIconKeys[Math.floor(Math.random() * lbIconKeys.length)]
+                }));
+            } else {
+                // Subsequent rounds: update bots relative to player money
+                let roundBankrupt = 0;
+                lbBots.forEach(bot => {
+                    if (!bot.alive) return;
+                    // Volatility: -50% to +70% swing
+                    const change = (Math.random() - 0.48) * 1.2;
+                    bot.netWorth = Math.floor(bot.netWorth * (1 + change));
+                    // Also drift towards player money range
+                    bot.netWorth = Math.floor(bot.netWorth * 0.7 + playerMoney * (0.1 + Math.random() * 0.5) * 0.3);
+                    if (bot.netWorth < Math.floor(playerMoney * 0.05)) {
+                        bot.alive = false;
+                        bot.netWorth = 0;
+                        roundBankrupt++;
+                    }
+                });
+                if (roundBankrupt > 0) {
+                    lbBankruptMsg = `\uD83D\uDC80 ${roundBankrupt} DOGS WENT BANKRUPT!`;
+                } else {
+                    lbBankruptMsg = '\u2705 NO OTHER DOGS WENT BANKRUPT!';
+                }
+            }
+        }
+
+        // Rounded rectangle helper for leaderboard cards
+        function lbRoundRect(ctx, x, y, rw, rh, r) {
+            if (rw < 2 * r) r = rw / 2;
+            if (rh < 2 * r) r = rh / 2;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + rw, y, x + rw, y + rh, r);
+            ctx.arcTo(x + rw, y + rh, x, y + rh, r);
+            ctx.arcTo(x, y + rh, x, y, r);
+            ctx.arcTo(x, y, x + rw, y, r);
+            ctx.closePath();
+        }
+
+        function drawLeaderboard() {
+            // Build sorted list: player entry + bots
+            const playerEntry = {
+                name: 'YOU',
+                netWorth: player.money,
+                alive: true,
+                isPlayer: true,
+                icon: player.character || 'scotty'
+            };
+            const allEntities = [...lbBots, playerEntry];
+            allEntities.sort((a, b) => b.netWorth - a.netWorth);
+            const rank = allEntities.indexOf(playerEntry);
+
+            // Overlay
+            const grad = ctx.createLinearGradient(0, 0, w, h);
+            grad.addColorStop(0, 'rgba(15, 12, 41, 0.95)');
+            grad.addColorStop(1, 'rgba(48, 43, 99, 0.98)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Responsive params
+            const cardW = Math.min(600, w - 40);
+            const cardH = w < 400 ? 60 : 80;
+            const gap = 15;
+            const headerBottom = 230;
+
+            const totalH = 5 * (cardH + gap);
+            let startY = (h - totalH) / 2 + 40;
+            if (startY < headerBottom) startY = headerBottom;
+
+            // Header
+            ctx.shadowBlur = 0;
+            ctx.textAlign = 'center';
+
+            ctx.fillStyle = '#facc15';
+            ctx.font = "bold 20px 'Segoe UI', sans-serif";
+            ctx.fillText(`ROUND ${lbRoundNumber} ENDED`, w / 2, 80);
+
+            ctx.fillStyle = '#fff';
+            const titleSize = w < 400 ? '36px' : '48px';
+            ctx.font = `800 ${titleSize} 'Segoe UI', sans-serif`;
+            ctx.fillText('LEADERBOARD', w / 2, 130);
+
+            // Bankrupt message
+            if (lbBankruptMsg.includes('\u2705')) {
+                ctx.fillStyle = '#4ade80';
+            } else {
+                ctx.fillStyle = '#ef4444';
+            }
+            ctx.font = "bold 20px 'Segoe UI', sans-serif";
+            ctx.fillText(lbBankruptMsg, w / 2, 170);
+
+            // Show 5 cards centered around player rank
+            let startIndex = Math.max(0, rank - 2);
+            let endIndex = Math.min(allEntities.length, rank + 3);
+            if (endIndex - startIndex < 5) {
+                if (startIndex === 0) endIndex = Math.min(allEntities.length, 5);
+                else startIndex = Math.max(0, allEntities.length - 5);
+            }
+
+            ctx.textAlign = 'left';
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const entity = allEntities[i];
+                const y = startY + (i - startIndex) * (cardH + gap);
+                const isPlayer = entity.isPlayer;
+
+                // Card background
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 10;
+
+                if (isPlayer) {
+                    const hl = ctx.createLinearGradient(w / 2 - cardW / 2, y, w / 2 + cardW / 2, y + cardH);
+                    hl.addColorStop(0, 'rgba(250, 204, 21, 0.2)');
+                    hl.addColorStop(1, 'rgba(250, 204, 21, 0.05)');
+                    ctx.fillStyle = hl;
+                    ctx.strokeStyle = '#facc15';
+                } else if (!entity.alive) {
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.3)';
+                } else {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                }
+
+                lbRoundRect(ctx, w / 2 - cardW / 2, y, cardW, cardH, 15);
+                ctx.fill();
+                ctx.lineWidth = isPlayer ? 2 : 1;
+                ctx.stroke();
+                ctx.restore();
+
+                // Draw icon
+                const iconSize = cardH - 20;
+                if (lbLoadedIcons[entity.icon]) {
+                    ctx.drawImage(lbLoadedIcons[entity.icon], w / 2 - cardW / 2 + 20, y + 10, iconSize, iconSize);
+                }
+
+                // Font sizes
+                const nameSize = w < 400 ? '16px' : '24px';
+                const rankSize = w < 400 ? '14px' : '20px';
+                const moneySize = w < 400 ? '16px' : '24px';
+
+                // Rank
+                ctx.fillStyle = isPlayer ? '#facc15' : '#94a3b8';
+                ctx.font = `bold ${rankSize} 'Segoe UI', sans-serif`;
+                ctx.fillText(`#${i + 1}`, w / 2 - cardW / 2 + iconSize + 30, y + cardH * 0.3);
+
+                // Name
+                ctx.fillStyle = isPlayer ? '#fff' : (entity.alive ? '#e2e8f0' : '#ef4444');
+                ctx.font = isPlayer ? `bold ${nameSize} 'Segoe UI', sans-serif` : `600 ${nameSize} 'Segoe UI', sans-serif`;
+                ctx.fillText(entity.name, w / 2 - cardW / 2 + iconSize + 30, y + cardH * 0.7);
+
+                // Net worth
+                ctx.textAlign = 'right';
+                if (!entity.alive) {
+                    ctx.font = `bold ${moneySize} 'Segoe UI', sans-serif`;
+                    ctx.fillStyle = '#ef4444';
+                    ctx.fillText('BANKRUPT', w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
+                } else {
+                    ctx.font = isPlayer ? `bold ${moneySize} 'Segoe UI', sans-serif` : `${moneySize} 'Segoe UI', sans-serif`;
+                    ctx.fillStyle = '#4ade80';
+                    ctx.fillText(`$${Math.floor(entity.netWorth).toLocaleString()}`, w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
+                }
+                ctx.textAlign = 'left';
+            }
+        }
+
+        function showLeaderboard() {
+            // Update bots based on current player money
+            updateLeaderboardBots();
+            gameState = 'LEADERBOARD';
+            leaderboardTimer = 180; // 3 seconds at 60fps
+            stopGameMusic();
+            startLeaderboardMusic();
+        }
+
+        function leaderboardToDialemma() {
+            gameState = 'DILEMMA';
+            stopLeaderboardMusic();
+            startDilemmaMusic();
+            document.getElementById('shop-ui').classList.add('active');
+            document.querySelector('.nav-bar').style.display = 'none';
+            document.getElementById('closeShop').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('cards-tab').classList.add('active');
+            startDilemma();
+        }
+
         function startRunner() {
             gameState = 'PLAYING';
             ui.style.display = 'none';
             document.querySelector('.timer-display').style.display = 'block';
+            stopShopMusic();
+            startGameMusic();
         }
 
         function resetGame() {
@@ -1650,6 +2690,7 @@
             // Clear DOM obstacles
             const overlay = document.getElementById('game-overlay');
             if (overlay) overlay.innerHTML = '';
+            stopAllAudio();
         }
 
         // Buy Item Function
@@ -1992,6 +3033,8 @@
 
         function continueCardGame() {
             // Transition to SHOP after making dilemma choice
+            stopDilemmaMusic();
+            startShopMusic();
             gameState = 'SHOP';
             // Restore nav bar and close button
             document.querySelector('.nav-bar').style.display = '';
@@ -2548,6 +3591,7 @@
                 ) {
                     const damage = Math.floor(20 / defense);
                     player.health -= damage;
+                    playDamage();
                     triggerPlayerAnim('damage', 20);
                     Juice.shake = 20;
                     Juice.flash = 10;
@@ -2555,6 +3599,7 @@
                     obs.remove(); // Removes DOM element and marks for deletion
                     if (player.health <= 0) {
                         gameState = 'GAMEOVER';
+                        stopAllAudio();
                         triggerPlayerAnim('lose', 1000);
                     }
                 }
@@ -2571,6 +3616,7 @@
                     player.y + player.size > c.y
                 ) {
                     player.money += Math.floor(100 * income);
+                    playCoin();
                     triggerPlayerAnim('collect', 15);
                     Juice.shake = 5;
                     c.markedForDeletion = true;
@@ -2755,17 +3801,11 @@
                         const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
                         player.money += passiveEarnings;
 
-                        gameState = 'DILEMMA';
-                        document.getElementById('shop-ui').classList.add('active');
-                        // Show cards dilemma (hide nav & close so user must choose)
-                        document.querySelector('.nav-bar').style.display = 'none';
-                        document.getElementById('closeShop').style.display = 'none';
-                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                        document.getElementById('cards-tab').classList.add('active');
-                        startDilemma();
+                        // Show leaderboard for 3 seconds before dilemma
+                        showLeaderboard();
                         Juice.postDraw();
                         requestAnimationFrame(loop);
-                        return; // Pause game updates
+                        return;
                     }
 
                     // Player Physics
@@ -2837,6 +3877,17 @@
                 }
 
                 drawUI();
+
+            } else if (gameState === 'LEADERBOARD') {
+                // Draw leaderboard overlay on canvas
+                drawLeaderboard();
+                leaderboardTimer--;
+                if (leaderboardTimer <= 0) {
+                    leaderboardToDialemma();
+                }
+                Juice.postDraw();
+                requestAnimationFrame(loop);
+                return;
 
             } else if (gameState === 'DILEMMA') {
                 // Pause game updates while showing dilemma
@@ -3137,7 +4188,7 @@
                 const element = document.querySelector('#skills-tab ' + selector);
                 if (element && !element.dataset.skillBound) {
                     element.dataset.skillBound = 'true';
-                    element.addEventListener('click', function() {
+                    element.addEventListener('click', function () {
                         showSkillPopup(skillButtonMap[selector]);
                     });
                 }

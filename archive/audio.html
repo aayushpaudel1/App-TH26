@@ -134,6 +134,10 @@
             <button class="btn-shop" onclick="toggleShopMusic()">Shop Music 🛒</button>
         </div>
         <div class="btn-group">
+            <button class="btn-music" onclick="toggleLeaderboardMusic()">Leaderboard 🏆</button>
+            <button class="btn-shop" onclick="toggleDilemmaMusic()">Dilemma 🤔</button>
+        </div>
+        <div class="btn-group">
             <button class="btn-jump" onclick="playJump()">Jump 🚀</button>
             <button class="btn-coin" onclick="playCoin()">Coin 💰</button>
             <button class="btn-stop" onclick="playDamage()">Damage 💥</button>
@@ -145,8 +149,8 @@
     </div>
     <script>
         let ctx, score = 0;
-        let gameNodes = [], shopNodes = [];
-        let gamePlaying = false, shopPlaying = false;
+        let gameNodes = [], shopNodes = [], leaderboardNodes = [], dilemmaNodes = [];
+        let gamePlaying = false, shopPlaying = false, leaderboardPlaying = false, dilemmaPlaying = false;
 
         function initAudio() {
             if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -283,7 +287,148 @@
                 updateStatus('Shop music stopped');
             } else {
                 stopGameMusic();
+                stopLeaderboardMusic();
+                stopDilemmaMusic();
                 startShopMusic();
+            }
+        }
+
+        // Leaderboard music: triumphant fanfare with brass-like tones
+        function startLeaderboardMusic() {
+            initAudio();
+            stopLeaderboardMusic();
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = 0.15;
+            masterGain.connect(ctx.destination);
+            leaderboardNodes.push(masterGain);
+
+            // Triumphant brass-like fanfare
+            const fanfareNotes = [
+                [523, 659, 784],  // C major
+                [587, 740, 880],  // D major
+                [659, 831, 988],  // E major
+                [698, 880, 1047]  // F major
+            ];
+            let noteIndex = 0;
+
+            function playFanfare() {
+                if (!leaderboardPlaying) return;
+                const chord = fanfareNotes[noteIndex];
+                chord.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = freq;
+                    osc.detune.value = Math.random() * 6 - 3;
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.1);
+                    gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.4);
+                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.9);
+                });
+                noteIndex = (noteIndex + 1) % fanfareNotes.length;
+                setTimeout(playFanfare, 800);
+            }
+
+            leaderboardPlaying = true;
+            playFanfare();
+            updateStatus('🏆 Leaderboard music playing', 'playing');
+        }
+
+        function stopLeaderboardMusic() {
+            leaderboardPlaying = false;
+            leaderboardNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            leaderboardNodes = [];
+        }
+
+        function toggleLeaderboardMusic() {
+            initAudio();
+            if (leaderboardPlaying) {
+                stopLeaderboardMusic();
+                updateStatus('Leaderboard music stopped');
+            } else {
+                stopGameMusic();
+                stopShopMusic();
+                stopDilemmaMusic();
+                startLeaderboardMusic();
+            }
+        }
+
+        // Dilemma music: tense, mysterious atmosphere
+        function startDilemmaMusic() {
+            initAudio();
+            stopDilemmaMusic();
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = 0.12;
+            masterGain.connect(ctx.destination);
+            dilemmaNodes.push(masterGain);
+
+            // Dissonant, tense chords
+            const tenseChords = [
+                [220, 233, 311],  // A, Bb, Eb (dissonant)
+                [196, 233, 294],  // G, Bb, D
+                [185, 220, 277],  // F#, A, C#
+                [208, 247, 311]   // G#, B, Eb
+            ];
+            let chordIdx = 0;
+
+            function playTenseChord() {
+                if (!dilemmaPlaying) return;
+                const chord = tenseChords[chordIdx];
+                chord.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    // Add slight vibrato for tension
+                    const lfo = ctx.createOscillator();
+                    const lfoGain = ctx.createGain();
+                    lfo.frequency.value = 4 + Math.random() * 2;
+                    lfoGain.gain.value = 3;
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(osc.frequency);
+                    lfo.start();
+                    lfo.stop(ctx.currentTime + 2.5);
+
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.5);
+                    gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 1.5);
+                    gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 2.2);
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 2.5);
+                });
+                chordIdx = (chordIdx + 1) % tenseChords.length;
+                setTimeout(playTenseChord, 2200);
+            }
+
+            dilemmaPlaying = true;
+            playTenseChord();
+            updateStatus('🤔 Dilemma music playing', 'shop');
+        }
+
+        function stopDilemmaMusic() {
+            dilemmaPlaying = false;
+            dilemmaNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
+            dilemmaNodes = [];
+        }
+
+        function toggleDilemmaMusic() {
+            initAudio();
+            if (dilemmaPlaying) {
+                stopDilemmaMusic();
+                updateStatus('Dilemma music stopped');
+            } else {
+                stopGameMusic();
+                stopShopMusic();
+                stopLeaderboardMusic();
+                startDilemmaMusic();
             }
         }
 
@@ -380,6 +525,8 @@
         function stopAll() {
             stopGameMusic();
             stopShopMusic();
+            stopLeaderboardMusic();
+            stopDilemmaMusic();
             updateStatus('All sounds stopped');
         }
 
