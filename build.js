@@ -6,7 +6,8 @@ const zlib = require('zlib');
 
 // --- CONFIGURATION ---
 const JS_FILE = 'src/main.js';
-const CSS_FILE = 'src/style.css'; 
+const CSS_FILE = 'src/style.css';
+const HTML_FILE = 'src/index.html';
 const OUTPUT_FILE = 'dist/index.html';
 
 async function build() {
@@ -17,8 +18,13 @@ async function build() {
         console.error(`❌ Error: ${JS_FILE} not found!`);
         process.exit(1);
     }
+    if (!fs.existsSync(HTML_FILE)) {
+        console.error(`❌ Error: ${HTML_FILE} not found!`);
+        process.exit(1);
+    }
     const jsCode = fs.readFileSync(JS_FILE, 'utf8');
     const cssCode = fs.existsSync(CSS_FILE) ? fs.readFileSync(CSS_FILE, 'utf8') : '';
+    const srcHtml = fs.readFileSync(HTML_FILE, 'utf8');
     
     // 2. TERSER (Minify JS)
     console.log('📉 Terser: Minifying JS...');
@@ -52,19 +58,19 @@ async function build() {
     const packedJs = firstLine + secondLine;
 
     // 4. COMBINE INTO HTML
-    // We inject your CSS and the packed JS into a tiny HTML shell
-    // Note: id="c" is the standard short ID for canvas in 13k games
-    const htmlTemplate = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>${cssCode}</style>
-    </head>
-    <body>
-        <canvas id="c"></canvas>
-        <div id="ui"></div> <script>${packedJs}</script>
-    </body>
-    </html>`;
+    // Read the source HTML, inline the CSS and packed JS
+    // Strip the external <link> and <script src> references
+    let htmlTemplate = srcHtml;
+    // Replace the <link rel="stylesheet" href="style.css"> with inline <style>
+    htmlTemplate = htmlTemplate.replace(
+        /<link\s+rel="stylesheet"\s+href="style\.css"\s*\/?>/i,
+        `<style>${cssCode}</style>`
+    );
+    // Replace the <script src="main.js"></script> with inline packed script
+    htmlTemplate = htmlTemplate.replace(
+        /<script\s+src="main\.js"\s*><\/script>/i,
+        `<script>${packedJs}</script>`
+    );
 
     // 5. MINIFY HTML (Strip all whitespace)
     console.log('🧹 Minifying HTML...');

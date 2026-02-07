@@ -1,4 +1,4 @@
-const c = document.getElementById('c');
+﻿const c = document.getElementById('c');
 const ctx = c.getContext('2d');
 const ui = document.getElementById('ui');
 const staticCityCvs = document.createElement('canvas');

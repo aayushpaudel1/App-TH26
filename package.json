@@ -1,0 +1,17 @@
+{
+  "name": "financial-dash",
+  "version": "1.0.0",
+  "description": "A 15KB Financial Battle Royale Game",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "npx serve src"
+  },
+  "author": "aayush and brian and dhruv and brian",
+  "license": "ISC",
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "roadroller": "^2.1.0",
+    "terser": "^5.37.0"
+  }
+}
