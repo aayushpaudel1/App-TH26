@@ -7,6 +7,9 @@ html {
     background: #0f0c29;
     color: var(--text-color);
     position: fixed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     
     width: 100%;
     height: 100%;
@@ -192,8 +195,6 @@ h1, h2 {
 
     .char-card {
         padding: 12px;
-        flex-direction: row;
-        flex-wrap: wrap;
         gap: 10px;
     }
 
@@ -203,63 +204,27 @@ h1, h2 {
     }
 
     .char-name {
-        font-size: 18px;
+        font-size: 1.3rem;
     }
 
     .char-desc {
-        font-size: 13px;
+        font-size: 1rem;
     }
 
     .char-stats {
-        font-size: 12px;
+        font-size: 0.9rem;
     }
 
     .stat-row {
-        font-size: 12px;
+        font-size: 0.9rem;
     }
 
     .ability-name {
-        font-size: 12px;
+        font-size: 0.9rem;
     }
 
     .ability-desc {
-        font-size: 11px;
-    }
-
-    #shop-stats {
-        position: relative;
-        top: auto;
-        left: auto;
-        margin: 10px;
-        flex-wrap: wrap;
-    }
-
-    #closeShop {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin: 10px;
-        width: calc(100% - 20px);
-        text-align: center;
-    }
-
-    #shop-tab .shop-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        padding: 10px;
-    }
-
-    #shop-tab .shop-item {
-        width: 100%;
-        height: 90px;
-    }
-
-    .tab-content {
-        padding: 10px 15px 40px 15px;
-    }
-
-    #skills-tab {
-        padding: 10px 10px 20px 10px;
+        font-size: 0.85rem;
     }
 }
 
@@ -553,6 +518,9 @@ h1, h2 {
     margin-bottom: 2rem;
     font-weight: 900;
     background: linear-gradient(135deg, #22d3ee, #a855f7, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     text-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
     image-rendering: pixelated;
     font-variant-caps: small-caps;
@@ -628,7 +596,6 @@ h1, h2 {
 #shop-tab .shop-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
     gap: 20px;
     padding: 10px 20px;
     max-width: 800px;
@@ -641,15 +608,15 @@ h1, h2 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 160px;
-    height: 110px;
+    width: 100%;
+    padding: 14px 10px;
     background: rgba(30, 41, 59, 0.7);
     border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    box-sizing: border-box;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);
 }
@@ -824,6 +791,7 @@ h1, h2 {
 #cards-tab .cards-title {
     font-size: 1.75rem;
     margin-bottom: 15px;
+    text-align: center;
 }
 
 #cards-tab .card-container {
@@ -1391,5 +1359,37 @@ h1, h2 {
     50% {
         opacity: 1;
         transform: scale(1.05);
+    }
+}
+
+@media (max-width: 768px) {
+    #shop-stats {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 10px;
+        flex-wrap: wrap;
+    }
+
+    #closeShop {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 10px;
+        width: calc(100% - 20px);
+        text-align: center;
+    }
+
+    #shop-tab .shop-container {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .tab-content {
+        padding: 10px 15px 40px 15px;
+    }
+
+    #skills-tab {
+        padding: 10px 10px 20px 10px;
     }
 }
