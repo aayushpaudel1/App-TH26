@@ -14,21 +14,78 @@ async function build() {
     console.log('🏗️  Starting Build...');
 
     // 1. READ FILES
-    if (!fs.existsSync(JS_FILE)) {
-        console.error(`❌ Error: ${JS_FILE} not found!`);
-        process.exit(1);
-    }
-    if (!fs.existsSync(HTML_FILE)) {
-        console.error(`❌ Error: ${HTML_FILE} not found!`);
-        process.exit(1);
+    for (const f of [JS_FILE, HTML_FILE]) {
+        if (!fs.existsSync(f)) {
+            console.error(`❌ Error: ${f} not found!`);
+            process.exit(1);
+        }
     }
     const jsCode = fs.readFileSync(JS_FILE, 'utf8');
     const cssCode = fs.existsSync(CSS_FILE) ? fs.readFileSync(CSS_FILE, 'utf8') : '';
     const srcHtml = fs.readFileSync(HTML_FILE, 'utf8');
+
+    // 2. EXTRACT <body> inner HTML
+    //    We'll inject the body content via JS so it goes through roadroller
+    const bodyMatch = srcHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    if (!bodyMatch) {
+        console.error('❌ Could not find <body> in HTML');
+        process.exit(1);
+    }
+    let bodyContent = bodyMatch[1];
+    // Remove the script tag reference (game code will be in the packed script)
+    bodyContent = bodyContent.replace(/<script\s+src="main\.js"[^>]*><\/script>/i, '');
+    bodyContent = bodyContent.trim();
+
+    // 3. PRE-MINIFY CSS
+    console.log('🧹 Pre-minifying CSS...');
+    const miniCssHtml = await htmlMinify(`<style>${cssCode}</style>`, {
+        minifyCSS: true,
+        collapseWhitespace: true,
+    });
+    const minifiedCss = miniCssHtml.replace(/^<style>/, '').replace(/<\/style>$/, '');
+
+    // 4. PRE-MINIFY the HTML body content
+    console.log('🧹 Pre-minifying HTML body...');
+    const minifiedBody = await htmlMinify(bodyContent, {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeAttributeQuotes: true,
+    });
+
+    // 5. BUILD COMBINED JS
+    //    This script injects CSS + HTML body + runs the game code.
+    //    EVERYTHING goes through terser + roadroller for maximum compression.
+    const escapedCss = minifiedCss.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\${/g, '\\${');
+    const escapedBody = minifiedBody.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\${/g, '\\${');
     
-    // 2. TERSER (Minify JS)
+    // 5.5. FIND GLOBAL FUNCTIONS REFERENCED IN HTML onclick handlers
+    //      These must be preserved by terser (not mangled or dead-code eliminated)
+    const onclickFns = new Set();
+    // Match both quoted and unquoted onclick attributes after html-minifier
+    const onclickRe = /onclick=["']?(\w+)\(/g;
+    let m;
+    while ((m = onclickRe.exec(minifiedBody)) !== null) {
+        onclickFns.add(m[1]);
+    }
+    const reserved = [...onclickFns];
+    console.log(`🔒 Preserving onclick globals: ${reserved.join(', ')}`);
+    
+    // Wrap onclick functions to ensure terser keeps them as globals
+    // by assigning them to window explicitly
+    const globalExports = reserved.map(fn => `window.${fn}=${fn}`).join(';');
+    
+    const combinedJs = [
+        `document.head.insertAdjacentHTML('beforeend','<style>'+\`${escapedCss}\`+'</style>')`,
+        `document.body.innerHTML=\`${escapedBody}\``,
+        jsCode,
+        globalExports
+    ].join(';');
+
+    console.log(`📊 Combined JS size: ${combinedJs.length} chars`);
+
+    // 6. TERSER (Minify JS)
     console.log('📉 Terser: Minifying JS...');
-    const minifiedJs = await minify(jsCode, {
+    const minifiedJs = await minify(combinedJs, {
         toplevel: true,
         compress: {
             passes: 2,
@@ -37,51 +94,36 @@ async function build() {
             unsafe_arrows: true,
             unsafe_math: true,
         },
-        mangle: true
+        mangle: {
+            reserved: reserved,
+        }
     });
 
     if (minifiedJs.error) {
         console.error('❌ Terser Error:', minifiedJs.error);
         process.exit(1);
     }
+    console.log(`📊 Terser output: ${minifiedJs.code.length} chars`);
 
-    // 3. ROADROLLER (Pack JS)
-    console.log('🚜 Roadroller: Crushing JS... (Level 2 - This takes 5-10 seconds)');
+    // 7. ROADROLLER (Pack JS - all CSS, HTML, and game code together)
+    console.log('🚜 Roadroller: Crushing everything... (Level 2 - This takes 5-10 seconds)');
     const packer = new Packer([{
         data: minifiedJs.code,
         type: 'js',
         action: 'eval',
     }], {});
 
-    await packer.optimize(2); // Level 2 is best for size (0 is fastest)
+    await packer.optimize(2);
     const { firstLine, secondLine } = packer.makeDecoder();
     const packedJs = firstLine + secondLine;
+    console.log(`📊 Packed JS: ${packedJs.length} chars`);
 
-    // 4. COMBINE INTO HTML
-    // Read the source HTML, inline the CSS and packed JS
-    // Strip the external <link> and <script src> references
-    let htmlTemplate = srcHtml;
-    // Replace the <link rel="stylesheet" href="style.css"> with inline <style>
-    htmlTemplate = htmlTemplate.replace(
-        /<link\s+rel="stylesheet"\s+href="style\.css"\s*\/?>/i,
-        `<style>${cssCode}</style>`
-    );
-    // Replace the <script src="main.js"></script> with inline packed script
-    htmlTemplate = htmlTemplate.replace(
-        /<script\s+src="main\.js"\s*><\/script>/i,
-        `<script>${packedJs}</script>`
-    );
-
-    // 5. MINIFY HTML (Strip all whitespace)
-    console.log('🧹 Minifying HTML...');
-    const finalHtml = await htmlMinify(htmlTemplate, {
-        collapseWhitespace: true,
-        minifyCSS: true, 
-        minifyJS: false, // JS is already packed
-        removeComments: true,
-        removeOptionalTags: true,
-        removeAttributeQuotes: true,
-    });
+    // 8. MINIMAL HTML SHELL — the packed script does everything
+    const finalHtml = '<!DOCTYPE html><html lang=en><head>'
+        + '<meta charset=UTF-8>'
+        + '<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">'
+        + '<title>Finance Dash</title></head>'
+        + `<body><script>${packedJs}</script></body></html>`;
 
     // Ensure dist exists
     if (!fs.existsSync('dist')) fs.mkdirSync('dist');

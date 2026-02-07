@@ -429,175 +429,6 @@ function initializeGame() {
 }
 
 // ========== LEADERBOARD SYSTEM ==========
-const LB_SVG_DEFS = `
-    <defs>
-        <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#cc0000" />
-            <stop offset="25%" stop-color="#006600" />
-            <stop offset="50%" stop-color="#000066" />
-            <stop offset="75%" stop-color="#ffff00" />
-            <stop offset="100%" stop-color="#cc0000" />
-        </linearGradient>
-        <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#00f3ff" />
-            <stop offset="100%" stop-color="#d400ff" />
-        </linearGradient>
-    </defs>
-`;
-
-const LB_SVG_STYLE = `
-    <style>
-        .terrier-head { fill: #1a1a1a; stroke: #333; stroke-width: 2; }
-        .terrier-body { fill: #0d0d0d; stroke: #2a2a2a; stroke-width: 1.5; }
-        .shaggy-fur { stroke: #3a3a3a; stroke-width: 1.5; fill: none; }
-        .ear-highlight { fill: none; stroke: #444; stroke-width: 2; }
-        .scotty-eye { fill: #000; stroke: #fff; stroke-width: 0.5; }
-        .scotty-snout { fill: #2a2a2a; }
-        .scotty-beard { fill: #1a1a1a; stroke: #3a3a3a; stroke-width: 1; }
-        .husky-fur { fill: #e0e0e0; }
-        .husky-mask { fill: #304050; }
-        .glasses-frame { fill: #111; stroke: #ff00ff; stroke-width: 1; }
-        .glasses-lens { fill: url(#lensGradient); opacity: 0.8; }
-        .crypto-glint { fill: #fff; opacity: 0.8; }
-        .golden-fur { fill: #d4af37; }
-        .golden-snoot { fill: #ffeebb; }
-        .glass-lens-clear { fill: rgba(255, 255, 255, 0.2); }
-        .corgi-fur-orange { fill: #d67828; }
-        .corgi-fur-white { fill: #fff; }
-        .crown { fill: #ffd700; stroke: #b8860b; stroke-width: 1; }
-        .gem { fill: #ff0000; }
-        .fur-orange { fill: #d4834f; }
-        .fur-cream { fill: #f5deb3; }
-        .helmet-yellow { fill: #ffcc00; stroke: #b8860b; stroke-width: 1; }
-        .fur-grey { fill: #777; }
-        .fur-white-patch { fill: #ddd; }
-        .hard-hat { fill: #ffaa00; stroke: #cc8800; stroke-width: 1; }
-        .collar-blue { fill: #0044ff; stroke: #002288; stroke-width: 1; }
-        .muscle-line { fill: none; stroke: #555; stroke-width: 1; opacity: 0.5; }
-    </style>
-`;
-
-function lbWrapSVG(content) {
-    const fixed = content.replace(/url\(#tartanPattern\)/g, 'url(#tartanGradient)');
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">${LB_SVG_DEFS}${LB_SVG_STYLE}${fixed}</svg>`;
-}
-
-const LB_DOG_SVGS = {
-    scotty: lbWrapSVG(`
-        <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
-        <rect x="30" y="75" width="12" height="15" class="terrier-body" rx="6" />
-        <rect x="60" y="75" width="12" height="15" class="terrier-body" rx="6" />
-        <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanGradient)" stroke="#000" stroke-width="1" />
-        <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
-        <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
-        <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
-        <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
-        <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
-        <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
-        <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
-        <circle cx="43" cy="42" r="3" class="scotty-eye" />
-        <circle cx="57" cy="42" r="3" class="scotty-eye" />
-        <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
-    `),
-    husky: lbWrapSVG(`
-        <path class="husky-fur" d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
-        <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
-        <path class="husky-fur" d="M40 30 L 50 50 L 60 30" />
-        <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
-        <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
-        <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
-        <ellipse cx="50" cy="58" rx="10" ry="8" class="husky-fur" />
-        <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" />
-        <path d="M45 62 Q 50 64, 55 61" fill="none" stroke="#111" stroke-width="1.5" />
-    `),
-    golden: lbWrapSVG(`
-        <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" class="golden-fur" />
-        <ellipse cx="35" cy="110" rx="8" ry="5" class="golden-fur" />
-        <ellipse cx="65" cy="110" rx="8" ry="5" class="golden-fur" />
-        <g transform="translate(0, 10)">
-            <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
-            <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
-            <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
-            <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
-            <circle cx="42" cy="42" r="3" fill="#000" />
-            <circle cx="58" cy="42" r="3" fill="#000" />
-            <circle cx="50" cy="55" r="3" fill="#000" />
-            <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5" />
-            <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5" />
-            <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
-        </g>
-    `),
-    corgi: lbWrapSVG(`
-        <path d="M30 60 L 70 60 L 80 110 L 20 110 Z" fill="#990000" stroke="#ffd700" stroke-width="1" />
-        <rect x="25" y="70" width="50" height="30" rx="10" class="corgi-fur-orange" />
-        <rect x="35" y="70" width="30" height="30" rx="10" class="corgi-fur-white" opacity="0.5" />
-        <rect x="25" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
-        <rect x="67" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
-        <g transform="translate(0, 15)">
-            <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
-            <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-            <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-            <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
-            <circle cx="42" cy="47" r="3" fill="#000" />
-            <circle cx="58" cy="47" r="3" fill="#000" />
-            <circle cx="50" cy="58" r="3" fill="#000" />
-            <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
-            <g class="crown">
-                <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
-                <circle class="gem" cx="50" cy="24" r="2" />
-            </g>
-        </g>
-    `),
-    shiba: lbWrapSVG(`
-        <rect x="30" y="60" width="40" height="40" rx="10" class="fur-orange" />
-        <rect x="35" y="65" width="30" height="30" rx="8" class="fur-cream" opacity="0.6" />
-        <rect x="32" y="90" width="8" height="20" rx="3" class="fur-orange" />
-        <rect x="60" y="90" width="8" height="20" rx="3" class="fur-orange" />
-        <g transform="translate(0, 10)">
-            <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
-            <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
-            <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
-            <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
-            <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
-            <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
-            <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
-            <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
-            <circle cx="50" cy="60" r="3" fill="#000" />
-            <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
-            <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
-            <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
-        </g>
-    `),
-    pitbull: lbWrapSVG(`
-        <rect x="25" y="60" width="50" height="40" rx="10" class="fur-grey" />
-        <path d="M30 65 L 70 65" class="muscle-line" />
-        <rect x="25" y="90" width="12" height="20" rx="3" class="fur-grey" />
-        <rect x="63" y="90" width="12" height="20" rx="3" class="fur-grey" />
-        <g transform="translate(0, 10)">
-            <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
-            <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
-            <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
-            <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
-            <circle cx="42" cy="48" r="3" fill="#000" />
-            <circle cx="58" cy="48" r="3" fill="#000" />
-            <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
-            <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
-            <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
-            <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
-            <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
-            <circle cx="50" cy="68" r="3" fill="#ffd700" />
-        </g>
-    `)
-};
-
-// Load leaderboard icons as images
-const lbLoadedIcons = {};
-const lbIconKeys = Object.keys(LB_DOG_SVGS);
-Object.keys(LB_DOG_SVGS).forEach(key => {
-    const img = new Image();
-    img.src = 'data:image/svg+xml;base64,' + btoa(LB_DOG_SVGS[key].trim());
-    img.onload = () => { lbLoadedIcons[key] = img; };
-});
 
 const botNames = [
     "DogeCoin","BarkCuban","ElonTusk","WarrenBuffet","SnoopDogg",
@@ -623,7 +454,7 @@ function updateLeaderboardBots() {
     if (lbBots.length === 0) {
         lbBots = botNames.slice(0, 99).map(name => ({
             name, netWorth: Math.floor(playerMoney * (0.3 + Math.random() * 1.4)),
-            alive: true, icon: lbIconKeys[Math.floor(Math.random() * lbIconKeys.length)]
+            alive: true
         }));
     } else {
         let roundBankrupt = 0;
@@ -658,8 +489,7 @@ function lbRoundRect(ctx, x, y, rw, rh, r) {
 
 function drawLeaderboard() {
     const playerEntry = {
-        name: 'YOU', netWorth: player.money, alive: true, isPlayer: true,
-        icon: player.character || 'scotty'
+        name: 'YOU', netWorth: player.money, alive: true, isPlayer: true
     };
     const allEntities = [...lbBots, playerEntry];
     allEntities.sort((a, b) => b.netWorth - a.netWorth);
@@ -728,21 +558,17 @@ function drawLeaderboard() {
         ctx.stroke();
         ctx.restore();
 
-        const iconSize = cardH - 20;
-        if (lbLoadedIcons[entity.icon]) {
-            ctx.drawImage(lbLoadedIcons[entity.icon], w / 2 - cardW / 2 + 20, y + 10, iconSize, iconSize);
-        }
         const nameSize = w < 400 ? '16px' : '24px';
         const rankSize = w < 400 ? '14px' : '20px';
         const moneySize = w < 400 ? '16px' : '24px';
 
         ctx.fillStyle = isPlayer ? '#facc15' : '#94a3b8';
         ctx.font = `bold ${rankSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(`#${i + 1}`, w / 2 - cardW / 2 + iconSize + 30, y + cardH * 0.3);
+        ctx.fillText(`#${i + 1}`, w / 2 - cardW / 2 + 20, y + cardH * 0.3);
 
         ctx.fillStyle = isPlayer ? '#fff' : (entity.alive ? '#e2e8f0' : '#ef4444');
         ctx.font = isPlayer ? `bold ${nameSize} 'Segoe UI', sans-serif` : `600 ${nameSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(entity.name, w / 2 - cardW / 2 + iconSize + 30, y + cardH * 0.7);
+        ctx.fillText(entity.name, w / 2 - cardW / 2 + 20, y + cardH * 0.7);
 
         ctx.textAlign = 'right';
         if (!entity.alive) {
