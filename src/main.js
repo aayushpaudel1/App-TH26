@@ -36,8 +36,7 @@ let coinTimer = 0;
 
 // ========== AUDIO ENGINE ==========
 let audioCtx;
-let gameNodes = [], shopNodes = [], leaderboardNodes = [], dilemmaNodes = [];
-let gameMusicPlaying = false, shopMusicPlaying = false, leaderboardMusicPlaying = false, dilemmaMusicPlaying = false;
+let muState = {};
 
 function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -45,189 +44,95 @@ function initAudio() {
     return audioCtx;
 }
 
-function startGameMusic() {
-    initAudio();
-    stopGameMusic();
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.15;
-    masterGain.connect(audioCtx.destination);
-    gameNodes.push(masterGain);
-    const notes = [220, 277, 330, 440, 554, 440, 330, 277];
-    let noteTick = 0;
-    function playArpNote() {
-        if (!gameMusicPlaying) return;
-        const measure = Math.floor(noteTick / 16) % 4;
-        let semitoneShift = 0;
-        if (measure === 1) semitoneShift = -1;
-        if (measure === 2) semitoneShift = -3;
-        if (measure === 3) semitoneShift = -4;
-        const multiplier = Math.pow(2, semitoneShift / 12);
-        const noteIndex = noteTick % notes.length;
-        const freq = notes[noteIndex] * multiplier;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'square';
-        osc.frequency.value = freq;
-        osc.detune.value = Math.random() * 10 - 5;
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-        osc.connect(gain);
-        gain.connect(masterGain);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
-        noteTick++;
-        setTimeout(playArpNote, 130);
-    }
-    gameMusicPlaying = true;
-    playArpNote();
+function stopMu(id) {
+    const s = muState[id];
+    if (s) { s.on = false; s.nodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch(e){} }); s.nodes = []; }
 }
 
-function stopGameMusic() {
-    gameMusicPlaying = false;
-    gameNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
-    gameNodes = [];
+function playMu(id, cfg) {
+    initAudio();
+    stopMu(id);
+    const mg = audioCtx.createGain();
+    mg.gain.value = cfg.vol;
+    mg.connect(audioCtx.destination);
+    const s = { on: true, nodes: [mg] };
+    muState[id] = s;
+    let idx = 0;
+    function tick() {
+        if (!s.on) return;
+        cfg.play(mg, idx);
+        idx++;
+        setTimeout(tick, cfg.ms);
+    }
+    tick();
+}
+
+function startGameMusic() {
+    const notes = [220,277,330,440,554,440,330,277];
+    playMu('game', { vol: 0.15, ms: 130, play(mg, t) {
+        const m = Math.floor(t/16)%4;
+        let sh = 0; if(m===1)sh=-1; if(m===2)sh=-3; if(m===3)sh=-4;
+        const f = notes[t%8]*Math.pow(2,sh/12);
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type='square'; o.frequency.value=f; o.detune.value=Math.random()*10-5;
+        g.gain.setValueAtTime(0.15,audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.12);
+        o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+0.15);
+    }});
 }
 
 function startShopMusic() {
-    initAudio();
-    stopShopMusic();
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.12;
-    masterGain.connect(audioCtx.destination);
-    shopNodes.push(masterGain);
-    const chords = [
-        [261, 329, 392], [293, 369, 440],
-        [246, 311, 369], [220, 277, 329]
-    ];
-    let chordIndex = 0;
-    function playChord() {
-        if (!shopMusicPlaying) return;
-        const chord = chords[chordIndex];
-        chord.forEach((freq) => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.3);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.8);
-            osc.connect(gain);
-            gain.connect(masterGain);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 2);
+    const ch = [[261,329,392],[293,369,440],[246,311,369],[220,277,329]];
+    playMu('shop', { vol: 0.12, ms: 2000, play(mg, t) {
+        ch[t%4].forEach(f => {
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type='sine'; o.frequency.value=f;
+            g.gain.setValueAtTime(0,audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.15,audioCtx.currentTime+0.3);
+            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.8);
+            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+2);
         });
-        chordIndex = (chordIndex + 1) % chords.length;
-        setTimeout(playChord, 2000);
-    }
-    shopMusicPlaying = true;
-    playChord();
-}
-
-function stopShopMusic() {
-    shopMusicPlaying = false;
-    shopNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
-    shopNodes = [];
+    }});
 }
 
 function startLeaderboardMusic() {
-    initAudio();
-    stopLeaderboardMusic();
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.15;
-    masterGain.connect(audioCtx.destination);
-    leaderboardNodes.push(masterGain);
-    const fanfareNotes = [
-        [523, 659, 784], [587, 740, 880],
-        [659, 831, 988], [698, 880, 1047]
-    ];
-    let noteIndex = 0;
-    function playFanfare() {
-        if (!leaderboardMusicPlaying) return;
-        const chord = fanfareNotes[noteIndex];
-        chord.forEach((freq) => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.value = freq;
-            osc.detune.value = Math.random() * 6 - 3;
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.1);
-            gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 0.4);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
-            osc.connect(gain);
-            gain.connect(masterGain);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.9);
+    const ch = [[523,659,784],[587,740,880],[659,831,988],[698,880,1047]];
+    playMu('lb', { vol: 0.15, ms: 800, play(mg, t) {
+        ch[t%4].forEach(f => {
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type='sawtooth'; o.frequency.value=f; o.detune.value=Math.random()*6-3;
+            g.gain.setValueAtTime(0,audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.12,audioCtx.currentTime+0.1);
+            g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+0.4);
+            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+0.8);
+            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+0.9);
         });
-        noteIndex = (noteIndex + 1) % fanfareNotes.length;
-        setTimeout(playFanfare, 800);
-    }
-    leaderboardMusicPlaying = true;
-    playFanfare();
-}
-
-function stopLeaderboardMusic() {
-    leaderboardMusicPlaying = false;
-    leaderboardNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
-    leaderboardNodes = [];
+    }});
 }
 
 function startDilemmaMusic() {
-    initAudio();
-    stopDilemmaMusic();
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.12;
-    masterGain.connect(audioCtx.destination);
-    dilemmaNodes.push(masterGain);
-    const tenseChords = [
-        [220, 233, 311], [196, 233, 294],
-        [185, 220, 277], [208, 247, 311]
-    ];
-    let chordIdx = 0;
-    function playTenseChord() {
-        if (!dilemmaMusicPlaying) return;
-        const chord = tenseChords[chordIdx];
-        chord.forEach((freq) => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.value = freq;
-            const lfo = audioCtx.createOscillator();
-            const lfoGain = audioCtx.createGain();
-            lfo.frequency.value = 4 + Math.random() * 2;
-            lfoGain.gain.value = 3;
-            lfo.connect(lfoGain);
-            lfoGain.connect(osc.frequency);
-            lfo.start();
-            lfo.stop(audioCtx.currentTime + 2.5);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.5);
-            gain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 1.5);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 2.2);
-            osc.connect(gain);
-            gain.connect(masterGain);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 2.5);
+    const ch = [[220,233,311],[196,233,294],[185,220,277],[208,247,311]];
+    playMu('dil', { vol: 0.12, ms: 2200, play(mg, t) {
+        ch[t%4].forEach(f => {
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type='triangle'; o.frequency.value=f;
+            const lfo = audioCtx.createOscillator(), lg = audioCtx.createGain();
+            lfo.frequency.value=4+Math.random()*2; lg.gain.value=3;
+            lfo.connect(lg); lg.connect(o.frequency); lfo.start(); lfo.stop(audioCtx.currentTime+2.5);
+            g.gain.setValueAtTime(0,audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(0.1,audioCtx.currentTime+0.5);
+            g.gain.linearRampToValueAtTime(0.08,audioCtx.currentTime+1.5);
+            g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+2.2);
+            o.connect(g); g.connect(mg); o.start(); o.stop(audioCtx.currentTime+2.5);
         });
-        chordIdx = (chordIdx + 1) % tenseChords.length;
-        setTimeout(playTenseChord, 2200);
-    }
-    dilemmaMusicPlaying = true;
-    playTenseChord();
+    }});
 }
 
-function stopDilemmaMusic() {
-    dilemmaMusicPlaying = false;
-    dilemmaNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch (e) { } });
-    dilemmaNodes = [];
-}
-
-function stopAllAudio() {
-    stopGameMusic();
-    stopShopMusic();
-    stopLeaderboardMusic();
-    stopDilemmaMusic();
-}
+function stopGameMusic() { stopMu('game'); }
+function stopShopMusic() { stopMu('shop'); }
+function stopLeaderboardMusic() { stopMu('lb'); }
+function stopDilemmaMusic() { stopMu('dil'); }
+function stopAllAudio() { Object.keys(muState).forEach(stopMu); }
 
 // SFX
 function playJump() {
@@ -430,19 +335,10 @@ function initializeGame() {
 
 // ========== LEADERBOARD SYSTEM ==========
 
-const botNames = [
-    "DogeCoin","BarkCuban","ElonTusk","WarrenBuffet","SnoopDogg",
-    "BezosBark","GateKeeper","ZuckerBone","BuffetDog","CryptoShiba",
-    "NFTerrier","BlockchainBully","StonkHound","DiamondPaws","HodlHusky",
-    "PaperHandsPug","MoonMoon","RocketRover","TeslaTerrier","AmazonAlta",
-    "GoogleGolden","AppleAiredale","MetaMutt","NetflixNewfie","SpotifySpaniel",
-    "UberUnderdog","LyftLab","AirbnbAkita","DoorDashDoxie","InstacartIggy",
-    "RobinhoodRetriever","FidelityFox","VanguardVizsla","SchwabSheepdog","ChaseChihuahua",
-    "WellsFargoWestie","CitiCorgi","AmexAlsatian","VisaVizsla","MastercardMastiff",
-    "PayPalPointer","VenmoVizsla","CashAppCorgi","SquareSchnauzer","StripeSetter",
-    "ShopifyShiba","EtsyEskimo","ZoomZuchon","SlackSheepdog","TrelloTerrier"
-];
-while (botNames.length < 99) botNames.push("Bot" + botNames.length);
+const botPre = ["Doge","Bark","Stonk","Hodl","Moon","Crypto","Diamond","Rocket","Block","Pixel"];
+const botSuf = ["Coin","Hound","Paws","Mutt","Shiba","Terrier","Corgi","Pup","Rover","Lab"];
+const botNames = [];
+for(let i=0;i<10;i++) for(let j=0;j<10;j++) botNames.push(botPre[i]+botSuf[j]);
 
 let lbBots = [];
 let lbRoundNumber = 0;
@@ -1532,19 +1428,6 @@ const tier3Adjacency = {
     'corp-fortress': ['benefits-max', 'promo-chaser'], 'safety-net': ['benefits-max']
 };
 
-const skillButtonMap = {
-    '.btn-code-rabbit': 'code-rabbit', '.btn-velocity-demon': 'velocity-demon',
-    '.btn-stackoverflow': 'stackoverflow', '.btn-caffeine': 'caffeine',
-    '.btn-turbo': 'turbo', '.btn-passive-bot': 'passive-bot', '.btn-api-mine': 'api-mine',
-    '.btn-starving-artist': 'starving-artist', '.btn-content-machine': 'content-machine',
-    '.btn-tank-artist': 'tank-artist', '.btn-royalty-checks': 'royalty-checks',
-    '.btn-set-forget': 'set-forget', '.btn-fortress-solitude': 'fortress-solitude',
-    '.btn-immovable-object': 'immovable-object', '.btn-cubicle-warrior': 'cubicle-warrior',
-    '.btn-promo-chaser': 'promo-chaser', '.btn-benefits-max': 'benefits-max',
-    '.btn-bonus-hunter': 'bonus-hunter', '.btn-exec-fasttrack': 'exec-fasttrack',
-    '.btn-corp-fortress': 'corp-fortress', '.btn-safety-net': 'safety-net'
-};
-
 function updateSkillLocks() {
     if (!playerPath) return;
     const tree = tierStructure[playerPath];
@@ -1552,9 +1435,7 @@ function updateSkillLocks() {
     const allSkills = [...tree.tier1, ...tree.tier2, ...tree.tier3];
     const tier1Bought = tree.tier1.some(s => purchasedSkills.has(s));
     allSkills.forEach(skillId => {
-        const selector = Object.keys(skillButtonMap).find(sel => skillButtonMap[sel] === skillId);
-        if (!selector) return;
-        const btn = document.querySelector('#skills-tab ' + selector);
+        const btn = document.querySelector('#skills-tab .skill-btn[data-skill="' + skillId + '"]');
         if (!btn) return;
         const iconItem = btn.closest('.icon-item');
         if (!iconItem) return;
@@ -1642,12 +1523,11 @@ function buySkill() {
 }
 
 function initSkillClickHandlers() {
-    Object.keys(skillButtonMap).forEach(selector => {
-        const element = document.querySelector('#skills-tab ' + selector);
-        if (element && !element.dataset.skillBound) {
-            element.dataset.skillBound = 'true';
-            element.addEventListener('click', function () {
-                showSkillPopup(skillButtonMap[selector]);
+    document.querySelectorAll('#skills-tab .skill-btn[data-skill]').forEach(el => {
+        if (!el.dataset.skillBound) {
+            el.dataset.skillBound = 'true';
+            el.addEventListener('click', function () {
+                showSkillPopup(el.dataset.skill);
             });
         }
     });

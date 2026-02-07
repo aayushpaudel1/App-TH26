@@ -64,7 +64,13 @@ async function build() {
     // Match both quoted and unquoted onclick attributes after html-minifier
     const onclickRe = /onclick=["']?(\w+)\(/g;
     let m;
+    // Scan static HTML body
     while ((m = onclickRe.exec(minifiedBody)) !== null) {
+        onclickFns.add(m[1]);
+    }
+    // Also scan JS source for dynamically generated onclick handlers (e.g. innerHTML templates)
+    const jsOnclickRe = /onclick=\\?["'](\w+)\(/g;
+    while ((m = jsOnclickRe.exec(jsCode)) !== null) {
         onclickFns.add(m[1]);
     }
     const reserved = [...onclickFns];
@@ -122,7 +128,7 @@ async function build() {
     const finalHtml = '<!DOCTYPE html><html lang=en><head>'
         + '<meta charset=UTF-8>'
         + '<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">'
-        + '<title>Finance Dash</title></head>'
+        + '<title>Capital K9</title></head>'
         + `<body><script>${packedJs}</script></body></html>`;
 
     // Ensure dist exists

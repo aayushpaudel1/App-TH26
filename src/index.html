@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css">
-    <title>Finance Dash</title>
+    <title>Capital K9: Career Royale</title>
 </head>
 
 <body>
     <canvas id="c"></canvas>
     <div id="game-overlay"></div>
     <div id="ui">
-        <h1>DOOBERT</h1>
+        <h1>CAPITAL K9</h1>
         <button id="playBtn">PLAY</button>
     </div>
     <div class="timer-display">15</div>
@@ -36,118 +36,35 @@
                     <div class="tree-title tech">⚡ Tech Path</div>
                     <div class="tier tier-1">
                         <div class="icon-item connector-down">
-                            <div class="btn btn-code-rabbit" title="Code Rabbit">
-                                <div class="code-bg"></div>
-                                <div class="rabbit-container">
-                                    <svg class="rabbit-svg" viewBox="0 0 50 40">
-                                        <line class="speed-lines" x1="0" y1="20" x2="15" y2="20" />
-                                        <line class="speed-lines" x1="5" y1="25" x2="20" y2="25" />
-                                        <path d="M15 25 Q 25 20, 35 25 L 45 20 Q 48 15, 35 15 Q 25 10, 15 25 Z" />
-                                        <circle cx="42" cy="18" r="6" />
-                                        <circle class="rabbit-eye" cx="44" cy="16" r="1.5" />
-                                    </svg>
-                                </div>
-                            </div>
+                            <div class="btn skill-btn" data-skill="code-rabbit" title="Code Rabbit">🐇</div>
                             <div class="icon-label">Code Rabbit</div>
                         </div>
                     </div>
                     <div class="tier tier-2">
                         <div class="icon-item">
-                            <div class="btn btn-velocity-demon" title="Velocity Demon">
-                                <div class="demon-blur"></div>
-                                <svg class="demon-svg" viewBox="0 0 50 50">
-                                    <path d="M15 40 L 25 25 L 35 20 Q 45 15, 40 10 L 35 5 Q 30 10, 25 10 L 10 30 Z"
-                                        transform="rotate(15 25 25)" />
-                                    <path d="M35 5 L 32 -5 L 38 0 Z" fill="var(--danger)" />
-                                    <path d="M40 10 L 45 0 L 42 5 Z" fill="var(--danger)" />
-                                    <circle class="demon-eyes" cx="35" cy="12" r="2" />
-                                    <path class="demon-grin" d="M32 18 Q 36 20, 40 16" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="velocity-demon" title="Velocity Demon">👹</div>
                             <div class="icon-label">Velocity Demon</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-stackoverflow" title="Stack Overflow Scholar">
-                                <svg class="book-browser-svg" viewBox="0 0 60 50">
-                                    <rect class="browser-frame" x="5" y="5" width="50" height="40" rx="2" />
-                                    <rect x="5" y="5" width="50" height="10" fill="#444" rx="2" />
-                                    <circle cx="10" cy="10" r="2" fill="#ff5f56" />
-                                    <circle cx="16" cy="10" r="2" fill="#ffbd2e" />
-                                    <circle cx="22" cy="10" r="2" fill="#27c93f" />
-                                    <path class="book-page"
-                                        d="M10 20 Q 20 20, 30 25 Q 40 20, 50 20 L 50 40 Q 40 40, 30 45 Q 20 40, 10 40 Z" />
-                                    <path class="book-spine" d="M29 25 L 31 25 L 31 45 L 29 45 Z" />
-                                    <rect class="sticky-note" x="42" y="15" width="6" height="8" rx="1"
-                                        transform="rotate(10 45 19)" />
-                                    <rect class="sticky-note" x="48" y="28" width="6" height="8" rx="1"
-                                        transform="rotate(-5 51 32)" />
-                                    <path class="cursor-pointer" d="M35 15 L 42 22 L 35 29 Z"
-                                        transform="rotate(-90 35 15) translate(5, 5)" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="stackoverflow" title="Stack Overflow Scholar">📚</div>
                             <div class="icon-label">Stack Overflow</div>
                         </div>
                     </div>
                     <div class="tier tier-3">
                         <div class="icon-item">
-                            <div class="btn btn-caffeine" title="Caffeine Overdrive">
-                                <svg class="mug-shake" viewBox="0 0 50 50">
-                                    <path d="M10 10 L 12 40 Q 12 45, 17 45 L 33 45 Q 38 45, 38 40 L 40 10" fill="none"
-                                        stroke="var(--text-secondary)" stroke-width="3" />
-                                    <path d="M40 15 Q 48 15, 48 25 Q 48 35, 40 35" fill="none"
-                                        stroke="var(--text-secondary)" stroke-width="3" />
-                                    <path class="liquid-glow"
-                                        d="M12 25 L 13 40 Q 13 43, 17 43 L 33 43 Q 37 43, 37 40 L 38 25 Q 25 30, 12 25 Z" />
-                                    <path class="steam-jagged"
-                                        d="M15 5 L 20 10 L 15 15 M 25 2 L 30 8 L 25 14 M 35 5 L 40 10 L 35 15" />
-                                    <path d="M20 20 L 25 30 L 30 15" fill="none" stroke="#fff" stroke-width="2" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="caffeine" title="Caffeine Overdrive">☕</div>
                             <div class="icon-label">Caffeine OD</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-turbo" title="Turbo Compiler">
-                                <svg viewBox="0 0 60 40">
-                                    <rect class="progress-frame" x="2" y="15" width="56" height="10" rx="2"
-                                        transform="rotate(-2 30 20)" />
-                                    <rect class="progress-fill" x="4" y="17" width="52" height="6" rx="1"
-                                        transform="rotate(-2 30 20)" />
-                                    <circle class="sparks" cx="55" cy="15" r="1.5"
-                                        style="animation-duration: 0.4s; animation-delay: 0s;" />
-                                    <circle class="sparks" cx="57" cy="20" r="1"
-                                        style="animation-duration: 0.6s; animation-delay: 0.1s;" />
-                                    <circle class="sparks" cx="53" cy="18" r="2"
-                                        style="animation-duration: 0.5s; animation-delay: 0.2s;" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="turbo" title="Turbo Compiler">⚡</div>
                             <div class="icon-label">Turbo Compiler</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-passive-bot" title="Passive Income Bot">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="bot-body" x="15" y="10" width="20" height="25" rx="2" />
-                                    <circle class="bot-body" cx="25" cy="-5" r="8" />
-                                    <line x1="15" y1="20" x2="5" y2="25" stroke="var(--accent-blue)" stroke-width="3" />
-                                    <line x1="35" y1="20" x2="45" y2="15" stroke="var(--accent-blue)"
-                                        stroke-width="3" />
-                                    <rect x="22" y="15" width="6" height="2" fill="#000" />
-                                    <circle class="coin-drip" cx="25" cy="18" r="2" />
-                                    <circle class="coin-drip" cx="25" cy="25" r="2" style="animation-delay: 0.5s;" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="passive-bot" title="Passive Income Bot">🤖</div>
                             <div class="icon-label">Income Bot</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-api-mine" title="API Goldmine">
-                                <svg viewBox="0 0 50 60">
-                                    <rect class="server-frame" x="5" y="5" width="40" height="50" rx="3" />
-                                    <path class="gold-core" d="M15 20 L 25 15 L 35 20 L 30 35 L 20 35 Z" />
-                                    <path class="cable-vine" d="M25 35 Q 25 45, 10 50" />
-                                    <path class="cable-vine" d="M25 35 Q 25 45, 40 50" />
-                                    <circle cx="10" cy="50" r="2" fill="#ffd700" />
-                                    <circle cx="40" cy="50" r="2" fill="#ffd700" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="api-mine" title="API Goldmine">⛏️</div>
                             <div class="icon-label">API Goldmine</div>
                         </div>
                     </div>
@@ -158,94 +75,35 @@
                     <div class="tree-title creative">🎨 Creative Path</div>
                     <div class="tier tier-1">
                         <div class="icon-item connector-down">
-                            <div class="btn btn-starving-artist" title="Starving Artist">
-                                <div class="cracked-frame"></div>
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="paintbrush-taped" x="22" y="15" width="6" height="20" fill="#a0522d"
-                                        rx="1" />
-                                    <rect class="paintbrush-taped" x="21" y="22" width="8" height="4" fill="#ddd"
-                                        rx="0.5" />
-                                    <path class="paintbrush-taped" d="M22 15 L 20 5 L 30 5 L 28 15 Z" fill="#d3d3d3" />
-                                    <circle class="brush-glow" cx="25" cy="5" r="3" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="starving-artist" title="Starving Artist">🎨</div>
                             <div class="icon-label">Starving Artist</div>
                         </div>
                     </div>
                     <div class="tier tier-2">
                         <div class="icon-item">
-                            <div class="btn btn-content-machine" title="Content Machine">
-                                <svg viewBox="0 0 50 50">
-                                    <path class="conveyor-belt" d="M5 35 L 45 35" />
-                                    <rect x="10" y="25" width="8" height="10" fill="#ef5350" />
-                                    <circle cx="25" cy="30" r="4" fill="#42a5f5" />
-                                    <rect x="35" y="25" width="8" height="10" fill="#ffca28" />
-                                    <circle cx="10" cy="38" r="3" fill="#666" />
-                                    <circle cx="25" cy="38" r="3" fill="#666" />
-                                    <circle cx="40" cy="38" r="3" fill="#666" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="content-machine" title="Content Machine">🏭</div>
                             <div class="icon-label">Content Machine</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-tank-artist" title="Tank Artist">
-                                <svg viewBox="0 0 50 50">
-                                    <path class="palette-shield"
-                                        d="M10 25 Q 10 5, 25 5 Q 40 5, 40 25 Q 40 45, 25 45 Q 10 45, 10 25 Z" />
-                                    <circle cx="18" cy="20" r="3" fill="#2a2a2a" />
-                                    <circle class="paint-splat" cx="30" cy="15" r="3" fill="#f44336"
-                                        style="animation-delay: 0s;" />
-                                    <circle class="paint-splat" cx="35" cy="25" r="3" fill="#2196f3"
-                                        style="animation-delay: 0.5s;" />
-                                    <circle class="paint-splat" cx="28" cy="35" r="3" fill="#ffeb3b"
-                                        style="animation-delay: 1s;" />
-                                    <line x1="15" y1="30" x2="20" y2="35" stroke="#5d4037" stroke-width="1" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="tank-artist" title="Tank Artist">🛡️</div>
                             <div class="icon-label">Tank Artist</div>
                         </div>
                     </div>
                     <div class="tier tier-3">
                         <div class="icon-item">
-                            <div class="btn btn-royalty-checks" title="Royalty Checks">
-                                <svg viewBox="0 0 50 50">
-                                    <circle class="vinyl-record" cx="25" cy="25" r="20" fill="#111" stroke="#333"
-                                        stroke-width="1" />
-                                    <circle class="vinyl-record" cx="25" cy="25" r="8" fill="#e91e63" />
-                                    <circle cx="25" cy="25" r="2" fill="#000" />
-                                    <circle class="orbiting-coin" cx="25" cy="25" r="3" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="royalty-checks" title="Royalty Checks">💿</div>
                             <div class="icon-label">Royalty Checks</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-set-forget" title="Set It Forget It">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="toggle-switch-base" x="10" y="15" width="30" height="20" rx="10" />
-                                    <circle class="toggle-switch-on" cx="32" cy="25" r="8" />
-                                    <path class="dust-layer" d="M10 15 Q 25 20, 40 15 L 40 20 Q 25 25, 10 20 Z" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="set-forget" title="Set It Forget It">🔄</div>
                             <div class="icon-label">Set & Forget</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-fortress-solitude" title="Fortress of Solitude">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="concrete-walls" x="10" y="15" width="30" height="25" />
-                                    <rect class="warm-window-light" x="22" y="20" width="6" height="8" />
-                                    <path class="concrete-walls" d="M5 15 L 25 5 L 45 15 Z" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="fortress-solitude" title="Fortress of Solitude">🏰</div>
                             <div class="icon-label">Fortress</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-immovable-object" title="Immovable Object">
-                                <svg viewBox="0 0 50 50">
-                                    <line x1="0" y1="40" x2="50" y2="40" stroke="#7f8c8d" stroke-width="2" />
-                                    <rect class="stone-block" x="15" y="20" width="20" height="25" />
-                                    <path class="impact-cracks" d="M10 40 L 15 35 M 40 40 L 35 35 M 25 20 L 25 10" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="immovable-object" title="Immovable Object">🪨</div>
                             <div class="icon-label">Immovable</div>
                         </div>
                     </div>
@@ -256,102 +114,35 @@
                     <div class="tree-title corporate">💼 Corporate Path</div>
                     <div class="tier tier-1">
                         <div class="icon-item connector-down">
-                            <div class="btn btn-cubicle-warrior" title="Cubicle Warrior">
-                                <svg viewBox="0 0 50 50">
-                                    <path class="desk-shield" d="M10 20 L 40 20 L 40 40 L 10 40 Z" />
-                                    <rect x="15" y="25" width="20" height="10" fill="#ecf0f1" />
-                                    <rect class="keyboard-weapon" x="12" y="30" width="26" height="8" rx="1" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="cubicle-warrior" title="Cubicle Warrior">⌨️</div>
                             <div class="icon-label">Cubicle Warrior</div>
                         </div>
                     </div>
                     <div class="tier tier-2">
                         <div class="icon-item">
-                            <div class="btn btn-promo-chaser" title="Promotion Chaser">
-                                <svg viewBox="0 0 50 50">
-                                    <path class="staircase"
-                                        d="M10 40 L 20 40 L 20 30 L 30 30 L 30 20 L 40 20 L 40 10" />
-                                    <path class="arrow-upward" d="M15 40 L 15 30 L 10 35 M 15 30 L 20 35"
-                                        stroke="#3498db" stroke-width="2" />
-                                    <text x="12" y="38" font-size="6" fill="#7f8c8d">Jr</text>
-                                    <text x="32" y="18" font-size="6" fill="#7f8c8d">CEO</text>
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="promo-chaser" title="Promotion Chaser">📈</div>
                             <div class="icon-label">Promo Chaser</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-benefits-max" title="Benefits Maximizer">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="checklist-shield" x="15" y="10" width="20" height="30" rx="2" />
-                                    <path class="check-mark" d="M20 18 L 23 21 L 28 16" fill="none" stroke="#27ae60"
-                                        stroke-width="2" />
-                                    <path class="check-mark" d="M20 25 L 23 28 L 28 23" fill="none" stroke="#27ae60"
-                                        stroke-width="2" />
-                                    <path class="check-mark" d="M20 32 L 23 35 L 28 30" fill="none" stroke="#27ae60"
-                                        stroke-width="2" />
-                                    <rect x="30" y="32" width="6" height="6" fill="#e74c3c" />
-                                    <path d="M33 33 L 33 37 M 31 35 L 35 35" stroke="#fff" stroke-width="1.5" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="benefits-max" title="Benefits Maximizer">✅</div>
                             <div class="icon-label">Benefits Max</div>
                         </div>
                     </div>
                     <div class="tier tier-3">
                         <div class="icon-item">
-                            <div class="btn btn-bonus-hunter" title="Bonus Hunter">
-                                <svg viewBox="0 0 50 50">
-                                    <circle class="target-ring" cx="25" cy="25" r="15" />
-                                    <circle class="target-ring" cx="25" cy="25" r="10" />
-                                    <text class="dollar-bullseye" x="25" y="26">$</text>
-                                    <line class="arrow-pierce" x1="40" y1="10" x2="25" y2="25" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="bonus-hunter" title="Bonus Hunter">🎯</div>
                             <div class="icon-label">Bonus Hunter</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-exec-fasttrack" title="Executive Fast Track">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="elevator-box" x="15" y="10" width="20" height="30" />
-                                    <line x1="25" y1="10" x2="25" y2="40" stroke="#7f8c8d" stroke-width="1" />
-                                    <g class="floor-numbers">
-                                        <text x="38" y="15">10</text>
-                                        <text x="38" y="25">20</text>
-                                        <text x="38" y="35">30</text>
-                                        <text x="38" y="5">5</text>
-                                    </g>
-                                    <path d="M25 5 L 20 10 L 30 10 Z" fill="#2ecc71" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="exec-fasttrack" title="Executive Fast Track">🚀</div>
                             <div class="icon-label">Fast Track</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-corp-fortress" title="Corporate Fortress">
-                                <svg viewBox="0 0 50 50">
-                                    <rect class="skyscraper" x="15" y="5" width="20" height="40" />
-                                    <rect class="skyscraper" x="10" y="20" width="5" height="25" />
-                                    <rect class="skyscraper" x="35" y="15" width="5" height="30" />
-                                    <rect class="windows-lit" x="17" y="10" width="2" height="2" />
-                                    <rect class="windows-lit" x="21" y="10" width="2" height="2" />
-                                    <rect class="windows-lit" x="25" y="10" width="2" height="2" />
-                                    <rect class="windows-lit" x="29" y="10" width="2" height="2" />
-                                    <rect class="windows-lit" x="17" y="15" width="2" height="2" />
-                                    <rect class="windows-lit" x="29" y="30" width="2" height="2" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="corp-fortress" title="Corporate Fortress">🏢</div>
                             <div class="icon-label">Corp Fortress</div>
                         </div>
                         <div class="icon-item">
-                            <div class="btn btn-safety-net" title="Safety Net Supreme">
-                                <svg viewBox="0 0 50 50">
-                                    <path class="golden-net" d="M5 35 Q 25 45, 45 35" />
-                                    <line class="golden-net" x1="10" y1="36" x2="15" y2="40" />
-                                    <line class="golden-net" x1="20" y1="39" x2="25" y2="40" />
-                                    <line class="golden-net" x1="30" y1="39" x2="35" y2="38" />
-                                    <circle class="figure-safe" cx="25" cy="30" r="3" />
-                                    <line x1="25" y1="33" x2="25" y2="40" stroke="#2c3e50" stroke-width="2" />
-                                </svg>
-                            </div>
+                            <div class="btn skill-btn" data-skill="safety-net" title="Safety Net Supreme">🪢</div>
                             <div class="icon-label">Safety Net</div>
                         </div>
                     </div>
@@ -812,26 +603,15 @@
         <h2>Choose Your Path</h2>
         <div class="section">
             <div class="path-option">
-                <div class="btn btn-tech" title="Tech Path" onclick="selectPath('tech')">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                        <path d="M2 10h4v4h-4z" opacity="0.5" />
-                    </svg>
-                </div>
+                <div class="btn path-btn" onclick="selectPath('tech')">⚡</div>
                 <p class="path-label">Tech</p>
             </div>
-
             <div class="path-option">
-                <div class="btn btn-creative" title="Creative Path" onclick="selectPath('creative')">
-                    <div class="icon-creative">🎨</div>
-                </div>
+                <div class="btn path-btn" onclick="selectPath('creative')">🎨</div>
                 <p class="path-label">Creative</p>
             </div>
-
             <div class="path-option">
-                <div class="btn btn-corporate" title="Corporate Path" onclick="selectPath('corporate')">
-                    <div class="icon-briefcase"></div>
-                </div>
+                <div class="btn path-btn" onclick="selectPath('corporate')">💼</div>
                 <p class="path-label">Corporate</p>
             </div>
         </div>
