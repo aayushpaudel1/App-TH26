@@ -30,7 +30,31 @@
             </div>
         </div>
         <div id="skills-tab" class="tab-content active">
-            <canvas id="skills-canvas"></canvas>
+            <div class="skills-trees-container">
+                <!-- Skill trees will be populated by JavaScript based on playerPath -->
+                <div id="tech-tree" class="skill-tree" style="display: none;"></div>
+                <div id="creative-tree" class="skill-tree" style="display: none;"></div>
+                <div id="corporate-tree" class="skill-tree" style="display: none;"></div>
+            </div>
+
+            <!-- Skill Popup -->
+            <div id="skill-popup">
+                <div class="popup-header">
+                    <div class="popup-title" id="popup-skill-name">Skill Name</div>
+                    <button class="popup-close" onclick="closeSkillPopup()">&times;</button>
+                </div>
+                <div class="popup-content">
+                    <div class="popup-info">
+                        <div class="popup-description" id="popup-description">Skill description goes here</div>
+                        <div class="popup-stats" id="popup-stats">
+                            <!-- Stats will be injected here -->
+                        </div>
+                    </div>
+                    <button class="popup-buy-btn" id="popup-buy-btn" onclick="buySkill()">
+                        Buy - $<span id="popup-price">0</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div id="shop-tab" class="tab-content">
             <h1>Health Shop</h1>
@@ -85,9 +109,18 @@
             </div>
             <div id="status-msg"></div>
         </div>
+        <div id="cards-tab" class="tab-content">
+            <div class="cards-container">
+                <h1 class="cards-title">💰 Financial Crossroads</h1>
+                <div class="card-container" id="cardContainer">
+                    <!-- Decision card will be rendered here -->
+                </div>
+            </div>
+        </div>
         <div class="nav-bar">
             <button class="nav-tab active" data-tab="skills">SKILLS</button>
             <button class="nav-tab" data-tab="shop">SHOP</button>
+            <button class="nav-tab" data-tab="cards">CARDS</button>
         </div>
     </div>
 
@@ -497,7 +530,7 @@
         let w, h;
 
         // Game State
-        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, GAMEOVER, SHOP
+        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, DILEMMA, SHOP, GAMEOVER
         let gameTime = 0;
         let score = 0;
         let gameTimer = 0;
@@ -773,6 +806,276 @@
         function updateShopStats() {
             document.getElementById('shop-balance').textContent = `$${player.money}`;
             document.getElementById('shop-health').textContent = `${player.health}/${player.maxHealth}`;
+        }
+
+        // ========== CARDS TAB LOGIC ==========
+        const cardsDecisions = [
+            {
+                scenario: "First Paycheck!",
+                optionA: {
+                    title: "Buy New Collar",
+                    icon: "🎀",
+                    effect: "Visual cosmetic change only: no stat benefits!",
+                    result: "You look fabulous, but your future self might have preferred some savings...",
+                    stats: { money: 0, income: 0, defense: 0, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "Start 401k",
+                    icon: "📈",
+                    effect: "-$100 Cash, but Passive Income +5% permanently!",
+                    result: "Smart! Your future self thanks you. Compound interest is now your best friend.",
+                    stats: { money: -100, income: 0, defense: 0, passiveIncome: 0.05 }
+                }
+            },
+            {
+                scenario: "Car Breaks Down",
+                optionA: {
+                    title: "Put on Credit Card",
+                    icon: "💳",
+                    effect: "Keep your cash now, but Income -10% due to interest payments!",
+                    result: "The debt trap closes in... Interest payments will haunt you for years.",
+                    stats: { money: 0, income: -0.10, defense: 0, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "Pay Cash",
+                    icon: "💵",
+                    effect: "-$500 Cash immediately, but Defense +10% from financial security!",
+                    result: "Pain now, gain later! No debt means freedom to grow your wealth.",
+                    stats: { money: -500, income: 0, defense: 0.10, passiveIncome: 0 }
+                }
+            },
+            {
+                scenario: "Student Loans",
+                optionA: {
+                    title: "Defer Payment",
+                    icon: "⏰",
+                    effect: "Keep your cash for now, but Passive Income -15% as interest compounds!",
+                    result: "The debt grows silently. It's always watching, always growing.",
+                    stats: { money: 0, income: 0, defense: 0, passiveIncome: -0.15 }
+                },
+                optionB: {
+                    title: "Pay Aggressively",
+                    icon: "⚔️",
+                    effect: "-75% of current Cash, but Income +20% permanently!",
+                    result: "Debt-free! With no monthly payments, your income potential skyrockets.",
+                    stats: { money: 'percent', moneyPercent: -0.75, income: 0.20, defense: 0, passiveIncome: 0 }
+                }
+            },
+            {
+                scenario: "Weekend Vibes",
+                optionA: {
+                    title: "Party All Night",
+                    icon: "🥳",
+                    effect: "+$100 Cash from networking, but Income -5% from lost productivity!",
+                    result: "YOLO! Great memories made, but money doesn't grow while you sleep it off.",
+                    stats: { money: 100, income: -0.05, defense: 0, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "Take Online Course",
+                    icon: "🎓",
+                    effect: "-$200 Cash, but Income +15% permanently!",
+                    result: "Knowledge is power! New skills unlock higher earning potential.",
+                    stats: { money: -200, income: 0.15, defense: 0, passiveIncome: 0 }
+                }
+            },
+            {
+                scenario: "Tax Refund Season 💰",
+                optionA: {
+                    title: "YOLO on Crypto",
+                    icon: "🚀",
+                    effect: "50% chance to 2x your Cash... 50% chance to lose it ALL and Defense -10%!",
+                    result: "To the moon... or to the ground. Fortune favors the bold (sometimes).",
+                    stats: { money: 'gamble', income: 0, defense: 0, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "High Yield Savings",
+                    icon: "🛡️",
+                    effect: "+$200 Cash and Defense +20% from emergency fund security!",
+                    result: "Safe and protected! Your emergency fund shields you from life's surprises.",
+                    stats: { money: 200, income: 0, defense: 0.20, passiveIncome: 0 }
+                }
+            },
+            {
+                scenario: "The Promotion! 🏆",
+                optionA: {
+                    title: "Buy Luxury Condo",
+                    icon: "🏠",
+                    effect: "-$1000 Cash and Income -15% from higher expenses!",
+                    result: "Living large has its costs... Your expenses grow with your income.",
+                    stats: { money: -1000, income: -0.15, defense: 0, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "Stay in Apartment",
+                    icon: "🏢",
+                    effect: "Keep your Cash and gain +20% Passive Income from investing the difference!",
+                    result: "Humble living, wealthy building! You resist the temptation to inflate your lifestyle.",
+                    stats: { money: 0, income: 0, defense: 0, passiveIncome: 0.20 }
+                }
+            },
+            {
+                scenario: "Market Crash! 📉",
+                optionA: {
+                    title: "Sell Everything!",
+                    icon: "😱",
+                    effect: "+$2000 Cash immediately, but Passive Income -100% (drops to 0)!",
+                    result: "Panic sold at the bottom... The market always recovers, but you won't.",
+                    stats: { money: 2000, income: 0, defense: 0, passiveIncome: -1.0 }
+                },
+                optionB: {
+                    title: "Hold & Buy Dip",
+                    icon: "💎",
+                    effect: "-$500 Cash to buy the dip, but Passive Income +50%!",
+                    result: "Diamond hands! Buying when others panic is how millionaires are made.",
+                    stats: { money: -500, income: 0, defense: 0, passiveIncome: 0.50 }
+                }
+            },
+            {
+                scenario: "Health Scare 🏥",
+                optionA: {
+                    title: "Risk It",
+                    icon: "🎲",
+                    effect: "Save your Cash, but Defense -30% from lack of coverage!",
+                    result: "Living dangerously... One wrong move and it's all over.",
+                    stats: { money: 0, income: 0, defense: -0.30, passiveIncome: 0 }
+                },
+                optionB: {
+                    title: "Buy Insurance",
+                    icon: "❤️",
+                    effect: "-$1000 Cash, but Defense +40% from comprehensive coverage!",
+                    result: "Protected! Insurance isn't fun, but it's the adult thing to do.",
+                    stats: { money: -1000, income: 0, defense: 0.40, passiveIncome: 0 }
+                }
+            }
+        ];
+
+        let currentCardDecision = null;
+
+        function startDilemma() {
+            // Pick a random decision
+            const randomIndex = Math.floor(Math.random() * cardsDecisions.length);
+            currentCardDecision = cardsDecisions[randomIndex];
+            renderCard(currentCardDecision);
+        }
+
+        function renderCard(decision) {
+            // Randomly swap colors for options
+            const randomSwap = Math.random() > 0.5;
+            const classA = randomSwap ? 'option-smart' : 'option-risky';
+            const classB = randomSwap ? 'option-risky' : 'option-smart';
+
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = `
+                <div class="decision-card">
+                    <div class="card-header">
+                        <h2 class="scenario-title">${decision.scenario}</h2>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card ${classA}" onclick="selectCardOption('A')">
+                            <span class="option-icon">${decision.optionA.icon}</span>
+                            <h3 class="option-title">${decision.optionA.title}</h3>
+                            <p class="option-effect">${decision.optionA.effect}</p>
+                        </div>
+
+                        <div class="option-card ${classB}" onclick="selectCardOption('B')">
+                            <span class="option-icon">${decision.optionB.icon}</span>
+                            <h3 class="option-title">${decision.optionB.title}</h3>
+                            <p class="option-effect">${decision.optionB.effect}</p>
+                        </div>
+                    </div>
+
+                    <div class="result-message" id="resultMessage">
+                        <h3 id="resultTitle"></h3>
+                        <p id="resultText"></p>
+                    </div>
+
+                    <button class="continue-btn" id="continueBtn" onclick="continueCardGame()">
+                        Continue to Shop →
+                    </button>
+                </div>
+            `;
+        }
+
+        function selectCardOption(option) {
+            const decision = currentCardDecision;
+            const cards = document.querySelectorAll('#cards-tab .option-card');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const continueBtn = document.getElementById('continueBtn');
+
+            // Prevent changing selection after making a choice
+            if (continueBtn.classList.contains('show')) {
+                return;
+            }
+
+            const selectedOption = option === 'A' ? decision.optionA : decision.optionB;
+            const stats = selectedOption.stats;
+
+            // Apply stat changes
+            if (stats.money === 'percent') {
+                player.money = Math.floor(player.money * (1 + stats.moneyPercent));
+            } else if (stats.money === 'gamble') {
+                // Crypto gamble
+                if (Math.random() > 0.5) {
+                    player.money *= 2;
+                    resultText.textContent = `🚀 TO THE MOON! Your crypto doubled! ${selectedOption.result}`;
+                } else {
+                    player.money = 0;
+                    defense -= 0.10;
+                    resultText.textContent = `📉 REKT! Lost everything! ${selectedOption.result}`;
+                }
+            } else {
+                player.money += stats.money;
+            }
+
+            income += stats.income;
+            defense += stats.defense;
+            passiveIncome += stats.passiveIncome;
+
+            // Ensure stats don't go below minimum values
+            income = Math.max(0.1, income);
+            defense = Math.max(0.1, defense);
+            passiveIncome = Math.max(0, passiveIncome);
+            player.money = Math.max(0, player.money);
+
+            if (option === 'A') {
+                cards[0].classList.add('selected');
+                resultMessage.className = 'result-message show risky';
+                resultTitle.textContent = 'You chose Option A!';
+                if (stats.money !== 'gamble') {
+                    resultText.textContent = selectedOption.result;
+                }
+            } else {
+                cards[1].classList.add('selected');
+                resultMessage.className = 'result-message show smart';
+                resultTitle.textContent = 'You chose Option B!';
+                resultText.textContent = selectedOption.result;
+            }
+
+            continueBtn.classList.add('show');
+
+            // Disable clicking on cards after selection
+            cards.forEach(card => {
+                card.style.pointerEvents = 'none';
+                if (!card.classList.contains('selected')) {
+                    card.style.opacity = '0.4';
+                }
+            });
+
+            console.log(`Card choice made. Stats: Income ${income.toFixed(2)}, Defense ${defense.toFixed(2)}, PassiveIncome ${passiveIncome.toFixed(2)}, Money $${player.money}`);
+        }
+
+        function continueCardGame() {
+            // Transition to SHOP after making dilemma choice
+            gameState = 'SHOP';
+            // Switch to skills tab
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="skills"]').classList.add('active');
+            document.getElementById('skills-tab').classList.add('active');
+            drawSkillsTree();
+            updateShopStats();
         }
 
         // Draw Skills Tree
@@ -1567,11 +1870,14 @@
                         const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
                         player.money += passiveEarnings;
 
-                        gameState = 'SHOP';
+                        gameState = 'DILEMMA';
                         document.getElementById('shop-ui').classList.add('active');
-                        // Draw the first tab's content
-                        drawSkillsTree();
-                        updateShopStats();
+                        // Switch to cards tab and show dilemma
+                        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        document.querySelector('[data-tab="cards"]').classList.add('active');
+                        document.getElementById('cards-tab').classList.add('active');
+                        startDilemma();
                         Juice.postDraw();
                         requestAnimationFrame(loop);
                         return; // Pause game updates
@@ -1646,6 +1952,13 @@
                 }
 
                 drawUI();
+
+            } else if (gameState === 'DILEMMA') {
+                // Pause game updates while showing dilemma
+                // Background animations continue via separate frame() loop
+                Juice.postDraw();
+                requestAnimationFrame(loop);
+                return;
 
             } else if (gameState === 'SHOP') {
                 // Pause game updates while in shop
