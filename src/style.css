@@ -633,7 +633,7 @@ h2 {
 }
 
 .anim-collect .char-btn::after {
-    content: '+ðŸ’°';
+    content: '+💰';
     position: absolute;
     top: 0;
     left: 50%;
@@ -2630,7 +2630,7 @@ h2 {
 }
 
 .skill-locked::after {
-    content: 'ðŸ”’';
+    content: '🔒';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -2647,7 +2647,7 @@ h2 {
 }
 
 .skill-purchased .btn::after {
-    content: 'âœ…';
+    content: '✅';
     position: absolute;
     top: -6px;
     right: -6px;
