@@ -136,6 +136,7 @@
         <div class="btn-group">
             <button class="btn-jump" onclick="playJump()">Jump 🚀</button>
             <button class="btn-coin" onclick="playCoin()">Coin 💰</button>
+            <button class="btn-stop" onclick="playDamage()">Damage 💥</button>
         </div>
         <div class="btn-group">
             <button class="btn-stop" onclick="stopAll()">Stop All</button>
@@ -162,35 +163,45 @@
             masterGain.connect(ctx.destination);
             gameNodes.push(masterGain);
 
-            // Bass drone
-            const bass = ctx.createOscillator();
-            const bassGain = ctx.createGain();
-            bass.type = 'sawtooth';
-            bass.frequency.value = 55; // A1
-            bassGain.gain.value = 0.3;
-            bass.connect(bassGain);
-            bassGain.connect(masterGain);
-            bass.start();
-            gameNodes.push(bass);
 
-            // Arpeggio sequence
-            const notes = [220, 277, 330, 440, 330, 277]; // A3, C#4, E4, A4...
-            let noteIndex = 0;
+
+            // Arpeggio sequence (Extend to 8 notes for 4/4 time)
+            const notes = [220, 277, 330, 440, 554, 440, 330, 277]; // A3, C#4, E4, A4, C#5, A4, E4, C#4
+            let noteTick = 0;
 
             function playArpNote() {
                 if (!gamePlaying) return;
+
+                // Determine measure (4 beats = 16 sixteenths)
+                // Cycle: 0 -> -2 -> -4 -> -5 (semitones)
+                const measure = Math.floor(noteTick / 16) % 4;
+                let semitoneShift = 0;
+                if (measure === 1) semitoneShift = -1; // G#
+                if (measure === 2) semitoneShift = -3; // F#
+                if (measure === 3) semitoneShift = -4; // F
+
+                const multiplier = Math.pow(2, semitoneShift / 12);
+                const noteIndex = noteTick % notes.length;
+                const freq = notes[noteIndex] * multiplier;
+
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'square';
-                osc.frequency.value = notes[noteIndex];
-                gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                osc.frequency.value = freq;
+
+                // slightly random detune for analog feel
+                osc.detune.value = Math.random() * 10 - 5;
+
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+
                 osc.connect(gain);
                 gain.connect(masterGain);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.15);
-                noteIndex = (noteIndex + 1) % notes.length;
-                setTimeout(playArpNote, 150);
+
+                noteTick++;
+                setTimeout(playArpNote, 130); // slightly faster bpm
             }
 
             gamePlaying = true;
@@ -318,6 +329,47 @@
             score++;
             document.getElementById('score').textContent = 'Score: ' + score;
             updateStatus('💰 Coin collected! +1');
+            setTimeout(() => {
+                if (gamePlaying) updateStatus('🎮 Game music playing', 'playing');
+                else if (shopPlaying) updateStatus('🛒 Shop music playing', 'shop');
+                else updateStatus('Ready');
+            }, 800);
+        }
+
+        // Damage sound - harsh distorted hit
+        function playDamage() {
+            initAudio();
+            // Noise burst using oscillator
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const distortion = ctx.createWaveShaper();
+
+            // Create distortion curve
+            const k = 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            for (let i = 0; i < n_samples; i++) {
+                const x = i * 2 / n_samples - 1;
+                curve[i] = (3 + k) * x * 20 / (Math.PI + k * Math.abs(x));
+            }
+            distortion.curve = curve;
+            distortion.oversample = '4x';
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.15);
+
+            gain.gain.setValueAtTime(0.6, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+
+            osc.connect(distortion);
+            distortion.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.2);
+
+            updateStatus('💥 Damage taken!');
             setTimeout(() => {
                 if (gamePlaying) updateStatus('🎮 Game music playing', 'playing');
                 else if (shopPlaying) updateStatus('🛒 Shop music playing', 'shop');

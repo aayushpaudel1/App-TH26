@@ -6,6 +6,614 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css">
     <title>Finance Dash</title>
+    <style id="skills-styles">
+        /* ========== SKILLS TAB EXCLUSIVE CSS ========== */
+        /* CSS variables scoped to skills tab */
+        #skills-tab {
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-yellow: #facc15;
+            --accent-cyan: #22d3ee;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --glow-blue: 0 0 15px rgba(59, 130, 246, 0.5);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ===== Icon Stats ===== */
+        #skills-tab .icon-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 500;
+            background: var(--glass-bg);
+            padding: 8px 10px;
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(8px);
+        }
+
+        /* ===== Tree Layout ===== */
+        #skills-tab .skill-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 60px;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        #skills-tab .tree-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding: 10px 30px;
+            border-radius: 12px;
+        }
+        #skills-tab .tree-title.tech {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(34, 211, 238, 0.2));
+            border: 1px solid var(--accent-blue);
+        }
+        #skills-tab .tree-title.creative {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(244, 114, 182, 0.2));
+            border: 1px solid var(--accent-purple);
+        }
+        #skills-tab .tree-title.corporate {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.3), rgba(251, 191, 36, 0.2));
+            border: 1px solid var(--accent-yellow);
+        }
+        #skills-tab .tier {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            padding: 15px 10px;
+            width: 100%;
+        }
+        #skills-tab .tier .icon-item {
+            position: relative;
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        #skills-tab .tier .icon-item .btn {
+            width: 70px;
+            height: 70px;
+        }
+        #skills-tab .connector-down::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 15px;
+            background: var(--accent-blue);
+            opacity: 0.6;
+        }
+        #skills-tab .tier-2::before,
+        #skills-tab .tier-3::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--accent-blue) 20%, var(--accent-blue) 80%, transparent);
+            opacity: 0.4;
+        }
+        #skills-tab .tier-2 .icon-item::before,
+        #skills-tab .tier-3 .icon-item::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 15px;
+            background: var(--accent-blue);
+            opacity: 0.5;
+        }
+        #skills-tab .path-divider {
+            width: 90%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--glass-border), transparent);
+            margin: 30px 0;
+        }
+
+        /* ===== Skill Popup ===== */
+        #skill-popup {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border-top: 2px solid #3b82f6;
+            padding: 20px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-height: 50vh;
+            overflow-y: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #skill-popup.active { bottom: 0; }
+        #skill-popup .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        #skill-popup .popup-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+        #skill-popup .popup-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        #skill-popup .popup-close:hover { color: #f8fafc; }
+        #skill-popup .popup-content {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        #skill-popup .popup-info { flex: 1; }
+        #skill-popup .popup-description {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        #skill-popup .popup-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+        #skill-popup .popup-buy-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s;
+            white-space: nowrap;
+            min-width: 90px;
+        }
+        #skill-popup .popup-buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* ===== Tech Tier 1: Code Rabbit ===== */
+        #skills-tab .btn-code-rabbit {
+            background: #050a10;
+            border: 1px solid var(--accent-cyan);
+            overflow: hidden;
+            position: relative;
+        }
+        #skills-tab .code-bg {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(180deg, transparent 0, transparent 4px, rgba(34, 211, 238, 0.1) 4px, rgba(34, 211, 238, 0.1) 5px);
+            animation: skills-scroll-code 3s linear infinite;
+        }
+        @keyframes skills-scroll-code {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 20px; }
+        }
+        #skills-tab .rabbit-svg {
+            width: 100%;
+            height: 100%;
+            fill: #e0e0e0;
+            filter: drop-shadow(0 0 2px var(--accent-cyan));
+        }
+        #skills-tab .rabbit-eye {
+            fill: var(--accent-cyan);
+            filter: drop-shadow(0 0 5px var(--accent-cyan));
+        }
+        #skills-tab .speed-lines {
+            stroke: rgba(34, 211, 238, 0.6);
+            stroke-width: 2;
+            stroke-dasharray: 10, 5;
+        }
+
+        /* ===== Tech Tier 2: Velocity Demon ===== */
+        #skills-tab .btn-velocity-demon {
+            background: linear-gradient(135deg, #450a0a, #7f1d1d);
+            border: 1px solid var(--danger);
+            overflow: hidden;
+            animation: skills-vibrate 0.1s infinite;
+        }
+        @keyframes skills-vibrate {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            75% { transform: translate(1px, -1px); }
+            100% { transform: translate(-1px, 1px); }
+        }
+        #skills-tab .demon-blur {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), rgba(255, 255, 0, 0.5));
+            width: 100%;
+            height: 100%;
+            transform: skewX(-30deg);
+            filter: blur(4px);
+            opacity: 0.6;
+        }
+        #skills-tab .demon-svg {
+            width: 100%;
+            height: 100%;
+            fill: #450a0a;
+            stroke: var(--accent-yellow);
+            stroke-width: 1;
+        }
+        #skills-tab .demon-eyes {
+            fill: #fff;
+            filter: drop-shadow(0 0 4px var(--danger));
+        }
+        #skills-tab .demon-grin {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+        }
+
+        /* ===== Tech Tier 2: Stack Overflow Scholar ===== */
+        #skills-tab .btn-stackoverflow {
+            background: #2d2d2d;
+            border: 1px solid #f48024;
+            box-shadow: 0 0 10px rgba(244, 128, 36, 0.2);
+        }
+        #skills-tab .book-browser-svg { width: 100%; height: 100%; }
+        #skills-tab .browser-frame { fill: #fff; opacity: 0.1; }
+        #skills-tab .book-spine { fill: #f48024; }
+        #skills-tab .book-page { fill: #eee; }
+        #skills-tab .sticky-note { fill: #ffeb3b; stroke: rgba(0, 0, 0, 0.1); }
+        #skills-tab .cursor-pointer {
+            fill: #fff;
+            stroke: #000;
+            stroke-width: 1;
+            filter: drop-shadow(0 0 4px #f48024);
+            animation: skills-bounce 2s infinite;
+        }
+        @keyframes skills-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* ===== Tech Tier 3: Caffeine Overdrive ===== */
+        #skills-tab .btn-caffeine {
+            background: #1a1a1a;
+            border: 1px solid var(--success);
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+        }
+        #skills-tab .mug-shake {
+            animation: skills-vibrate-heavy 0.2s infinite;
+            transform-origin: center bottom;
+        }
+        @keyframes skills-vibrate-heavy {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+        }
+        #skills-tab .liquid-glow {
+            fill: var(--success);
+            filter: drop-shadow(0 0 5px var(--success));
+        }
+        #skills-tab .steam-jagged {
+            stroke: #fff;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 100;
+            animation: skills-dash 2s linear infinite;
+        }
+        @keyframes skills-dash { to { stroke-dashoffset: -200; } }
+
+        /* ===== Tech Tier 3: Turbo Compiler ===== */
+        #skills-tab .btn-turbo {
+            background: #222;
+            border: 1px solid #f43f5e;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+        }
+        #skills-tab .progress-frame { fill: #000; stroke: #555; stroke-width: 2; }
+        #skills-tab .progress-fill { fill: #f43f5e; filter: drop-shadow(0 0 5px #f43f5e); }
+        #skills-tab .sparks {
+            fill: #ffff00;
+            animation: skills-fly-sparks 0.5s linear infinite;
+            opacity: 0;
+        }
+        @keyframes skills-fly-sparks {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(10px, -10px) scale(0); opacity: 0; }
+        }
+
+        /* ===== Tech Tier 3: Passive Income Bot ===== */
+        #skills-tab .btn-passive-bot {
+            background: #101520;
+            border: 1px solid var(--accent-blue);
+        }
+        #skills-tab .bot-body { fill: var(--accent-blue); }
+        #skills-tab .coin-drip {
+            fill: var(--accent-yellow);
+            animation: skills-drip 2s infinite;
+        }
+        @keyframes skills-drip {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(20px); opacity: 0; }
+        }
+
+        /* ===== Tech Tier 3: API Goldmine ===== */
+        #skills-tab .btn-api-mine {
+            background: #0a0a0a;
+            border: 1px solid var(--accent-yellow);
+        }
+        #skills-tab .server-frame { fill: #222; stroke: #444; }
+        #skills-tab .gold-core {
+            fill: var(--accent-yellow);
+            filter: drop-shadow(0 0 8px var(--accent-yellow));
+            animation: skills-pulse-gold 2s infinite;
+        }
+        @keyframes skills-pulse-gold {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        #skills-tab .cable-vine {
+            stroke: var(--accent-yellow);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        /* ===== Creative Tier 1: Starving Artist ===== */
+        #skills-tab .btn-starving-artist {
+            background: #201a15;
+            border: 1px solid #c2410c;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #skills-tab .cracked-frame {
+            position: absolute;
+            inset: 0;
+            border: 1px dashed #553311;
+            opacity: 0.5;
+        }
+        #skills-tab .paintbrush-taped {
+            transform: rotate(-45deg);
+            transform-origin: center;
+            filter: drop-shadow(2px 2px 2px #000);
+        }
+        #skills-tab .brush-glow {
+            fill: var(--accent-yellow);
+            filter: blur(2px);
+            opacity: 0.6;
+            animation: skills-pulse-glow 2s infinite;
+        }
+        @keyframes skills-pulse-glow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ===== Creative Tier 2: Content Machine ===== */
+        #skills-tab .btn-content-machine {
+            background: #1a1a1a;
+            border: 1px solid var(--text-secondary);
+            overflow: hidden;
+        }
+        #skills-tab .conveyor-belt {
+            fill: none;
+            stroke: #444;
+            stroke-width: 4;
+            stroke-dasharray: 10, 5;
+            animation: skills-conveyor-move 1s linear infinite;
+        }
+        @keyframes skills-conveyor-move { to { stroke-dashoffset: -15; } }
+
+        /* ===== Creative Tier 2: Tank Artist ===== */
+        #skills-tab .btn-tank-artist {
+            background: #2a2a2a;
+            border: 1px solid var(--success);
+        }
+        #skills-tab .palette-shield {
+            fill: #8d6e63;
+            stroke: #5d4037;
+            stroke-width: 1;
+        }
+        #skills-tab .paint-splat {
+            animation: skills-splat-pop 3s infinite;
+        }
+        @keyframes skills-splat-pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ===== Creative Tier 3: Royalty Checks ===== */
+        #skills-tab .btn-royalty-checks {
+            background: #111;
+            border: 1px solid var(--accent-yellow);
+            border-radius: 50%;
+        }
+        #skills-tab .vinyl-record {
+            transform-origin: 25px 25px;
+            animation: skills-spin-slow 5s linear infinite;
+        }
+        @keyframes skills-spin-slow { to { transform: rotate(360deg); } }
+        #skills-tab .orbiting-coin {
+            fill: var(--accent-yellow);
+            animation: skills-orbit-reverse 3s linear infinite;
+            transform-origin: 25px 25px;
+        }
+        @keyframes skills-orbit-reverse {
+            from { transform: rotate(360deg) translateX(18px) rotate(-360deg); }
+            to { transform: rotate(0deg) translateX(18px) rotate(0deg); }
+        }
+
+        /* ===== Creative Tier 3: Set It Forget It ===== */
+        #skills-tab .btn-set-forget {
+            background: #222;
+            border: 1px solid var(--text-secondary);
+        }
+        #skills-tab .toggle-switch-base { fill: #333; stroke: #555; }
+        #skills-tab .toggle-switch-on { fill: var(--success); filter: drop-shadow(0 0 2px var(--success)); }
+        #skills-tab .dust-layer { fill: #aaa; opacity: 0.3; }
+
+        /* ===== Creative Tier 3: Fortress of Solitude ===== */
+        #skills-tab .btn-fortress-solitude {
+            background: #1e293b;
+            border: 1px solid var(--text-secondary);
+        }
+        #skills-tab .concrete-walls { fill: #636e72; }
+        #skills-tab .warm-window-light { fill: #fdcb6e; filter: drop-shadow(0 0 5px #fdcb6e); }
+
+        /* ===== Creative Tier 3: Immovable Object ===== */
+        #skills-tab .btn-immovable-object {
+            background: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        #skills-tab .stone-block { fill: #636e72; stroke: #2d3436; }
+        #skills-tab .impact-cracks { stroke: #b2bec3; fill: none; stroke-width: 0.5; }
+
+        /* ===== Corporate Tier 1: Cubicle Warrior ===== */
+        #skills-tab .btn-cubicle-warrior {
+            background: #dcdde1;
+            border: 1px solid var(--text-secondary);
+        }
+        #skills-tab .desk-shield { fill: #bdc3c7; stroke: var(--text-secondary); stroke-width: 1; }
+        #skills-tab .keyboard-weapon { fill: #2c3e50; }
+
+        /* ===== Corporate Tier 2: Promotion Chaser ===== */
+        #skills-tab .btn-promo-chaser {
+            background: #ecf0f1;
+            border: 1px solid var(--accent-blue);
+        }
+        #skills-tab .staircase {
+            fill: none;
+            stroke: #95a5a6;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        #skills-tab .arrow-upward {
+            fill: var(--accent-blue);
+            animation: skills-climb-stairs 2s steps(4) infinite;
+        }
+        @keyframes skills-climb-stairs {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, -20px); }
+        }
+
+        /* ===== Corporate Tier 2: Benefits Maximizer ===== */
+        #skills-tab .btn-benefits-max {
+            background: #fff;
+            border: 1px solid #27ae60;
+        }
+        #skills-tab .checklist-shield { fill: #fff; stroke: #27ae60; stroke-width: 1.5; }
+        #skills-tab .check-mark { fill: #27ae60; }
+        #skills-tab .med-cross { fill: var(--danger); }
+
+        /* ===== Corporate Tier 3: Bonus Hunter ===== */
+        #skills-tab .btn-bonus-hunter {
+            background: #2c3e50;
+            border: 1px solid var(--accent-yellow);
+        }
+        #skills-tab .target-ring { fill: none; stroke: #ecf0f1; stroke-width: 2; }
+        #skills-tab .dollar-bullseye {
+            fill: var(--accent-yellow);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        #skills-tab .arrow-pierce { stroke: var(--danger); stroke-width: 2; }
+
+        /* ===== Corporate Tier 3: Executive Fast Track ===== */
+        #skills-tab .btn-exec-fasttrack {
+            background: #34495e;
+            border: 1px solid var(--accent-blue);
+            overflow: hidden;
+        }
+        #skills-tab .elevator-box { fill: #95a5a6; stroke: #7f8c8d; }
+        #skills-tab .floor-numbers {
+            fill: #ecf0f1;
+            font-size: 10px;
+            animation: skills-floor-blur 0.5s linear infinite;
+        }
+        @keyframes skills-floor-blur {
+            from { transform: translateY(0); }
+            to { transform: translateY(20px); }
+        }
+
+        /* ===== Corporate Tier 3: Corporate Fortress ===== */
+        #skills-tab .btn-corp-fortress {
+            background: #2c3e50;
+            border: 1px solid #bdc3c7;
+        }
+        #skills-tab .skyscraper { fill: #34495e; stroke: #2c3e50; }
+        #skills-tab .windows-lit { fill: var(--accent-yellow); }
+
+        /* ===== Corporate Tier 3: Safety Net Supreme ===== */
+        #skills-tab .btn-safety-net {
+            background: #ecf0f1;
+            border: 1px solid var(--warning);
+        }
+        #skills-tab .golden-net { stroke: var(--warning); stroke-width: 1; fill: none; }
+        #skills-tab .figure-safe { fill: #2c3e50; }
+
+        /* ===== Mobile Responsive ===== */
+        @media (max-width: 600px) {
+            #skills-tab .tier { gap: 10px; padding: 10px 5px; }
+            #skills-tab .tier .icon-item { width: 80px; }
+            #skills-tab .tier .icon-item .btn { width: 60px; height: 60px; }
+            #skills-tab .tree-title { font-size: 1.2rem; padding: 8px 20px; }
+            #skills-tab .icon-label { font-size: 0.7rem; }
+        }
+
+        /* ===== Too Expensive Grayed Out ===== */
+        .too-expensive {
+            opacity: 0.35;
+            pointer-events: none;
+            filter: grayscale(100%);
+            cursor: not-allowed;
+        }
+        #skill-popup .popup-buy-btn.too-expensive {
+            opacity: 0.35;
+            pointer-events: none;
+            filter: grayscale(100%);
+            background: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,10 +639,304 @@
         </div>
         <div id="skills-tab" class="tab-content active">
             <div class="skills-trees-container">
-                <!-- Skill trees will be populated by JavaScript based on playerPath -->
-                <div id="tech-tree" class="skill-tree" style="display: none;"></div>
-                <div id="creative-tree" class="skill-tree" style="display: none;"></div>
-                <div id="corporate-tree" class="skill-tree" style="display: none;"></div>
+                <!-- Tech Path Binary Tree -->
+                <div id="tech-tree" class="skill-tree" style="display: none;">
+                    <div class="tree-title tech">⚡ Tech Path</div>
+                    <div class="tier tier-1">
+                        <div class="icon-item connector-down">
+                            <div class="btn btn-code-rabbit" title="Code Rabbit">
+                                <div class="code-bg"></div>
+                                <div class="rabbit-container">
+                                    <svg class="rabbit-svg" viewBox="0 0 50 40">
+                                        <line class="speed-lines" x1="0" y1="20" x2="15" y2="20" />
+                                        <line class="speed-lines" x1="5" y1="25" x2="20" y2="25" />
+                                        <path d="M15 25 Q 25 20, 35 25 L 45 20 Q 48 15, 35 15 Q 25 10, 15 25 Z" />
+                                        <circle cx="42" cy="18" r="6" />
+                                        <circle class="rabbit-eye" cx="44" cy="16" r="1.5" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="icon-label">Code Rabbit</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-2">
+                        <div class="icon-item">
+                            <div class="btn btn-velocity-demon" title="Velocity Demon">
+                                <div class="demon-blur"></div>
+                                <svg class="demon-svg" viewBox="0 0 50 50">
+                                    <path d="M15 40 L 25 25 L 35 20 Q 45 15, 40 10 L 35 5 Q 30 10, 25 10 L 10 30 Z" transform="rotate(15 25 25)" />
+                                    <path d="M35 5 L 32 -5 L 38 0 Z" fill="var(--danger)" />
+                                    <path d="M40 10 L 45 0 L 42 5 Z" fill="var(--danger)" />
+                                    <circle class="demon-eyes" cx="35" cy="12" r="2" />
+                                    <path class="demon-grin" d="M32 18 Q 36 20, 40 16" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Velocity Demon</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-stackoverflow" title="Stack Overflow Scholar">
+                                <svg class="book-browser-svg" viewBox="0 0 60 50">
+                                    <rect class="browser-frame" x="5" y="5" width="50" height="40" rx="2" />
+                                    <rect x="5" y="5" width="50" height="10" fill="#444" rx="2" />
+                                    <circle cx="10" cy="10" r="2" fill="#ff5f56" />
+                                    <circle cx="16" cy="10" r="2" fill="#ffbd2e" />
+                                    <circle cx="22" cy="10" r="2" fill="#27c93f" />
+                                    <path class="book-page" d="M10 20 Q 20 20, 30 25 Q 40 20, 50 20 L 50 40 Q 40 40, 30 45 Q 20 40, 10 40 Z" />
+                                    <path class="book-spine" d="M29 25 L 31 25 L 31 45 L 29 45 Z" />
+                                    <rect class="sticky-note" x="42" y="15" width="6" height="8" rx="1" transform="rotate(10 45 19)" />
+                                    <rect class="sticky-note" x="48" y="28" width="6" height="8" rx="1" transform="rotate(-5 51 32)" />
+                                    <path class="cursor-pointer" d="M35 15 L 42 22 L 35 29 Z" transform="rotate(-90 35 15) translate(5, 5)" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Stack Overflow</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-3">
+                        <div class="icon-item">
+                            <div class="btn btn-caffeine" title="Caffeine Overdrive">
+                                <svg class="mug-shake" viewBox="0 0 50 50">
+                                    <path d="M10 10 L 12 40 Q 12 45, 17 45 L 33 45 Q 38 45, 38 40 L 40 10" fill="none" stroke="var(--text-secondary)" stroke-width="3" />
+                                    <path d="M40 15 Q 48 15, 48 25 Q 48 35, 40 35" fill="none" stroke="var(--text-secondary)" stroke-width="3" />
+                                    <path class="liquid-glow" d="M12 25 L 13 40 Q 13 43, 17 43 L 33 43 Q 37 43, 37 40 L 38 25 Q 25 30, 12 25 Z" />
+                                    <path class="steam-jagged" d="M15 5 L 20 10 L 15 15 M 25 2 L 30 8 L 25 14 M 35 5 L 40 10 L 35 15" />
+                                    <path d="M20 20 L 25 30 L 30 15" fill="none" stroke="#fff" stroke-width="2" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Caffeine OD</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-turbo" title="Turbo Compiler">
+                                <svg viewBox="0 0 60 40">
+                                    <rect class="progress-frame" x="2" y="15" width="56" height="10" rx="2" transform="rotate(-2 30 20)" />
+                                    <rect class="progress-fill" x="4" y="17" width="52" height="6" rx="1" transform="rotate(-2 30 20)" />
+                                    <circle class="sparks" cx="55" cy="15" r="1.5" style="animation-duration: 0.4s; animation-delay: 0s;" />
+                                    <circle class="sparks" cx="57" cy="20" r="1" style="animation-duration: 0.6s; animation-delay: 0.1s;" />
+                                    <circle class="sparks" cx="53" cy="18" r="2" style="animation-duration: 0.5s; animation-delay: 0.2s;" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Turbo Compiler</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-passive-bot" title="Passive Income Bot">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="bot-body" x="15" y="10" width="20" height="25" rx="2" />
+                                    <circle class="bot-body" cx="25" cy="-5" r="8" />
+                                    <line x1="15" y1="20" x2="5" y2="25" stroke="var(--accent-blue)" stroke-width="3" />
+                                    <line x1="35" y1="20" x2="45" y2="15" stroke="var(--accent-blue)" stroke-width="3" />
+                                    <rect x="22" y="15" width="6" height="2" fill="#000" />
+                                    <circle class="coin-drip" cx="25" cy="18" r="2" />
+                                    <circle class="coin-drip" cx="25" cy="25" r="2" style="animation-delay: 0.5s;" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Income Bot</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-api-mine" title="API Goldmine">
+                                <svg viewBox="0 0 50 60">
+                                    <rect class="server-frame" x="5" y="5" width="40" height="50" rx="3" />
+                                    <path class="gold-core" d="M15 20 L 25 15 L 35 20 L 30 35 L 20 35 Z" />
+                                    <path class="cable-vine" d="M25 35 Q 25 45, 10 50" />
+                                    <path class="cable-vine" d="M25 35 Q 25 45, 40 50" />
+                                    <circle cx="10" cy="50" r="2" fill="#ffd700" />
+                                    <circle cx="40" cy="50" r="2" fill="#ffd700" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">API Goldmine</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Creative Path Binary Tree -->
+                <div id="creative-tree" class="skill-tree" style="display: none;">
+                    <div class="tree-title creative">🎨 Creative Path</div>
+                    <div class="tier tier-1">
+                        <div class="icon-item connector-down">
+                            <div class="btn btn-starving-artist" title="Starving Artist">
+                                <div class="cracked-frame"></div>
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="paintbrush-taped" x="22" y="15" width="6" height="20" fill="#a0522d" rx="1" />
+                                    <rect class="paintbrush-taped" x="21" y="22" width="8" height="4" fill="#ddd" rx="0.5" />
+                                    <path class="paintbrush-taped" d="M22 15 L 20 5 L 30 5 L 28 15 Z" fill="#d3d3d3" />
+                                    <circle class="brush-glow" cx="25" cy="5" r="3" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Starving Artist</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-2">
+                        <div class="icon-item">
+                            <div class="btn btn-content-machine" title="Content Machine">
+                                <svg viewBox="0 0 50 50">
+                                    <path class="conveyor-belt" d="M5 35 L 45 35" />
+                                    <rect x="10" y="25" width="8" height="10" fill="#ef5350" />
+                                    <circle cx="25" cy="30" r="4" fill="#42a5f5" />
+                                    <rect x="35" y="25" width="8" height="10" fill="#ffca28" />
+                                    <circle cx="10" cy="38" r="3" fill="#666" />
+                                    <circle cx="25" cy="38" r="3" fill="#666" />
+                                    <circle cx="40" cy="38" r="3" fill="#666" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Content Machine</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-tank-artist" title="Tank Artist">
+                                <svg viewBox="0 0 50 50">
+                                    <path class="palette-shield" d="M10 25 Q 10 5, 25 5 Q 40 5, 40 25 Q 40 45, 25 45 Q 10 45, 10 25 Z" />
+                                    <circle cx="18" cy="20" r="3" fill="#2a2a2a" />
+                                    <circle class="paint-splat" cx="30" cy="15" r="3" fill="#f44336" style="animation-delay: 0s;" />
+                                    <circle class="paint-splat" cx="35" cy="25" r="3" fill="#2196f3" style="animation-delay: 0.5s;" />
+                                    <circle class="paint-splat" cx="28" cy="35" r="3" fill="#ffeb3b" style="animation-delay: 1s;" />
+                                    <line x1="15" y1="30" x2="20" y2="35" stroke="#5d4037" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Tank Artist</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-3">
+                        <div class="icon-item">
+                            <div class="btn btn-royalty-checks" title="Royalty Checks">
+                                <svg viewBox="0 0 50 50">
+                                    <circle class="vinyl-record" cx="25" cy="25" r="20" fill="#111" stroke="#333" stroke-width="1" />
+                                    <circle class="vinyl-record" cx="25" cy="25" r="8" fill="#e91e63" />
+                                    <circle cx="25" cy="25" r="2" fill="#000" />
+                                    <circle class="orbiting-coin" cx="25" cy="25" r="3" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Royalty Checks</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-set-forget" title="Set It Forget It">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="toggle-switch-base" x="10" y="15" width="30" height="20" rx="10" />
+                                    <circle class="toggle-switch-on" cx="32" cy="25" r="8" />
+                                    <path class="dust-layer" d="M10 15 Q 25 20, 40 15 L 40 20 Q 25 25, 10 20 Z" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Set & Forget</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-fortress-solitude" title="Fortress of Solitude">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="concrete-walls" x="10" y="15" width="30" height="25" />
+                                    <rect class="warm-window-light" x="22" y="20" width="6" height="8" />
+                                    <path class="concrete-walls" d="M5 15 L 25 5 L 45 15 Z" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Fortress</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-immovable-object" title="Immovable Object">
+                                <svg viewBox="0 0 50 50">
+                                    <line x1="0" y1="40" x2="50" y2="40" stroke="#7f8c8d" stroke-width="2" />
+                                    <rect class="stone-block" x="15" y="20" width="20" height="25" />
+                                    <path class="impact-cracks" d="M10 40 L 15 35 M 40 40 L 35 35 M 25 20 L 25 10" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Immovable</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corporate Path Binary Tree -->
+                <div id="corporate-tree" class="skill-tree" style="display: none;">
+                    <div class="tree-title corporate">💼 Corporate Path</div>
+                    <div class="tier tier-1">
+                        <div class="icon-item connector-down">
+                            <div class="btn btn-cubicle-warrior" title="Cubicle Warrior">
+                                <svg viewBox="0 0 50 50">
+                                    <path class="desk-shield" d="M10 20 L 40 20 L 40 40 L 10 40 Z" />
+                                    <rect x="15" y="25" width="20" height="10" fill="#ecf0f1" />
+                                    <rect class="keyboard-weapon" x="12" y="30" width="26" height="8" rx="1" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Cubicle Warrior</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-2">
+                        <div class="icon-item">
+                            <div class="btn btn-promo-chaser" title="Promotion Chaser">
+                                <svg viewBox="0 0 50 50">
+                                    <path class="staircase" d="M10 40 L 20 40 L 20 30 L 30 30 L 30 20 L 40 20 L 40 10" />
+                                    <path class="arrow-upward" d="M15 40 L 15 30 L 10 35 M 15 30 L 20 35" stroke="#3498db" stroke-width="2" />
+                                    <text x="12" y="38" font-size="6" fill="#7f8c8d">Jr</text>
+                                    <text x="32" y="18" font-size="6" fill="#7f8c8d">CEO</text>
+                                </svg>
+                            </div>
+                            <div class="icon-label">Promo Chaser</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-benefits-max" title="Benefits Maximizer">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="checklist-shield" x="15" y="10" width="20" height="30" rx="2" />
+                                    <path class="check-mark" d="M20 18 L 23 21 L 28 16" fill="none" stroke="#27ae60" stroke-width="2" />
+                                    <path class="check-mark" d="M20 25 L 23 28 L 28 23" fill="none" stroke="#27ae60" stroke-width="2" />
+                                    <path class="check-mark" d="M20 32 L 23 35 L 28 30" fill="none" stroke="#27ae60" stroke-width="2" />
+                                    <rect x="30" y="32" width="6" height="6" fill="#e74c3c" />
+                                    <path d="M33 33 L 33 37 M 31 35 L 35 35" stroke="#fff" stroke-width="1.5" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Benefits Max</div>
+                        </div>
+                    </div>
+                    <div class="tier tier-3">
+                        <div class="icon-item">
+                            <div class="btn btn-bonus-hunter" title="Bonus Hunter">
+                                <svg viewBox="0 0 50 50">
+                                    <circle class="target-ring" cx="25" cy="25" r="15" />
+                                    <circle class="target-ring" cx="25" cy="25" r="10" />
+                                    <text class="dollar-bullseye" x="25" y="26">$</text>
+                                    <line class="arrow-pierce" x1="40" y1="10" x2="25" y2="25" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Bonus Hunter</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-exec-fasttrack" title="Executive Fast Track">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="elevator-box" x="15" y="10" width="20" height="30" />
+                                    <line x1="25" y1="10" x2="25" y2="40" stroke="#7f8c8d" stroke-width="1" />
+                                    <g class="floor-numbers">
+                                        <text x="38" y="15">10</text>
+                                        <text x="38" y="25">20</text>
+                                        <text x="38" y="35">30</text>
+                                        <text x="38" y="5">5</text>
+                                    </g>
+                                    <path d="M25 5 L 20 10 L 30 10 Z" fill="#2ecc71" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Fast Track</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-corp-fortress" title="Corporate Fortress">
+                                <svg viewBox="0 0 50 50">
+                                    <rect class="skyscraper" x="15" y="5" width="20" height="40" />
+                                    <rect class="skyscraper" x="10" y="20" width="5" height="25" />
+                                    <rect class="skyscraper" x="35" y="15" width="5" height="30" />
+                                    <rect class="windows-lit" x="17" y="10" width="2" height="2" />
+                                    <rect class="windows-lit" x="21" y="10" width="2" height="2" />
+                                    <rect class="windows-lit" x="25" y="10" width="2" height="2" />
+                                    <rect class="windows-lit" x="29" y="10" width="2" height="2" />
+                                    <rect class="windows-lit" x="17" y="15" width="2" height="2" />
+                                    <rect class="windows-lit" x="29" y="30" width="2" height="2" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Corp Fortress</div>
+                        </div>
+                        <div class="icon-item">
+                            <div class="btn btn-safety-net" title="Safety Net Supreme">
+                                <svg viewBox="0 0 50 50">
+                                    <path class="golden-net" d="M5 35 Q 25 45, 45 35" />
+                                    <line class="golden-net" x1="10" y1="36" x2="15" y2="40" />
+                                    <line class="golden-net" x1="20" y1="39" x2="25" y2="40" />
+                                    <line class="golden-net" x1="30" y1="39" x2="35" y2="38" />
+                                    <circle class="figure-safe" cx="25" cy="30" r="3" />
+                                    <line x1="25" y1="33" x2="25" y2="40" stroke="#2c3e50" stroke-width="2" />
+                                </svg>
+                            </div>
+                            <div class="icon-label">Safety Net</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Skill Popup -->
@@ -120,7 +1022,6 @@
         <div class="nav-bar">
             <button class="nav-tab active" data-tab="skills">SKILLS</button>
             <button class="nav-tab" data-tab="shop">SHOP</button>
-            <button class="nav-tab" data-tab="cards">CARDS</button>
         </div>
     </div>
 
@@ -794,6 +1695,7 @@
 
             // Update shop stats display
             updateShopStats();
+            updateAffordability();
 
             setTimeout(() => {
                 msg.style.opacity = 0;
@@ -806,6 +1708,28 @@
         function updateShopStats() {
             document.getElementById('shop-balance').textContent = `$${player.money}`;
             document.getElementById('shop-health').textContent = `${player.health}/${player.maxHealth}`;
+        }
+
+        // Update affordability - gray out items player can't afford
+        function updateAffordability() {
+            document.querySelectorAll('.shop-item').forEach(item => {
+                const costText = item.querySelector('.item-cost').textContent;
+                const cost = parseInt(costText.replace(/[^0-9]/g, ''));
+                if (player.money < cost) {
+                    item.classList.add('too-expensive');
+                } else {
+                    item.classList.remove('too-expensive');
+                }
+            });
+            if (currentSkill) {
+                const skill = skillData[currentSkill];
+                const buyBtn = document.getElementById('popup-buy-btn');
+                if (skill && player.money < skill.price) {
+                    buyBtn.classList.add('too-expensive');
+                } else if (buyBtn) {
+                    buyBtn.classList.remove('too-expensive');
+                }
+            }
         }
 
         // ========== CARDS TAB LOGIC ==========
@@ -1069,6 +1993,9 @@
         function continueCardGame() {
             // Transition to SHOP after making dilemma choice
             gameState = 'SHOP';
+            // Restore nav bar and close button
+            document.querySelector('.nav-bar').style.display = '';
+            document.getElementById('closeShop').style.display = '';
             // Switch to skills tab
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -1076,69 +2003,27 @@
             document.getElementById('skills-tab').classList.add('active');
             drawSkillsTree();
             updateShopStats();
+            updateAffordability();
         }
 
-        // Draw Skills Tree
+        // Draw Skills Tree - shows the correct tree based on playerPath
         function drawSkillsTree() {
-            const canvas = document.getElementById('skills-canvas');
-            const ctx = canvas.getContext('2d');
-            const parent = canvas.parentElement;
-            canvas.width = parent.clientWidth;
-            canvas.height = parent.clientHeight;
+            // Hide all trees first
+            document.getElementById('tech-tree').style.display = 'none';
+            document.getElementById('creative-tree').style.display = 'none';
+            document.getElementById('corporate-tree').style.display = 'none';
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Display selected path at the top
-            if (playerPath) {
-                ctx.fillStyle = '#fff';
-                ctx.font = 'bold 32px Arial';
-                ctx.textAlign = 'center';
-                const pathName = playerPath.charAt(0).toUpperCase() + playerPath.slice(1);
-                ctx.fillText(`${pathName} Path`, canvas.width / 2, 50);
+            // Show the tree matching the player's chosen path
+            if (playerPath === 'tech') {
+                document.getElementById('tech-tree').style.display = 'flex';
+            } else if (playerPath === 'creative') {
+                document.getElementById('creative-tree').style.display = 'flex';
+            } else if (playerPath === 'corporate') {
+                document.getElementById('corporate-tree').style.display = 'flex';
             }
 
-            const layers = [1, 2, 4, 8];
-            const nodeRadius = 30;
-            const layerHeight = (canvas.height - 80) / (layers.length + 1);
-            const nodes = [];
-
-            ctx.strokeStyle = '#aaa';
-            ctx.lineWidth = 2;
-
-            for (let layer = 0; layer < layers.length; layer++) {
-                const nodeCount = layers[layer];
-                const spacing = canvas.width / (nodeCount + 1);
-                for (let i = 0; i < nodeCount; i++) {
-                    const x = spacing * (i + 1);
-                    const y = 80 + layerHeight * (layer + 1);
-                    nodes.push({ x, y, layer, index: i });
-
-                    if (layer < layers.length - 1) {
-                        const childLayer = layer + 1;
-                        const childSpacing = canvas.width / (layers[childLayer] + 1);
-                        for (let c = 0; c < 2; c++) {
-                            const childIndex = i * 2 + c;
-                            const childX = childSpacing * (childIndex + 1);
-                            const childY = 80 + layerHeight * (childLayer + 1);
-                            ctx.beginPath();
-                            ctx.moveTo(x, y);
-                            ctx.lineTo(childX, childY);
-                            ctx.stroke();
-                        }
-                    }
-                }
-            }
-
-            nodes.forEach(node => {
-                ctx.fillStyle = '#ddd';
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#777';
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeRadius - 4, 0, Math.PI * 2);
-                ctx.fill();
-            });
+            // Initialize skill click handlers
+            initSkillClickHandlers();
         }
 
         // UI Event Listeners
@@ -1872,10 +2757,10 @@
 
                         gameState = 'DILEMMA';
                         document.getElementById('shop-ui').classList.add('active');
-                        // Switch to cards tab and show dilemma
-                        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                        // Show cards dilemma (hide nav & close so user must choose)
+                        document.querySelector('.nav-bar').style.display = 'none';
+                        document.getElementById('closeShop').style.display = 'none';
                         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                        document.querySelector('[data-tab="cards"]').classList.add('active');
                         document.getElementById('cards-tab').classList.add('active');
                         startDilemma();
                         Juice.postDraw();
@@ -1983,6 +2868,281 @@
         }
 
         loop();
+
+        // ========== SKILL DATA & HANDLERS ==========
+        const skillData = {
+            // Tech Path
+            'code-rabbit': {
+                name: 'Code Rabbit',
+                description: 'Lightning-fast coding assistant that helps you write code at breakneck speeds.',
+                buffs: ['💰 Income +10%'],
+                debuffs: [],
+                price: 500
+            },
+            'velocity-demon': {
+                name: 'Velocity Demon',
+                description: 'Push your development speed beyond mortal limits with demonic efficiency.',
+                buffs: ['💰 Income +15%'],
+                debuffs: [],
+                price: 1200
+            },
+            'stackoverflow': {
+                name: 'Stack Overflow Scholar',
+                description: 'Gain instant access to infinite knowledge and never get stuck again.',
+                buffs: ['💰 Income +25%'],
+                debuffs: [],
+                price: 1500
+            },
+            'caffeine': {
+                name: 'Caffeine Overdrive',
+                description: 'Channel the power of infinite coffee for extreme productivity.',
+                buffs: ['📊 Passive Income +10%'],
+                debuffs: ['⚠️ Damage Taken +8%'],
+                price: 2000
+            },
+            'turbo': {
+                name: 'Turbo Compiler',
+                description: 'Compile and execute code at blazing speeds, but sacrifice some stability.',
+                buffs: ['💰 Income +20%'],
+                debuffs: ['🛡️ Defense -15%'],
+                price: 2500
+            },
+            'passive-bot': {
+                name: 'Passive Income Bot',
+                description: 'Automated revenue stream that generates money while you sleep.',
+                buffs: ['💰 Income +20%', '📊 Passive Income +15%'],
+                debuffs: [],
+                price: 3000
+            },
+            'api-mine': {
+                name: 'API Goldmine',
+                description: 'Tap into lucrative API integrations but expose yourself to more risks.',
+                buffs: ['💰 Income +30%'],
+                debuffs: ['⚠️ Damage Taken +10%'],
+                price: 3500
+            },
+            // Creative Path
+            'starving-artist': {
+                name: 'Starving Artist',
+                description: 'Pour your soul into your craft, sacrificing income for passion and resilience.',
+                buffs: ['📊 Passive Income +15%', '🛡️ Defense +10%'],
+                debuffs: ['💰 Income -10%'],
+                price: 500
+            },
+            'content-machine': {
+                name: 'Content Machine',
+                description: 'Mass-produce creative content at the cost of personal speed.',
+                buffs: ['📊 Passive Income +25%'],
+                debuffs: [],
+                price: 1200
+            },
+            'tank-artist': {
+                name: 'Tank Artist',
+                description: 'Build thick skin from criticism and become nearly indestructible.',
+                buffs: ['🛡️ Defense +20%'],
+                debuffs: ['⚠️ Damage Taken +8%'],
+                price: 1500
+            },
+            'royalty-checks': {
+                name: 'Royalty Checks Forever',
+                description: 'Create timeless work that generates passive income indefinitely.',
+                buffs: ['📊 Passive Income +20%', '🛡️ Defense +10%'],
+                debuffs: ['💰 Income -15%'],
+                price: 2500
+            },
+            'set-forget': {
+                name: 'Set It and Forget It',
+                description: 'Automate your creative output completely, but move at a snail\'s pace.',
+                buffs: ['📊 Passive Income +30%'],
+                debuffs: [],
+                price: 3000
+            },
+            'fortress-solitude': {
+                name: 'Fortress of Solitude',
+                description: 'Isolate yourself to perfect your craft with enhanced protection.',
+                buffs: ['🛡️ Defense +15%', '📊 Passive Income +15%'],
+                debuffs: ['💰 Income -20%'],
+                price: 2800
+            },
+            'immovable-object': {
+                name: 'Immovable Object',
+                description: 'Become an unstoppable defensive force at the expense of all mobility.',
+                buffs: ['🛡️ Defense +30%'],
+                debuffs: [],
+                price: 3500
+            },
+            // Corporate Path
+            'cubicle-warrior': {
+                name: 'Cubicle Warrior',
+                description: 'Master the art of corporate survival with steady income and protection.',
+                buffs: ['💰 Income +15%', '🛡️ Defense +10%'],
+                debuffs: [],
+                price: 500
+            },
+            'promo-chaser': {
+                name: 'Promotion Chaser',
+                description: 'Climb the corporate ladder aggressively, sacrificing passive earnings.',
+                buffs: ['💰 Income +25%'],
+                debuffs: ['📊 Passive Income -15%'],
+                price: 1200
+            },
+            'benefits-max': {
+                name: 'Benefits Maximizer',
+                description: 'Optimize your corporate benefits package for maximum protection.',
+                buffs: ['🛡️ Defense +20%'],
+                debuffs: [],
+                price: 1500
+            },
+            'bonus-hunter': {
+                name: 'Performance Bonus Hunter',
+                description: 'Target high-risk, high-reward performance bonuses.',
+                buffs: ['💰 Income +20%', '🛡️ Defense +10%'],
+                debuffs: ['⚠️ Damage Taken +10%'],
+                price: 2500
+            },
+            'exec-fasttrack': {
+                name: 'Executive Fast Track',
+                description: 'Rocket to the top with aggressive income growth, sacrificing stability.',
+                buffs: ['💰 Income +30%'],
+                debuffs: ['📊 Passive Income -20%'],
+                price: 3000
+            },
+            'corp-fortress': {
+                name: 'Corporate Fortress',
+                description: 'Build an impenetrable corporate defense with balanced income.',
+                buffs: ['🛡️ Defense +15%', '💰 Income +15%'],
+                debuffs: [],
+                price: 3200
+            },
+            'safety-net': {
+                name: 'Safety Net Supreme',
+                description: 'Maximize job security and protection at the cost of immediate earnings.',
+                buffs: ['🛡️ Defense +25%'],
+                debuffs: ['💰 Income -15%'],
+                price: 2800
+            }
+        };
+
+        let currentSkill = null;
+
+        function showSkillPopup(skillId) {
+            const skill = skillData[skillId];
+            if (!skill) return;
+
+            currentSkill = skillId;
+
+            document.getElementById('popup-skill-name').textContent = skill.name;
+            document.getElementById('popup-description').textContent = skill.description;
+            document.getElementById('popup-price').textContent = skill.price;
+
+            const statsContainer = document.getElementById('popup-stats');
+            statsContainer.innerHTML = '';
+
+            skill.buffs.forEach(buff => {
+                const buffEl = document.createElement('span');
+                buffEl.className = 'buff';
+                buffEl.textContent = buff;
+                statsContainer.appendChild(buffEl);
+            });
+
+            skill.debuffs.forEach(debuff => {
+                const debuffEl = document.createElement('span');
+                debuffEl.className = 'debuff';
+                debuffEl.textContent = debuff;
+                statsContainer.appendChild(debuffEl);
+            });
+
+            // Gray out buy button if can't afford
+            const buyBtn = document.getElementById('popup-buy-btn');
+            if (player.money < skill.price) {
+                buyBtn.classList.add('too-expensive');
+            } else {
+                buyBtn.classList.remove('too-expensive');
+            }
+
+            document.getElementById('skill-popup').classList.add('active');
+        }
+
+        function closeSkillPopup() {
+            document.getElementById('skill-popup').classList.remove('active');
+            currentSkill = null;
+        }
+
+        function buySkill() {
+            if (!currentSkill) return;
+            const skill = skillData[currentSkill];
+
+            if (player.money < skill.price) {
+                return;
+            }
+
+            player.money -= skill.price;
+
+            // Apply buffs/debuffs
+            skill.buffs.forEach(buff => {
+                const match = buff.match(/([+-]?\d+)%/);
+                if (!match) return;
+                const val = parseInt(match[1]) / 100;
+                if (buff.includes('Income') && !buff.includes('Passive')) income += val;
+                else if (buff.includes('Passive')) passiveIncome += val;
+                else if (buff.includes('Defense')) defense += val;
+            });
+            skill.debuffs.forEach(debuff => {
+                const match = debuff.match(/([+-]?\d+)%/);
+                if (!match) return;
+                const val = parseInt(match[1]) / 100;
+                if (debuff.includes('Income') && !debuff.includes('Passive')) income -= val;
+                else if (debuff.includes('Passive')) passiveIncome -= val;
+                else if (debuff.includes('Defense')) defense -= val;
+            });
+
+            // Ensure minimums
+            income = Math.max(0.1, income);
+            defense = Math.max(0.1, defense);
+            passiveIncome = Math.max(0, passiveIncome);
+
+            updateShopStats();
+            updateAffordability();
+            closeSkillPopup();
+            console.log(`Bought ${skill.name}: -$${skill.price}. Income ${income.toFixed(2)}, Defense ${defense.toFixed(2)}, Passive ${passiveIncome.toFixed(2)}`);
+        }
+
+        // Skill button -> skill ID mapping
+        const skillButtonMap = {
+            '.btn-code-rabbit': 'code-rabbit',
+            '.btn-velocity-demon': 'velocity-demon',
+            '.btn-stackoverflow': 'stackoverflow',
+            '.btn-caffeine': 'caffeine',
+            '.btn-turbo': 'turbo',
+            '.btn-passive-bot': 'passive-bot',
+            '.btn-api-mine': 'api-mine',
+            '.btn-starving-artist': 'starving-artist',
+            '.btn-content-machine': 'content-machine',
+            '.btn-tank-artist': 'tank-artist',
+            '.btn-royalty-checks': 'royalty-checks',
+            '.btn-set-forget': 'set-forget',
+            '.btn-fortress-solitude': 'fortress-solitude',
+            '.btn-immovable-object': 'immovable-object',
+            '.btn-cubicle-warrior': 'cubicle-warrior',
+            '.btn-promo-chaser': 'promo-chaser',
+            '.btn-benefits-max': 'benefits-max',
+            '.btn-bonus-hunter': 'bonus-hunter',
+            '.btn-exec-fasttrack': 'exec-fasttrack',
+            '.btn-corp-fortress': 'corp-fortress',
+            '.btn-safety-net': 'safety-net'
+        };
+
+        function initSkillClickHandlers() {
+            Object.keys(skillButtonMap).forEach(selector => {
+                const element = document.querySelector('#skills-tab ' + selector);
+                if (element && !element.dataset.skillBound) {
+                    element.dataset.skillBound = 'true';
+                    element.addEventListener('click', function() {
+                        showSkillPopup(skillButtonMap[selector]);
+                    });
+                }
+            });
+        }
     </script>
 </body>
 
