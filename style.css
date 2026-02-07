@@ -67,13 +67,16 @@ canvas {
     height: 100%;
     z-index: 15;
     display: none;
-    overflow: hidden; /* Changed from overflow-y: auto */
+    overflow: hidden;
+    /* Changed from overflow-y: auto */
     background: rgb(15, 12, 41);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem; /* Add padding for mobile */
-    box-sizing: border-box; /* Ensure padding doesn't overflow */
+    padding: 2rem;
+    /* Add padding for mobile */
+    box-sizing: border-box;
+    /* Ensure padding doesn't overflow */
 }
 
 #path-selection.active {
@@ -82,17 +85,21 @@ canvas {
 
 #path-selection h2 {
     color: #fff;
-    font-size: clamp(1.5rem, 5vw, 3rem); /* Responsive font size */
-    margin-bottom: clamp(1.5rem, 4vh, 3rem); /* Responsive margin */
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    /* Responsive font size */
+    margin-bottom: clamp(1.5rem, 4vh, 3rem);
+    /* Responsive margin */
     text-align: center;
 }
 
 /* Make the section responsive too */
 #path-selection .section {
-    max-width: 90%; /* Prevent overflow on small screens */
+    max-width: 90%;
+    /* Prevent overflow on small screens */
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap; /* Allow wrapping on very small screens */
+    flex-wrap: wrap;
+    /* Allow wrapping on very small screens */
     justify-content: center;
 }
 
@@ -1419,4 +1426,440 @@ h2 {
     background: #ff0000;
     position: absolute;
     top: 20px;
+}
+
+/* --- Character Styles from chars.html --- */
+
+:root {
+    --neon-blue: #00f3ff;
+    --neon-pink: #d400ff;
+    --gold: #ffd700;
+    --tartan-red: #cc0000;
+    --tartan-green: #006600;
+}
+
+.char-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: auto;
+    background: transparent;
+    padding: 20px;
+    border-radius: 0;
+    border: none;
+}
+
+.char-btn {
+    width: 140px;
+    height: 140px;
+    position: relative;
+    background: transparent;
+    border: none;
+    overflow: visible;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.char-btn:hover {
+    transform: scale(1.1);
+}
+
+/* --- Scotty: Terrier, Tartan --- */
+.btn-scotty {
+    background: transparent;
+    border: none;
+}
+
+.scotty-bg {
+    display: none;
+}
+
+.scotty-svg {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+}
+
+.terrier-head {
+    fill: #1a1a1a;
+    stroke: #333;
+    stroke-width: 2;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.terrier-body {
+    fill: #0d0d0d;
+    stroke: #2a2a2a;
+    stroke-width: 1.5;
+}
+
+.shaggy-fur {
+    stroke: #3a3a3a;
+    stroke-width: 1.5;
+    fill: none;
+}
+
+.bowtie {
+    fill: url(#tartanGradient);
+    stroke: #000;
+    stroke-width: 1;
+}
+
+.tartan-coat {
+    fill: url(#tartanGradient);
+    opacity: 0.9;
+}
+
+.ear-highlight {
+    fill: none;
+    stroke: #444;
+    stroke-width: 2;
+}
+
+.scotty-eye {
+    fill: #000;
+    stroke: #fff;
+    stroke-width: 0.5;
+}
+
+.scotty-snout {
+    fill: #2a2a2a;
+}
+
+.scotty-beard {
+    fill: #1a1a1a;
+    stroke: #3a3a3a;
+    stroke-width: 1;
+}
+
+/* --- Husky: Neon, Sunglasses --- */
+.btn-husky {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.husky-svg {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+}
+
+.husky-fur {
+    fill: #e0e0e0;
+}
+
+.husky-mask {
+    fill: #304050;
+}
+
+.glasses-frame {
+    fill: #111;
+    stroke: var(--neon-pink);
+    stroke-width: 1;
+}
+
+.glasses-lens {
+    fill: url(#lensGradient);
+    opacity: 0.8;
+}
+
+.crypto-glint {
+    fill: #fff;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 2px #fff);
+}
+
+/* --- Golden: Glasses, Charts --- */
+.btn-golden {
+    background: transparent;
+    border: none;
+}
+
+.golden-svg {
+    position: relative;
+    width: 85%;
+    height: 85%;
+    top: 10%;
+    left: 7.5%;
+}
+
+.golden-fur {
+    fill: #d4af37;
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+}
+
+.golden-snoot {
+    fill: #ffeebb;
+}
+
+.reading-glasses {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1.5;
+}
+
+.glass-lens-clear {
+    fill: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Corgi: Crown, Royal --- */
+.btn-corgi {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.corgi-svg {
+    position: relative;
+    width: 85%;
+    height: 85%;
+    top: 12%;
+    left: 7.5%;
+}
+
+.corgi-fur-orange {
+    fill: #d67828;
+}
+
+.corgi-fur-white {
+    fill: #fff;
+}
+
+.crown {
+    fill: var(--gold);
+    stroke: #b8860b;
+    stroke-width: 1;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+    transform-origin: 50% 10%;
+    animation: crown-tilt 3s ease-in-out infinite alternate;
+}
+
+@keyframes crown-tilt {
+    from {
+        transform: rotate(-5deg);
+    }
+
+    to {
+        transform: rotate(5deg);
+    }
+}
+
+.gem {
+    fill: #ff0000;
+}
+
+/* --- Shiba Inu: Safety Helmet, Shield --- */
+.btn-shiba {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.shiba-svg {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    top: 10%;
+    left: 5%;
+}
+
+.fur-orange {
+    fill: #d4834f;
+}
+
+.fur-cream {
+    fill: #f5deb3;
+}
+
+.helmet-yellow {
+    fill: #ffcc00;
+    stroke: #b8860b;
+    stroke-width: 1;
+}
+
+.helmet-stripe {
+    fill: #fff;
+    opacity: 0.8;
+}
+
+/* --- Pitbull: Hard Hat, Hustle --- */
+.btn-pitbull {
+    background: transparent;
+    border: none;
+}
+
+.pitbull-svg {
+    position: relative;
+    width: 85%;
+    height: 85%;
+    top: 10%;
+    left: 7.5%;
+}
+
+.fur-grey {
+    fill: #777;
+}
+
+.fur-white-patch {
+    fill: #ddd;
+}
+
+.hard-hat {
+    fill: #ffaa00;
+    stroke: #cc8800;
+    stroke-width: 1;
+}
+
+.collar-blue {
+    fill: #0044ff;
+    stroke: #002288;
+    stroke-width: 1;
+}
+
+.muscle-line {
+    fill: none;
+    stroke: #555;
+    stroke-width: 1;
+    opacity: 0.5;
+}
+
+/* Animation adjust for full body */
+@keyframes jump {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-40px) scaleY(1.05);
+    }
+}
+
+.walking-legs {
+    animation: walk 1s infinite linear;
+}
+
+@keyframes walk {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(10deg);
+    }
+
+    50% {
+        transform: rotate(0deg);
+    }
+
+    75% {
+        transform: rotate(-10deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+/* --- Animation Classes --- */
+.anim-jump .char-btn {
+    animation: jump 0.6s ease-in-out infinite;
+}
+
+.anim-damage .char-btn {
+    animation: damage 0.4s ease-in-out infinite;
+}
+
+@keyframes damage {
+
+    0%,
+    100% {
+        transform: translateX(0);
+        filter: drop-shadow(0 0 0 red);
+    }
+
+    25% {
+        transform: translateX(-5px) rotate(-5deg);
+        filter: drop-shadow(0 0 10px red);
+    }
+
+    75% {
+        transform: translateX(5px) rotate(5deg);
+        filter: drop-shadow(0 0 10px red);
+    }
+}
+
+.anim-collect .char-btn {
+    animation: collect 0.8s ease-out infinite;
+}
+
+@keyframes collect {
+    0% {
+        transform: scale(1);
+        filter: brightness(1) drop-shadow(0 0 0 gold);
+    }
+
+    50% {
+        transform: scale(1.15);
+        filter: brightness(1.3) drop-shadow(0 0 15px gold);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: brightness(1) drop-shadow(0 0 0 gold);
+    }
+}
+
+.anim-collect .char-btn::after {
+    content: '+💰';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    animation: floatUp 0.8s ease-out infinite;
+    opacity: 0;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -40px);
+        opacity: 0;
+    }
+}
+
+.anim-lose .char-btn {
+    filter: grayscale(100%) contrast(1.2);
+    transform: translateY(10px) rotate(10deg);
+    transition: all 0.5s ease;
+}
+
+.anim-win .char-btn {
+    animation: win 0.6s infinite alternate;
+    box-shadow: none;
+}
+
+@keyframes win {
+    0% {
+        transform: translateY(0) rotate(-5deg);
+        filter: drop-shadow(0 0 10px var(--neon-blue));
+    }
+
+    100% {
+        transform: translateY(-15px) rotate(5deg);
+        filter: drop-shadow(0 0 25px var(--neon-blue));
+    }
 }

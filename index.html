@@ -517,7 +517,7 @@
         const player = {
             x: 50,
             y: 0,
-            size: 30,
+            size: 85,
             vy: 0,
             gravity: 0.3,
             thrust: -0.3,
@@ -526,7 +526,8 @@
             health: 100,
             maxHealth: 100,
             money: 0,
-            character: null
+            character: null,
+            anim: { type: 'none', timer: 0, maxTime: 0, active: false }
         };
 
         // Entities
@@ -609,6 +610,57 @@
                     break;
             }
 
+            // Serialize SVG to Image with Computed Styles
+            const svg = document.querySelector(`.${characterType}-svg`);
+            if (svg) {
+                // Clone the node to modify without affecting DOM
+                const clone = svg.cloneNode(true);
+
+                // Helper to inline styles
+                function inlineComputedStyles(source, target) {
+                    const computed = window.getComputedStyle(source);
+                    const properties = [
+                        'fill', 'stroke', 'stroke-width', 'opacity',
+                        'filter', 'transform', 'transform-origin'
+                    ];
+                    for (const prop of properties) {
+                        target.style[prop] = computed[prop];
+                    }
+                    for (let i = 0; i < source.children.length; i++) {
+                        if (target.children[i]) {
+                            inlineComputedStyles(source.children[i], target.children[i]);
+                        }
+                    }
+                }
+
+                inlineComputedStyles(svg, clone);
+
+                let xml = new XMLSerializer().serializeToString(clone);
+
+                // Inject Global Defs (Gradients)
+                const hiddenSvg = document.querySelector('#character-selection > svg');
+                if (hiddenSvg) {
+                    const defs = hiddenSvg.querySelector('defs');
+                    if (defs) {
+                        // Clone defs to avoid moving it
+                        const defsXml = new XMLSerializer().serializeToString(defs.cloneNode(true));
+                        // Insert after opening tag
+                        xml = xml.replace('>', '>' + defsXml);
+                    }
+                }
+
+                // Ensure xmlns is present
+                if (!xml.includes('xmlns=')) {
+                    xml = xml.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+                }
+                const svg64 = btoa(xml);
+                const b64Start = 'data:image/svg+xml;base64,';
+                const image64 = b64Start + svg64;
+
+                player.sprite = new Image();
+                player.sprite.src = image64;
+            }
+
             document.getElementById('character-selection').classList.remove('active');
             showPathSelection();
         }
@@ -638,6 +690,9 @@
             coins = [];
             score = 0;
             gameTimer = 0;
+
+            // Reset Animation
+            player.anim = { type: 'none', timer: 0, maxTime: 0, active: false };
 
             // Regenerate City & Reset Scroll
             cityScroll = 0;
@@ -1305,8 +1360,15 @@
                 ) {
                     const damage = Math.floor(20 / defense);
                     player.health -= damage;
+                    triggerPlayerAnim('damage', 20);
+                    Juice.shake = 20;
+                    Juice.flash = 10;
+                    Juice.freeze = 5;
                     obs.remove(); // Removes DOM element and marks for deletion
-                    if (player.health <= 0) gameState = 'GAMEOVER';
+                    if (player.health <= 0) {
+                        gameState = 'GAMEOVER';
+                        triggerPlayerAnim('lose', 1000);
+                    }
                 }
             }
 
@@ -1321,6 +1383,8 @@
                     player.y + player.size > c.y
                 ) {
                     player.money += Math.floor(100 * income);
+                    triggerPlayerAnim('collect', 15);
+                    Juice.shake = 5;
                     c.markedForDeletion = true;
                 }
             }
@@ -1360,10 +1424,117 @@
             ctx.restore();
         }
 
+        // Juice Object
+        const Juice = {
+            shake: 0,
+            flash: 0,
+            freeze: 0,
+            update: function () {
+                // Decrement freeze
+                if (this.freeze > 0) {
+                    this.freeze--;
+                    return true; // Frozen
+                }
+                // Decay shake
+                if (this.shake > 0) {
+                    this.shake *= 0.9;
+                    if (this.shake < 0.5) this.shake = 0;
+                }
+                // Decrement flash
+                if (this.flash > 0) this.flash--;
+                return false; // Not frozen
+            },
+            preDraw: function () {
+                if (this.shake > 0) {
+                    const dx = (Math.random() - 0.5) * this.shake;
+                    const dy = (Math.random() - 0.5) * this.shake;
+                    ctx.save();
+                    ctx.translate(dx, dy);
+                }
+            },
+            postDraw: function () {
+                if (this.shake > 0) ctx.restore();
+                if (this.flash > 0) {
+                    ctx.fillStyle = "rgba(255, 0, 0, " + (this.flash / 10) + ")";
+                    ctx.fillRect(0, 0, w, h);
+                }
+            }
+        };
+
+        // Animation Helpers
+        function triggerPlayerAnim(type, duration) {
+            player.anim.type = type;
+            player.anim.timer = duration;
+            player.anim.maxTime = duration;
+            player.anim.active = true;
+        }
+
+        function updatePlayerAnim() {
+            if (!player.anim.active) return;
+            player.anim.timer--;
+            if (player.anim.timer <= 0) {
+                player.anim.active = false;
+                player.anim.type = 'none';
+            }
+        }
+
+        function applyPlayerTransforms(ctx, cx, cy) {
+            // Jump/Fall Squash & Stretch (Always active based on physics if not animating)
+            if (!player.anim.active && gameState === 'PLAYING') {
+                if (player.vy < -1) { // Jumping
+                    ctx.translate(cx, cy);
+                    ctx.scale(0.9, 1.1); // Stretch vertically
+                    ctx.translate(-cx, -cy);
+                } else if (player.vy > 1) { // Falling
+                    ctx.translate(cx, cy);
+                    ctx.scale(1.1, 0.9); // Squash vertically
+                    ctx.translate(-cx, -cy);
+                }
+                return;
+            }
+
+            if (!player.anim.active) return;
+
+            const t = 1 - (player.anim.timer / player.anim.maxTime); // 0 to 1
+            ctx.translate(cx, cy);
+
+            if (player.anim.type === 'damage') {
+                // wobble
+                const wobble = Math.sin(t * 20) * 5 * (1 - t);
+                ctx.translate(wobble, 0);
+                // rotate
+                const rot = Math.sin(t * 15) * 0.1;
+                ctx.rotate(rot);
+                // filter
+                ctx.filter = `drop-shadow(0 0 ${10 * (1 - t)}px red)`;
+            } else if (player.anim.type === 'collect') {
+                // scale pop
+                const scale = 1 + Math.sin(t * Math.PI) * 0.3; // 1 -> 1.3 -> 1
+                ctx.scale(scale, scale);
+                // filter
+                ctx.filter = `brightness(1.5) drop-shadow(0 0 ${15 * Math.sin(t * Math.PI)}px gold)`;
+            } else if (player.anim.type === 'win') {
+                const bounce = Math.abs(Math.sin(t * 10)) * -10;
+                ctx.translate(0, bounce);
+                ctx.rotate(Math.sin(t * 5) * 0.1);
+                ctx.filter = `drop-shadow(0 0 10px #00f3ff)`;
+            } else if (player.anim.type === 'lose') {
+                ctx.filter = 'grayscale(100%) contrast(1.2)';
+                ctx.rotate(0.1);
+                ctx.translate(0, t * 20); // Sink down
+            }
+
+            ctx.translate(-cx, -cy);
+        }
+
         // Loop
         function loop() {
+            const frozen = Juice.update();
+
             // clearRect to let background show through
             ctx.clearRect(0, 0, w, h);
+
+            Juice.preDraw();
 
             if (gameState === 'TITLE') {
                 const scale = Math.min(w, h) / 40;
@@ -1373,77 +1544,113 @@
             } else if (gameState === 'CHARACTERS') {
                 // Pause game updates during character selection
                 // Background animations continue via separate frame() loop
+                Juice.postDraw();
                 requestAnimationFrame(loop);
                 return;
 
             } else if (gameState === 'PATHS') {
                 // Pause game updates during path selection
                 // Background animations continue via separate frame() loop
+                Juice.postDraw();
                 requestAnimationFrame(loop);
                 return;
 
             } else if (gameState === 'PLAYING') {
-                // Timer Logic
-                gameTimer += 1 / 60; // Assuming 60fps
-                const timeRemaining = Math.max(0, Math.ceil(GAME_INTERVAL - gameTimer));
-                document.querySelector('.timer-display').textContent = timeRemaining;
+                if (!frozen) {
+                    // Timer Logic
+                    gameTimer += 1 / 60; // Assuming 60fps
+                    const timeRemaining = Math.max(0, Math.ceil(GAME_INTERVAL - gameTimer));
+                    document.querySelector('.timer-display').textContent = timeRemaining;
 
-                if (gameTimer >= GAME_INTERVAL) {
-                    // Generate passive income
-                    const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
-                    player.money += passiveEarnings;
+                    if (gameTimer >= GAME_INTERVAL) {
+                        // Generate passive income
+                        const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
+                        player.money += passiveEarnings;
 
-                    gameState = 'SHOP';
-                    document.getElementById('shop-ui').classList.add('active');
-                    // Draw the first tab's content
-                    drawSkillsTree();
-                    updateShopStats();
-                    requestAnimationFrame(loop);
-                    return; // Pause game updates
-                }
+                        gameState = 'SHOP';
+                        document.getElementById('shop-ui').classList.add('active');
+                        // Draw the first tab's content
+                        drawSkillsTree();
+                        updateShopStats();
+                        Juice.postDraw();
+                        requestAnimationFrame(loop);
+                        return; // Pause game updates
+                    }
 
-                // Player Physics
-                if (player.isThrusting) player.vy += player.thrust;
-                else player.vy += player.gravity;
+                    // Player Physics
+                    if (player.isThrusting) player.vy += player.thrust;
+                    else player.vy += player.gravity;
 
-                if (player.vy > player.maxVy) player.vy = player.maxVy;
-                if (player.vy < -player.maxVy) player.vy = -player.maxVy;
-                player.y += player.vy;
+                    if (player.vy > player.maxVy) player.vy = player.maxVy;
+                    if (player.vy < -player.maxVy) player.vy = -player.maxVy;
+                    player.y += player.vy;
 
-                if (player.y < 0) { player.y = 0; player.vy = 0; }
-                if (player.y > h - player.size) { player.y = h - player.size; player.vy = 0; }
+                    if (player.y < 0) { player.y = 0; player.vy = 0; }
+                    if (player.y > h - player.size) { player.y = h - player.size; player.vy = 0; }
 
-                // Spawning
-                obstacleTimer++;
-                if (obstacleTimer > 60) {
-                    obstacles.push(new Obstacle());
-                    obstacleTimer = 0;
-                }
+                    // Spawning
+                    obstacleTimer++;
+                    if (obstacleTimer > 60) {
+                        obstacles.push(new Obstacle());
+                        obstacleTimer = 0;
+                    }
 
-                coinTimer++;
-                if (coinTimer > 40) {
-                    if (Math.random() > 0.5) coins.push(new Coin());
-                    coinTimer = 0;
+                    coinTimer++;
+                    if (coinTimer > 40) {
+                        if (Math.random() > 0.5) coins.push(new Coin());
+                        coinTimer = 0;
+                    }
                 }
 
                 // Update & Draw Entities
-                obstacles.forEach(o => { o.update(); o.draw(); });
-                obstacles = obstacles.filter(o => !o.markedForDeletion);
+                obstacles.forEach(o => {
+                    if (!frozen) o.update();
+                    o.draw();
+                });
+                if (!frozen) obstacles = obstacles.filter(o => !o.markedForDeletion);
 
-                coins.forEach(c => { c.update(); c.draw(); });
-                coins = coins.filter(c => !c.markedForDeletion);
+                coins.forEach(c => {
+                    if (!frozen) c.update();
+                    c.draw();
+                });
+                if (!frozen) coins = coins.filter(c => !c.markedForDeletion);
 
-                checkCollisions();
+                if (!frozen) checkCollisions();
+
+                updatePlayerAnim();
 
                 // Draw Player
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(player.x, player.y, player.size, player.size);
+                ctx.save();
+                const cx = player.x + player.size / 2;
+                const cy = player.y + player.size / 2;
+                applyPlayerTransforms(ctx, cx, cy);
+
+                if (player.sprite && player.sprite.complete) {
+                    ctx.drawImage(player.sprite, player.x, player.y, player.size, player.size);
+                } else {
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(player.x, player.y, player.size, player.size);
+                }
+                ctx.restore();
+
+                // Draw Floating Text for Collect
+                if (player.anim.type === 'collect') {
+                    ctx.save();
+                    ctx.fillStyle = '#ffd700';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textAlign = 'center';
+                    const t = 1 - (player.anim.timer / player.anim.maxTime);
+                    ctx.globalAlpha = 1 - t;
+                    ctx.fillText('+💰', cx, player.y - 10 - (t * 30));
+                    ctx.restore();
+                }
 
                 drawUI();
 
             } else if (gameState === 'SHOP') {
                 // Pause game updates while in shop
                 // Background animations continue via separate frame() loop
+                Juice.postDraw();
                 requestAnimationFrame(loop);
                 return;
 
@@ -1456,6 +1663,8 @@
                 ctx.fillText(`Final Money: $${player.money}`, w / 2, h / 2 + 40);
                 ctx.fillText('Click to Title', w / 2, h / 2 + 80);
             }
+
+            Juice.postDraw();
 
             requestAnimationFrame(loop);
         }
