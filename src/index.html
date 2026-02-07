@@ -243,8 +243,6 @@
     <div id="water-base"></div>
     <!-- City sits above water -->
     <canvas id="city-canvas" class="layer"></canvas>
-    <!-- Reflection is a copy of city/lights inverted -->
-    <canvas id="reflection-canvas"></canvas>
 
     <!-- Character selection -->
     <div id="character-selection">
@@ -428,60 +426,6 @@
                 </div>
             </div>
 
-            <!-- Corgi -->
-            <div class="char-card">
-                <div class="char-btn btn-corgi" title="Corgi" onclick="selectCharacter('corgi')">
-                    <svg class="corgi-svg" viewBox="0 0 100 120">
-                        <!-- Cape -->
-                        <path d="M30 60 L 70 60 L 80 110 L 20 110 Z" fill="#990000" stroke="#ffd700" stroke-width="1" />
-
-                        <!-- Tail (Nub) -->
-                        <ellipse cx="73" cy="80" rx="3" ry="5" class="corgi-fur-orange" transform="rotate(-20 73 80)" />
-
-                        <!-- Body (Long) -->
-                        <rect x="25" y="70" width="50" height="30" rx="10" class="corgi-fur-orange" />
-                        <rect x="35" y="70" width="30" height="30" rx="10" class="corgi-fur-white" opacity="0.5" />
-
-                        <!-- Stubby Legs -->
-                        <rect x="25" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
-                        <rect x="67" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
-
-                        <!-- Head -->
-                        <g transform="translate(0, 15)">
-                            <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
-                            <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-                            <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-                            <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
-                            <circle cx="42" cy="47" r="3" fill="#000" />
-                            <circle cx="58" cy="47" r="3" fill="#000" />
-                            <circle cx="50" cy="58" r="3" fill="#000" />
-                            <!-- Smile -->
-                            <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
-                            <!-- Crown -->
-                            <g class="crown">
-                                <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
-                                <circle class="gem" cx="50" cy="24" r="2" />
-                            </g>
-                        </g>
-                    </svg>
-                </div>
-                <div class="char-name">Corgi</div>
-                <div class="char-desc">Royalty, Born with Advantages</div>
-                <div class="char-stats">
-                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">120%</span>
-                    </div>
-                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
-                            class="stat-value">110%</span>
-                    </div>
-                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                            class="stat-value">135%</span></div>
-                    <div class="special-ability">
-                        <div class="ability-name">INHERITANCE</div>
-                        <div class="ability-desc">• Start with 500 coins<br>• Random windfalls<br>• Skills +15%/yr<br>• Lifestyle drains 5%/yr</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Shiba Inu -->
             <div class="char-card">
                 <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
@@ -531,57 +475,6 @@
                     <div class="special-ability">
                         <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
                         <div class="ability-desc">• 3 Guard Tokens/yr<br>• Negate obstacles<br>• Penalties −40%<br>• Skills +10%, no risk bonus</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pitbull -->
-            <div class="char-card">
-                <div class="char-btn btn-pitbull" title="Pitbull" onclick="selectCharacter('pitbull')">
-                    <svg class="pitbull-svg" viewBox="0 0 100 120">
-                        <!-- Body (Muscular) -->
-                        <rect x="25" y="60" width="50" height="40" rx="10" class="fur-grey" />
-                        <path d="M30 65 L 70 65" stroke="#555" stroke-width="1" opacity="0.5" />
-                        <!-- chest definition -->
-
-                        <!-- Legs -->
-                        <rect x="25" y="90" width="12" height="20" rx="3" class="fur-grey" />
-                        <rect x="63" y="90" width="12" height="20" rx="3" class="fur-grey" />
-
-                        <!-- Head -->
-                        <g transform="translate(0, 10)">
-                            <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
-                            <!-- Ears -->
-                            <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
-                            <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
-                            <!-- Chest Patch -->
-                            <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
-                            <!-- Face -->
-                            <circle cx="42" cy="48" r="3" fill="#000" />
-                            <circle cx="58" cy="48" r="3" fill="#000" />
-                            <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
-                            <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
-                            <!-- Hard Hat -->
-                            <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
-                            <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
-                            <!-- Collar -->
-                            <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
-                            <circle cx="50" cy="68" r="3" fill="#ffd700" />
-                        </g>
-                    </svg>
-                </div>
-                <div class="char-name">Pitbull</div>
-                <div class="char-desc">Pure Hustle, No Shortcuts</div>
-                <div class="char-stats">
-                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">105%</span>
-                    </div>
-                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">90%</span>
-                    </div>
-                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                            class="stat-value">65%</span></div>
-                    <div class="special-ability">
-                        <div class="ability-name">OVERTIME GRIND</div>
-                        <div class="ability-desc">• Collection +25% coins<br>• Combos boost income<br>• Missed runs hurt combos<br>• No passive scaling</div>
                     </div>
                 </div>
             </div>

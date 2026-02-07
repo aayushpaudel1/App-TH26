@@ -384,44 +384,6 @@ h2 {
 }
 
 
-.btn-corgi {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-.corgi-svg {
-    position: relative;
-    width: 85%;
-    height: 85%;
-    top: 12%;
-    left: 7.5%;
-}
-
-.corgi-fur-orange {
-    fill: #d67828;
-}
-
-.corgi-fur-white {
-    fill: #fff;
-}
-
-.crown {
-    fill: var(--gold);
-    stroke: #b8860b;
-    stroke-width: 1;
-    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
-    transform-origin: 50% 10%;
-    
-}
-
-
-
-.gem {
-    fill: #ff0000;
-}
-
-
 .btn-shiba {
     background: transparent;
     border: none;
@@ -447,43 +409,6 @@ h2 {
 .helmet-yellow {
     fill: #ffcc00;
     stroke: #b8860b;
-    stroke-width: 1;
-}
-
-
-
-
-
-.btn-pitbull {
-    background: transparent;
-    border: none;
-}
-
-.pitbull-svg {
-    position: relative;
-    width: 85%;
-    height: 85%;
-    top: 10%;
-    left: 7.5%;
-}
-
-.fur-grey {
-    fill: #777;
-}
-
-.fur-white-patch {
-    fill: #ddd;
-}
-
-.hard-hat {
-    fill: #ffaa00;
-    stroke: #cc8800;
-    stroke-width: 1;
-}
-
-.collar-blue {
-    fill: #0044ff;
-    stroke: #002288;
     stroke-width: 1;
 }
 
@@ -524,25 +449,6 @@ h2 {
 
 #city-canvas {
     z-index: 3;
-}
-
-#reflection-canvas {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 25%;
-    
-    z-index: 4;
-    opacity: 0.8;
-    
-    filter: blur(1px);
-    
-    transform: scaleY(-1);
-    
-    pointer-events: none;
-    mix-blend-mode: lighten;
-    
 }
 
 #water-base {
@@ -1128,27 +1034,6 @@ h2 {
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-#cards-tab .option-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    padding: 2px;
-    background: linear-gradient(135deg, transparent, transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#cards-tab .option-card:hover::before {
-    opacity: 1;
 }
 
 #cards-tab .option-card:hover {
@@ -1160,10 +1045,6 @@ h2 {
     border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-#cards-tab .option-risky::before {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-}
-
 #cards-tab .option-risky:hover {
     box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.4);
     border-color: #3b82f6;
@@ -1172,10 +1053,6 @@ h2 {
 #cards-tab .option-smart {
     background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(34, 197, 94, 0.05));
     border: 1px solid rgba(74, 222, 128, 0.3);
-}
-
-#cards-tab .option-smart::before {
-    background: linear-gradient(135deg, #4ade80, #22c55e);
 }
 
 #cards-tab .option-smart:hover {

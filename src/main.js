@@ -128,10 +128,6 @@ function startDilemmaMusic() {
     }});
 }
 
-function stopGameMusic() { stopMu('game'); }
-function stopShopMusic() { stopMu('shop'); }
-function stopLeaderboardMusic() { stopMu('lb'); }
-function stopDilemmaMusic() { stopMu('dil'); }
 function stopAllAudio() { Object.keys(muState).forEach(stopMu); }
 
 // SFX
@@ -251,9 +247,7 @@ function selectCharacter(characterType) {
         case 'scotty': income = 0.95; defense = 1.30; passiveIncome = 1.20; break;
         case 'husky': income = 1.40; defense = 0.65; passiveIncome = 0.75; break;
         case 'golden': income = 0.75; defense = 0.95; passiveIncome = 1.65; break;
-        case 'corgi': income = 1.20; defense = 1.10; passiveIncome = 1.35; break;
         case 'shiba': income = 0.85; defense = 1.50; passiveIncome = 0.95; break;
-        case 'pitbull': income = 1.05; defense = 0.90; passiveIncome = 0.65; break;
     }
 
     // Serialize SVG to Image
@@ -358,111 +352,40 @@ function updateLeaderboardBots() {
     }
 }
 
-function lbRoundRect(ctx, x, y, rw, rh, r) {
-    if (rw < 2 * r) r = rw / 2;
-    if (rh < 2 * r) r = rh / 2;
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + rw, y, x + rw, y + rh, r);
-    ctx.arcTo(x + rw, y + rh, x, y + rh, r);
-    ctx.arcTo(x, y + rh, x, y, r);
-    ctx.arcTo(x, y, x + rw, y, r);
-    ctx.closePath();
-}
-
 function drawLeaderboard() {
-    const playerEntry = {
-        name: 'YOU', netWorth: player.money, alive: true, isPlayer: true
-    };
-    const allEntities = [...lbBots, playerEntry];
-    allEntities.sort((a, b) => b.netWorth - a.netWorth);
-    const rank = allEntities.indexOf(playerEntry);
-
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, 'rgba(15, 12, 41, 0.95)');
-    grad.addColorStop(1, 'rgba(48, 43, 99, 0.98)');
-    ctx.fillStyle = grad;
+    const pe = { name: 'YOU', netWorth: player.money, alive: true, isPlayer: true };
+    const all = [...lbBots, pe].sort((a, b) => b.netWorth - a.netWorth);
+    const rank = all.indexOf(pe);
+    ctx.fillStyle = 'rgba(15,12,41,0.95)';
     ctx.fillRect(0, 0, w, h);
-
-    const cardW = Math.min(600, w - 40);
-    const cardH = w < 400 ? 60 : 80;
-    const gap = 15;
-    const headerBottom = 230;
-    const totalH = 5 * (cardH + gap);
-    let startY = (h - totalH) / 2 + 40;
-    if (startY < headerBottom) startY = headerBottom;
-
-    ctx.shadowBlur = 0;
     ctx.textAlign = 'center';
     ctx.fillStyle = '#facc15';
-    ctx.font = "bold 20px 'Segoe UI', sans-serif";
+    ctx.font = "bold 20px 'Segoe UI',sans-serif";
     ctx.fillText(`ROUND ${lbRoundNumber} ENDED`, w / 2, 80);
     ctx.fillStyle = '#fff';
-    const titleSize = w < 400 ? '36px' : '48px';
-    ctx.font = `800 ${titleSize} 'Segoe UI', sans-serif`;
+    ctx.font = "800 48px 'Segoe UI',sans-serif";
     ctx.fillText('LEADERBOARD', w / 2, 130);
     ctx.fillStyle = lbBankruptMsg.includes('\u2705') ? '#4ade80' : '#ef4444';
-    ctx.font = "bold 20px 'Segoe UI', sans-serif";
+    ctx.font = "bold 20px 'Segoe UI',sans-serif";
     ctx.fillText(lbBankruptMsg, w / 2, 170);
-
-    let startIndex = Math.max(0, rank - 2);
-    let endIndex = Math.min(allEntities.length, rank + 3);
-    if (endIndex - startIndex < 5) {
-        if (startIndex === 0) endIndex = Math.min(allEntities.length, 5);
-        else startIndex = Math.max(0, allEntities.length - 5);
-    }
-
+    let si = Math.max(0, rank - 2), ei = Math.min(all.length, rank + 3);
+    if (ei - si < 5) { if (si === 0) ei = Math.min(all.length, 5); else si = Math.max(0, all.length - 5); }
+    const cw = Math.min(600, w - 40), ch = 60, gap = 12;
     ctx.textAlign = 'left';
-    for (let i = startIndex; i < endIndex; i++) {
-        const entity = allEntities[i];
-        const y = startY + (i - startIndex) * (cardH + gap);
-        const isPlayer = entity.isPlayer;
-
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 10;
-        if (isPlayer) {
-            const hl = ctx.createLinearGradient(w / 2 - cardW / 2, y, w / 2 + cardW / 2, y + cardH);
-            hl.addColorStop(0, 'rgba(250, 204, 21, 0.2)');
-            hl.addColorStop(1, 'rgba(250, 204, 21, 0.05)');
-            ctx.fillStyle = hl;
-            ctx.strokeStyle = '#facc15';
-        } else if (!entity.alive) {
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.1)';
-            ctx.strokeStyle = 'rgba(239, 68, 68, 0.3)';
-        } else {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        }
-        lbRoundRect(ctx, w / 2 - cardW / 2, y, cardW, cardH, 15);
-        ctx.fill();
-        ctx.lineWidth = isPlayer ? 2 : 1;
-        ctx.stroke();
-        ctx.restore();
-
-        const nameSize = w < 400 ? '16px' : '24px';
-        const rankSize = w < 400 ? '14px' : '20px';
-        const moneySize = w < 400 ? '16px' : '24px';
-
-        ctx.fillStyle = isPlayer ? '#facc15' : '#94a3b8';
-        ctx.font = `bold ${rankSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(`#${i + 1}`, w / 2 - cardW / 2 + 20, y + cardH * 0.3);
-
-        ctx.fillStyle = isPlayer ? '#fff' : (entity.alive ? '#e2e8f0' : '#ef4444');
-        ctx.font = isPlayer ? `bold ${nameSize} 'Segoe UI', sans-serif` : `600 ${nameSize} 'Segoe UI', sans-serif`;
-        ctx.fillText(entity.name, w / 2 - cardW / 2 + 20, y + cardH * 0.7);
-
+    for (let i = si; i < ei; i++) {
+        const e = all[i], y = 200 + (i - si) * (ch + gap), ip = e.isPlayer;
+        ctx.fillStyle = ip ? 'rgba(250,204,21,0.15)' : !e.alive ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)';
+        ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
+        ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
+        ctx.font = "bold 16px 'Segoe UI',sans-serif";
+        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 25);
+        ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
+        ctx.font = (ip ? 'bold ' : '600 ') + "18px 'Segoe UI',sans-serif";
+        ctx.fillText(e.name, w / 2 - cw / 2 + 15, y + 48);
         ctx.textAlign = 'right';
-        if (!entity.alive) {
-            ctx.font = `bold ${moneySize} 'Segoe UI', sans-serif`;
-            ctx.fillStyle = '#ef4444';
-            ctx.fillText('BANKRUPT', w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
-        } else {
-            ctx.font = isPlayer ? `bold ${moneySize} 'Segoe UI', sans-serif` : `${moneySize} 'Segoe UI', sans-serif`;
-            ctx.fillStyle = '#4ade80';
-            ctx.fillText(`$${Math.floor(entity.netWorth).toLocaleString()}`, w / 2 + cardW / 2 - 20, y + cardH / 2 + 8);
-        }
+        ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
+        ctx.font = "bold 18px 'Segoe UI',sans-serif";
+        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 38);
         ctx.textAlign = 'left';
     }
 }
@@ -472,13 +395,13 @@ function showLeaderboard() {
     updateLeaderboardBots();
     gameState = 'LEADERBOARD';
     leaderboardTimer = 180;
-    stopGameMusic();
+    stopMu('game');
     startLeaderboardMusic();
 }
 
 function leaderboardToDialemma() {
     gameState = 'DILEMMA';
-    stopLeaderboardMusic();
+    stopMu('lb');
     startDilemmaMusic();
     document.getElementById('shop-ui').classList.add('active');
     document.querySelector('.nav-bar').style.display = 'none';
@@ -492,7 +415,7 @@ function startRunner() {
     gameState = 'PLAYING';
     ui.style.display = 'none';
     document.querySelector('.timer-display').style.display = 'block';
-    stopShopMusic();
+    stopMu('shop');
     startGameMusic();
 }
 
@@ -712,7 +635,7 @@ function selectCardOption(option) {
 }
 
 function continueCardGame() {
-    stopDilemmaMusic();
+    stopMu('dil');
     startShopMusic();
     gameState = 'SHOP';
     document.querySelector('.nav-bar').style.display = '';
@@ -763,17 +686,15 @@ const skyCvs = document.getElementById('sky-canvas');
 const auroraCvs = document.getElementById('aurora-canvas');
 const starsCvs = document.getElementById('stars-canvas');
 const cityCvs = document.getElementById('city-canvas');
-const reflectCvs = document.getElementById('reflection-canvas');
 const skyCtx = skyCvs.getContext('2d');
 const auroraCtx = auroraCvs.getContext('2d');
 const starsCtx = starsCvs.getContext('2d');
 const cityCtx = cityCvs.getContext('2d');
-const reflectCtx = reflectCvs.getContext('2d');
 
 function resize() {
     w = c.width = window.innerWidth;
     h = c.height = window.innerHeight;
-    [skyCvs, auroraCvs, starsCvs, cityCvs, reflectCvs].forEach(cvs => {
+    [skyCvs, auroraCvs, starsCvs, cityCvs].forEach(cvs => {
         cvs.width = window.innerWidth;
         cvs.height = window.innerHeight;
     });
@@ -913,7 +834,6 @@ function drawStaticCity() {
 
 function drawCity() {
     cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
-    reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height);
     cityScroll -= 2;
     if (cityScroll <= -w) cityScroll += w;
     cityCtx.drawImage(staticCityCvs, cityScroll, 0);
@@ -957,7 +877,6 @@ function drawCity() {
         cityCtx.fillRect(car.x, car.y, 8, 3);
         cityCtx.shadowBlur = 0;
     });
-    reflectCtx.drawImage(cityCvs, 0, 0);
 }
 
 let auroraTime = 0;
