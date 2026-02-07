@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="style.css">
+    <title>Finance Dash</title>
+</head>
+
+<body>
+    <canvas id="c"></canvas>
+    <div id="game-overlay"></div>
+    <div id="ui">
+        <h1>DOOBERT</h1>
+        <button id="playBtn">PLAY</button>
+    </div>
+    <div class="timer-display">15</div>
+
+    <div id="shop-ui">
+        <button id="closeShop">RESUME</button>
+        <div id="shop-stats">
+            <div class="stat-item">
+                <span class="stat-label">💰 Balance:</span>
+                <span id="shop-balance" class="stat-value">$0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">❤️ Health:</span>
+                <span id="shop-health" class="stat-value">100/100</span>
+            </div>
+        </div>
+        <div id="skills-tab" class="tab-content active">
+            <canvas id="skills-canvas"></canvas>
+        </div>
+        <div id="shop-tab" class="tab-content">
+            <h1>Health Shop</h1>
+            <div class="shop-container">
+                <!-- 1. Food: Apple -->
+                <div class="shop-item item-food" onclick="buyItem('Fresh Apple', 500, 5)">
+                    <span class="item-icon">🍎</span>
+                    <span class="item-title">Fresh Apple</span>
+                    <span class="item-cost">$500</span>
+                    <span class="item-health">+5 HP</span>
+                </div>
+
+                <!-- 2. Wellness: Vitamins -->
+                <div class="shop-item item-med" onclick="buyItem('Vitamins', 1250, 10)">
+                    <span class="item-icon">💊</span>
+                    <span class="item-title">Vitamins</span>
+                    <span class="item-cost">$1250</span>
+                    <span class="item-health">+10 HP</span>
+                </div>
+
+                <!-- 3. Exercise: Gym Pass -->
+                <div class="shop-item item-mental" onclick="buyItem('Gym Pass', 3750, 40)">
+                    <span class="item-icon">💪</span>
+                    <span class="item-title">Gym Pass</span>
+                    <span class="item-cost">$3750</span>
+                    <span class="item-health">+40 HP</span>
+                </div>
+
+                <!-- 4. Medicine: First Aid -->
+                <div class="shop-item item-med" onclick="buyItem('First Aid Kit', 2500, 25)">
+                    <span class="item-icon">🩹</span>
+                    <span class="item-title">First Aid Kit</span>
+                    <span class="item-cost">$2500</span>
+                    <span class="item-health">+25 HP</span>
+                </div>
+
+                <!-- 5. Mental Health: Therapy -->
+                <div class="shop-item item-mental" onclick="buyItem('Therapy', 5000, 50)">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-title">Therapy</span>
+                    <span class="item-cost">$5000</span>
+                    <span class="item-health">+50 HP</span>
+                </div>
+
+                <!-- 6. Rest: Luxury Spa -->
+                <div class="shop-item item-rest" onclick="buyItem('Luxury Spa', 25000, 100)">
+                    <span class="item-icon">🧖‍♀️</span>
+                    <span class="item-title">Luxury Spa</span>
+                    <span class="item-cost">$25000</span>
+                    <span class="item-health">FULL HP</span>
+                </div>
+            </div>
+            <div id="status-msg"></div>
+        </div>
+        <div class="nav-bar">
+            <button class="nav-tab active" data-tab="skills">SKILLS</button>
+            <button class="nav-tab" data-tab="shop">SHOP</button>
+        </div>
+    </div>
+
+    <canvas id="sky-canvas" class="layer"></canvas>
+    <canvas id="stars-canvas" class="layer"></canvas>
+    <canvas id="aurora-canvas" class="layer"></canvas>
+
+    <!-- Water Base -->
+    <div id="water-base"></div>
+    <!-- City sits above water -->
+    <canvas id="city-canvas" class="layer"></canvas>
+    <!-- Reflection is a copy of city/lights inverted -->
+    <canvas id="reflection-canvas"></canvas>
+
+    <!-- Character selection -->
+    <div id="character-selection">
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#cc0000" />
+                    <stop offset="25%" stop-color="#006600" />
+                    <stop offset="50%" stop-color="#000066" />
+                    <stop offset="75%" stop-color="#ffff00" />
+                    <stop offset="100%" stop-color="#cc0000" />
+                </linearGradient>
+                <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#00f3ff" />
+                    <stop offset="100%" stop-color="#d400ff" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <h2>Character Selection</h2>
+        <div class="container char-body">
+            <!-- Scotty -->
+            <div class="char-card">
+                <div class="char-btn btn-scotty" title="Scotty" onclick="selectCharacter('scotty')">
+                    <div class="scotty-bg"></div>
+                    <svg class="scotty-svg" viewBox="0 0 100 100">
+                        <!-- Body -->
+                        <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
+
+                        <!-- Legs -->
+                        <rect x="30" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
+                            rx="6" />
+                        <rect x="60" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
+                            rx="6" />
+
+                        <!-- Tartan Bandana -->
+                        <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanPattern)" stroke="#000" stroke-width="1" />
+
+                        <!-- Head (black, shaggy) -->
+                        <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
+
+                        <!-- Pointed Ears -->
+                        <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
+                        <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
+                        <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
+                        <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
+
+                        <!-- Shaggy fur texture -->
+                        <path d="M32 38 Q 28 42, 30 46" class="shaggy-fur" />
+                        <path d="M68 38 Q 72 42, 70 46" class="shaggy-fur" />
+                        <path d="M35 50 Q 32 54, 34 58" class="shaggy-fur" />
+                        <path d="M65 50 Q 68 54, 66 58" class="shaggy-fur" />
+
+                        <!-- Distinctive Beard -->
+                        <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
+                        <path d="M40 58 Q 38 62, 40 64" class="shaggy-fur" />
+                        <path d="M60 58 Q 62 62, 60 64" class="shaggy-fur" />
+
+                        <!-- Snout -->
+                        <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
+
+                        <!-- Eyes -->
+                        <circle cx="43" cy="42" r="3" class="scotty-eye" />
+                        <circle cx="57" cy="42" r="3" class="scotty-eye" />
+                        <circle cx="43" cy="42" r="1.5" fill="#fff" />
+                        <circle cx="57" cy="42" r="1.5" fill="#fff" />
+
+                        <!-- Nose -->
+                        <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
+                    </svg>
+                </div>
+                <div class="char-name">Scotty</div>
+                <div class="char-desc">Thrifty, Steady, Risk-Averse</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">95%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">130%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">120%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">SCOTTISH SAVINGS</div>
+                        <div class="ability-desc">• Auto-banks 10% of year-end balance<br>• Locked for 2 years, +15%
+                            passive
+                            income<br>• Early withdrawal burns 20%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Husky -->
+            <div class="char-card">
+                <div class="char-btn btn-husky" title="Husky" onclick="selectCharacter('husky')">
+                    <svg class="husky-svg" viewBox="0 0 100 100">
+                        <path class="husky-fur"
+                            d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
+                        <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
+                        <path class="husky-fur" d="M40 30 L 50 50 L 60 30" /> <!-- Forehead blaze -->
+                        <!-- Sunglasses -->
+                        <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
+                        <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
+                        <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
+                        <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" /> <!-- Bridge -->
+                        <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" /> <!-- Glint -->
+                        <!-- Snout -->
+                        <ellipse cx="50" cy="58" rx="10" ry="8" fill="#e0e0e0" /> <!-- Muzzle base -->
+                        <path d="M42 55 Q 50 52, 58 55" fill="none" stroke="#ddd" stroke-width="1" />
+                        <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" /> <!-- Nose -->
+                        <!-- Confident Smirk -->
+                        <path d="M45 62 Q 50 64, 55 61" fill="none" stroke="#111" stroke-width="1.5" />
+                    </svg>
+                </div>
+                <div class="char-name">Husky</div>
+                <div class="char-desc">High Risk, Crypto Bro Energy</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">140%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">65%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">75%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">MOON SHOT</div>
+                        <div class="ability-desc">• Coin value: $65–$160 (volatile)<br>• Boom: +2× coin value<br>•
+                            Crash:
+                            −30% year-end balance<br>• Consecutive crashes stack</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Golden -->
+            <div class="char-card">
+                <div class="char-btn btn-golden" title="Golden Retriever" onclick="selectCharacter('golden')">
+                    <svg class="golden-svg" viewBox="0 0 100 120">
+                        <!-- Tail (Wagging) -->
+                        <path d="M65 95 Q 80 85, 75 75" stroke="#d4af37" stroke-width="6" fill="none"
+                            stroke-linecap="round">
+                            <animate attributeName="d"
+                                values="M65 95 Q 80 85, 75 75; M65 95 Q 80 105, 85 95; M65 95 Q 80 85, 75 75" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+
+                        <!-- Body (Sitting) -->
+                        <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" class="golden-fur" />
+
+                        <!-- Paws -->
+                        <ellipse cx="35" cy="110" rx="8" ry="5" class="golden-fur" />
+                        <ellipse cx="65" cy="110" rx="8" ry="5" class="golden-fur" />
+                        <ellipse cx="40" cy="100" rx="6" ry="10" class="golden-fur" />
+                        <ellipse cx="60" cy="100" rx="6" ry="10" class="golden-fur" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
+                            <!-- Ears -->
+                            <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
+                            <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
+                            <!-- Snout/Face -->
+                            <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
+                            <circle cx="42" cy="42" r="3" fill="#000" />
+                            <circle cx="58" cy="42" r="3" fill="#000" />
+                            <circle cx="50" cy="55" r="3" fill="#000" />
+                            <!-- Glasses -->
+                            <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                                fill="rgba(255,255,255,0.2)" />
+                            <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                                fill="rgba(255,255,255,0.2)" />
+                            <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Golden Retriever</div>
+                <div class="char-desc">Patient, Compound Interest</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">75%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">95%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">165%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">COMPOUND MAGIC</div>
+                        <div class="ability-desc">• Year-end balance +10% growth<br>• Passive skills unlock 1 year
+                            early<br>• 70% balance locked each year</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corgi -->
+            <div class="char-card">
+                <div class="char-btn btn-corgi" title="Corgi" onclick="selectCharacter('corgi')">
+                    <svg class="corgi-svg" viewBox="0 0 100 120">
+                        <!-- Cape -->
+                        <path d="M30 60 L 70 60 L 80 110 L 20 110 Z" fill="#990000" stroke="#ffd700" stroke-width="1" />
+
+                        <!-- Tail (Nub) -->
+                        <ellipse cx="73" cy="80" rx="3" ry="5" class="corgi-fur-orange" transform="rotate(-20 73 80)" />
+
+                        <!-- Body (Long) -->
+                        <rect x="25" y="70" width="50" height="30" rx="10" class="corgi-fur-orange" />
+                        <rect x="35" y="70" width="30" height="30" rx="10" class="corgi-fur-white" opacity="0.5" />
+
+                        <!-- Stubby Legs -->
+                        <rect x="25" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+                        <rect x="67" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 15)">
+                            <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
+                            <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                            <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                            <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
+                            <circle cx="42" cy="47" r="3" fill="#000" />
+                            <circle cx="58" cy="47" r="3" fill="#000" />
+                            <circle cx="50" cy="58" r="3" fill="#000" />
+                            <!-- Smile -->
+                            <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
+                            <!-- Crown -->
+                            <g class="crown">
+                                <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
+                                <circle class="gem" cx="50" cy="24" r="2" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Corgi</div>
+                <div class="char-desc">Royalty, Born with Advantages</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">120%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">110%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">135%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">INHERITANCE</div>
+                        <div class="ability-desc">• Starts Year 1 with 500 coins ($50K)<br>• Random windfalls (+100–300
+                            coins)<br>• Skill costs +15% yearly<br>• Lifestyle siphons 5% balance yearly</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shiba Inu -->
+            <div class="char-card">
+                <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
+                    <div class="safety-shield-aura"></div>
+                    <svg class="shiba-svg" viewBox="0 0 100 120">
+                        <!-- Curled Tail - Moved Closer & Down -->
+                        <path d="M72 85 Q 85 75, 80 65" stroke="#d4834f" stroke-width="6" fill="none"
+                            stroke-linecap="round" />
+
+                        <!-- Body -->
+                        <rect x="30" y="60" width="40" height="40" rx="10" class="fur-orange" />
+                        <rect x="35" y="65" width="30" height="30" rx="8" class="fur-cream" opacity="0.6" />
+
+                        <!-- Legs -->
+                        <rect x="32" y="90" width="8" height="20" rx="3" class="fur-orange" />
+                        <rect x="60" y="90" width="8" height="20" rx="3" class="fur-orange" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
+                            <!-- Ears -->
+                            <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
+                            <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
+                            <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
+                            <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
+                            <!-- Face -->
+                            <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
+                            <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
+                            <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
+                            <circle cx="50" cy="60" r="3" fill="#000" />
+                            <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
+                            <!-- Helmet -->
+                            <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
+                            <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Shiba Inu</div>
+                <div class="char-desc">Cautious, Emergency Fund</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">85%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">150%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">95%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
+                        <div class="ability-desc">• Starts with 3 Guard Tokens yearly<br>• Tokens negate
+                            obstacles/events<br>• Debt/penalties reduced 40%<br>• Skill costs +10%, no high-risk bonuses
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitbull -->
+            <div class="char-card">
+                <div class="char-btn btn-pitbull" title="Pitbull" onclick="selectCharacter('pitbull')">
+                    <svg class="pitbull-svg" viewBox="0 0 100 120">
+                        <!-- Body (Muscular) -->
+                        <rect x="25" y="60" width="50" height="40" rx="10" class="fur-grey" />
+                        <path d="M30 65 L 70 65" stroke="#555" stroke-width="1" opacity="0.5" />
+                        <!-- chest definition -->
+
+                        <!-- Legs -->
+                        <rect x="25" y="90" width="12" height="20" rx="3" class="fur-grey" />
+                        <rect x="63" y="90" width="12" height="20" rx="3" class="fur-grey" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
+                            <!-- Ears -->
+                            <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
+                            <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
+                            <!-- Chest Patch -->
+                            <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
+                            <!-- Face -->
+                            <circle cx="42" cy="48" r="3" fill="#000" />
+                            <circle cx="58" cy="48" r="3" fill="#000" />
+                            <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
+                            <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
+                            <!-- Hard Hat -->
+                            <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
+                            <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
+                            <!-- Collar -->
+                            <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
+                            <circle cx="50" cy="68" r="3" fill="#ffd700" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Pitbull</div>
+                <div class="char-desc">Pure Hustle, No Shortcuts</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">105%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">90%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">65%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">OVERTIME GRIND</div>
+                        <div class="ability-desc">• Active collection +25% coin value<br>• High combos boost income
+                            permanently<br>• Missed runs reduce combo bonuses<br>• No passive scaling bonuses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Path selection -->
+    <div id="path-selection">
+        <h2>Choose Your Path</h2>
+        <div class="section">
+            <div class="path-option">
+                <div class="btn btn-tech" title="Tech Path" onclick="selectPath('tech')">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                        <path d="M2 10h4v4h-4z" opacity="0.5" />
+                    </svg>
+                </div>
+                <p class="path-label">Tech</p>
+            </div>
+
+            <div class="path-option">
+                <div class="btn btn-creative" title="Creative Path" onclick="selectPath('creative')">
+                    <div class="icon-creative">🎨</div>
+                </div>
+                <p class="path-label">Creative</p>
+            </div>
+
+            <div class="path-option">
+                <div class="btn btn-corporate" title="Corporate Path" onclick="selectPath('corporate')">
+                    <div class="icon-briefcase"></div>
+                </div>
+                <p class="path-label">Corporate</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        const c = document.getElementById('c');
+        const ctx = c.getContext('2d');
+        const ui = document.getElementById('ui');
+
+        const staticCityCvs = document.createElement('canvas');
+        const staticCityCtx = staticCityCvs.getContext('2d');
+
+        let w, h;
+
+        // Game State
+        let gameState = 'TITLE'; // TITLE, CHARACTERS, PATHS, PLAYING, GAMEOVER, SHOP
+        let gameTime = 0;
+        let score = 0;
+        let gameTimer = 0;
+        const GAME_INTERVAL = 15; // 15 seconds
+
+        // Player Class Stats
+        let playerClass = null;
+        let income = 1.0;
+        let defense = 1.0;
+        let passiveIncome = 1.0;
+
+        // Player Path
+        let playerPath = null;
+        let cityScroll = 0; // Tracks background scrolling range [0, -w]
+
+        // Player
+        const player = {
+            x: 50,
+            y: 0,
+            size: 30,
+            vy: 0,
+            gravity: 0.3,
+            thrust: -0.3,
+            maxVy: 12,
+            isThrusting: false,
+            health: 100,
+            maxHealth: 100,
+            money: 0,
+            character: null
+        };
+
+        // Entities
+        let obstacles = [];
+        let coins = [];
+        let obstacleTimer = 0;
+        let coinTimer = 0;
+
+        // Resize function consolidated below
+        // window.addEventListener('resize', resize);
+        // resize();
+
+        // Input Handling
+        function startThrust(e) {
+            if (e.type === 'mousedown' || e.type === 'touchstart') {
+                player.isThrusting = true;
+                if (gameState === 'GAMEOVER') resetGame();
+            }
+        }
+
+        function endThrust(e) {
+            if (e.type === 'mouseup' || e.type === 'touchend') {
+                player.isThrusting = false;
+            }
+        }
+
+        window.addEventListener('mousedown', startThrust);
+        window.addEventListener('touchstart', startThrust);
+        window.addEventListener('mouseup', endThrust);
+        window.addEventListener('touchend', endThrust);
+
+        document.getElementById('playBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            showCharacterSelection();
+        });
+
+        function showCharacterSelection() {
+            gameState = 'CHARACTERS';
+            ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'none';
+            document.getElementById('character-selection').classList.add('active');
+        }
+
+        function selectCharacter(characterType) {
+            // Store selected character
+            player.character = characterType;
+            playerClass = characterType;
+
+            // Set stats based on character
+            switch (characterType) {
+                case 'scotty':
+                    income = 0.95;
+                    defense = 1.30;
+                    passiveIncome = 1.20;
+                    break;
+                case 'husky':
+                    income = 1.40;
+                    defense = 0.65;
+                    passiveIncome = 0.75;
+                    break;
+                case 'golden':
+                    income = 0.75;
+                    defense = 0.95;
+                    passiveIncome = 1.65;
+                    break;
+                case 'corgi':
+                    income = 1.20;
+                    defense = 1.10;
+                    passiveIncome = 1.35;
+                    break;
+                case 'shiba':
+                    income = 0.85;
+                    defense = 1.50;
+                    passiveIncome = 0.95;
+                    break;
+                case 'pitbull':
+                    income = 1.05;
+                    defense = 0.90;
+                    passiveIncome = 0.65;
+                    break;
+            }
+
+            document.getElementById('character-selection').classList.remove('active');
+            showPathSelection();
+        }
+
+        function showPathSelection() {
+            gameState = 'PATHS';
+            ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'none';
+            const pathDiv = document.getElementById('path-selection');
+            pathDiv.classList.add('active');
+        }
+
+        function selectPath(pathType) {
+            playerPath = pathType;
+            document.getElementById('path-selection').classList.remove('active');
+            initializeGame();
+            startRunner();
+        }
+
+        function initializeGame() {
+            player.y = h / 2;
+            player.vy = 0;
+            player.isThrusting = false;
+            player.health = 100;
+            player.money = 0;
+            obstacles = [];
+            coins = [];
+            score = 0;
+            gameTimer = 0;
+
+            // Regenerate City & Reset Scroll
+            cityScroll = 0;
+            initCity();
+            drawStaticCity();
+        }
+
+        function startRunner() {
+            gameState = 'PLAYING';
+            ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'block';
+        }
+
+        function resetGame() {
+            gameState = 'TITLE';
+            ui.style.display = 'block';
+            document.querySelector('.timer-display').style.display = 'none';
+            document.getElementById('shop-ui').classList.remove('active');
+            document.getElementById('character-selection').classList.remove('active');
+            document.getElementById('path-selection').classList.remove('active');
+            // Clear DOM obstacles
+            const overlay = document.getElementById('game-overlay');
+            if (overlay) overlay.innerHTML = '';
+        }
+
+        // Buy Item Function
+        function buyItem(name, cost, health) {
+            const msg = document.getElementById('status-msg');
+
+            // Check if player has enough money
+            if (player.money < cost) {
+                msg.textContent = `Not enough money! Need $${cost}, have $${player.money}`;
+                msg.style.color = '#ff0000';
+                msg.style.opacity = 1;
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                }, 2000);
+                return;
+            }
+
+            // Check if player is already at full health
+            if (player.health >= player.maxHealth) {
+                msg.textContent = `Already at full health!`;
+                msg.style.color = '#ffaa00';
+                msg.style.opacity = 1;
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                }, 2000);
+                return;
+            }
+
+            // Deduct money
+            player.money -= cost;
+
+            // Restore health (FULL HP restores to max, otherwise add health value)
+            if (health === 100) {
+                player.health = player.maxHealth;
+            } else {
+                player.health = Math.min(player.health + health, player.maxHealth);
+            }
+
+            // Show success message
+            msg.textContent = `Purchased ${name} for $${cost}! Restored ${health === 100 ? 'FULL' : health} HP.`;
+            msg.style.color = '#00ff41';
+            msg.style.opacity = 1;
+
+            // Update shop stats display
+            updateShopStats();
+
+            setTimeout(() => {
+                msg.style.opacity = 0;
+            }, 2000);
+
+            console.log(`Bought ${name}: -$${cost}, +${health} HP`);
+        }
+
+        // Update Shop Stats Display
+        function updateShopStats() {
+            document.getElementById('shop-balance').textContent = `$${player.money}`;
+            document.getElementById('shop-health').textContent = `${player.health}/${player.maxHealth}`;
+        }
+
+        // Draw Skills Tree
+        function drawSkillsTree() {
+            const canvas = document.getElementById('skills-canvas');
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Display selected path at the top
+            if (playerPath) {
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 32px Arial';
+                ctx.textAlign = 'center';
+                const pathName = playerPath.charAt(0).toUpperCase() + playerPath.slice(1);
+                ctx.fillText(`${pathName} Path`, canvas.width / 2, 50);
+            }
+
+            const layers = [1, 2, 4, 8];
+            const nodeRadius = 30;
+            const layerHeight = (canvas.height - 80) / (layers.length + 1);
+            const nodes = [];
+
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 2;
+
+            for (let layer = 0; layer < layers.length; layer++) {
+                const nodeCount = layers[layer];
+                const spacing = canvas.width / (nodeCount + 1);
+                for (let i = 0; i < nodeCount; i++) {
+                    const x = spacing * (i + 1);
+                    const y = 80 + layerHeight * (layer + 1);
+                    nodes.push({ x, y, layer, index: i });
+
+                    if (layer < layers.length - 1) {
+                        const childLayer = layer + 1;
+                        const childSpacing = canvas.width / (layers[childLayer] + 1);
+                        for (let c = 0; c < 2; c++) {
+                            const childIndex = i * 2 + c;
+                            const childX = childSpacing * (childIndex + 1);
+                            const childY = 80 + layerHeight * (childLayer + 1);
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(childX, childY);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            nodes.forEach(node => {
+                ctx.fillStyle = '#ddd';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#777';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius - 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // UI Event Listeners
+        document.getElementById('closeShop').addEventListener('click', () => {
+            document.getElementById('shop-ui').classList.remove('active');
+            gameTimer = 0;
+            startRunner();
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+
+                if (tab.dataset.tab === 'skills') drawSkillsTree();
+            });
+        });
+
+        // --- Configuration ---
+        const config = {
+            cycleDuration: 120000,
+            waterLevel: 0.75 // Water starts at 75% height
+        };
+
+        let startTime = null;
+
+        const skyCvs = document.getElementById('sky-canvas');
+        const auroraCvs = document.getElementById('aurora-canvas');
+        const starsCvs = document.getElementById('stars-canvas');
+        const cityCvs = document.getElementById('city-canvas');
+        const reflectCvs = document.getElementById('reflection-canvas');
+
+        const skyCtx = skyCvs.getContext('2d');
+        const auroraCtx = auroraCvs.getContext('2d');
+        const starsCtx = starsCvs.getContext('2d');
+        const cityCtx = cityCvs.getContext('2d');
+        const reflectCtx = reflectCvs.getContext('2d');
+
+        function resize() {
+            w = c.width = window.innerWidth;
+            h = c.height = window.innerHeight;
+
+            [skyCvs, auroraCvs, starsCvs, cityCvs, reflectCvs].forEach(c => {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+            });
+
+            if (gameState === 'TITLE') player.y = h / 2;
+
+            initStars();
+            initCity();
+            drawStaticCity(); // Call after initCity to draw buildings
+        }
+        window.addEventListener('resize', resize);
+
+        // --- VIBRANT NYC SUNSET GRADIENTS ---
+        const skyColors = [
+            { pos: 0.0, stops: [{ r: 44, g: 62, b: 80 }, { r: 255, g: 94, b: 77 }] }, // Integrated some reds/oranges from image
+            { pos: 0.15, stops: [{ r: 50, g: 40, b: 70 }, { r: 214, g: 50, b: 48 }] }, // Deep Red/Purple
+            { pos: 0.3, stops: [{ r: 30, g: 30, b: 60 }, { r: 150, g: 50, b: 150 }] },
+            { pos: 0.45, stops: [{ r: 10, g: 10, b: 35 }, { r: 60, g: 30, b: 80 }] },
+            { pos: 0.6, stops: [{ r: 2, g: 2, b: 10 }, { r: 20, g: 20, b: 40 }] },
+            { pos: 0.85, stops: [{ r: 20, g: 20, b: 40 }, { r: 70, g: 70, b: 100 }] },
+            { pos: 1.0, stops: [{ r: 64, g: 64, b: 92 }, { r: 138, g: 118, b: 171 }] }
+        ];
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function getInterpColor(c1, c2, t) {
+            return `rgb(${lerp(c1.r, c2.r, t)}, ${lerp(c1.g, c2.g, t)}, ${lerp(c1.b, c2.b, t)})`;
+        }
+
+        function drawSky(progress) {
+            let start = skyColors[0];
+            let end = skyColors[skyColors.length - 1];
+
+            for (let i = 0; i < skyColors.length - 1; i++) {
+                if (progress >= skyColors[i].pos && progress < skyColors[i + 1].pos) {
+                    start = skyColors[i];
+                    end = skyColors[i + 1];
+                    break;
+                }
+            }
+
+            const range = end.pos - start.pos;
+            const t = (progress - start.pos) / range;
+
+            const c1 = getInterpColor(start.stops[0], end.stops[0], t);
+            const c2 = getInterpColor(start.stops[1], end.stops[1], t);
+
+            const grd = skyCtx.createLinearGradient(0, 0, 0, skyCvs.height * config.waterLevel);
+            grd.addColorStop(0, c1);
+            grd.addColorStop(1, c2);
+            skyCtx.fillStyle = grd;
+            skyCtx.fillRect(0, 0, skyCvs.width, skyCvs.height * config.waterLevel);
+        }
+
+        // --- Stars ---
+        let bgStars = [];
+        function initStars() {
+            bgStars = [];
+            for (let i = 0; i < 300; i++) {
+                const isShiny = Math.random() < 0.1;
+                bgStars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * (window.innerHeight * config.waterLevel),
+                    size: isShiny ? Math.random() * 2 + 1 : Math.random() * 1.5,
+                    opacity: Math.random(),
+                    twinkleSpeed: (Math.random() * 0.05 + 0.01) * (isShiny ? 2000 : 1),
+                    isShiny: isShiny
+                });
+            }
+        }
+
+        function drawStars() {
+            starsCtx.clearRect(0, 0, starsCvs.width, starsCvs.height);
+            bgStars.forEach(s => {
+                s.opacity += 0.005;
+                const val = Math.abs(Math.sin(performance.now() * 0.001 * s.twinkleSpeed + s.x));
+
+                starsCtx.shadowBlur = s.isShiny ? 8 : 0;
+                starsCtx.shadowColor = 'white';
+                starsCtx.fillStyle = `rgba(255, 255, 255, ${val})`;
+                starsCtx.beginPath();
+                starsCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                starsCtx.fill();
+            });
+            starsCtx.shadowBlur = 0;
+        }
+
+        // --- City & Traffic ---
+        let buildings = [];
+        let cars = [];
+
+        function initCity() {
+            buildings = [];
+            let currentX = 0;
+            const groundY = window.innerHeight * config.waterLevel;
+
+            while (currentX < window.innerWidth) {
+                let width, height, shape = 'flattop';
+                const rand = Math.random();
+
+                // Varied Shapes inspired by NY
+                if (rand > 0.85) { shape = 'empire'; width = 80; height = 400 + Math.random() * 100; } // Empire State
+                else { shape = 'block'; width = 50 + Math.random() * 80; height = 150 + Math.random() * 300; }
+
+                if (currentX + width > window.innerWidth) width = window.innerWidth - currentX;
+                if (width < 20) break;
+
+                // Windows
+                const winW = 6, winH = 9, gapX = 4, gapY = 6;
+                const cols = Math.floor((width - 4) / (winW + gapX));
+                const rows = Math.floor((height - 10) / (winH + gapY));
+                const winArr = [];
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let isOn = Math.random() > 0.5;
+
+                        if (Math.random() > 0.3) {
+                            winArr.push({ x: 4 + c * (winW + gapX), y: 10 + r * (winH + gapY), w: winW, h: winH, on: isOn, flickerOffset: Math.random() * 10000 });
+                        }
+                    }
+                }
+
+                buildings.push({ x: currentX, y: groundY - height, w: width, h: height, shape: shape, windows: winArr, colorIdx: Math.random() });
+                currentX += width - 2;
+            }
+
+            // Init Cars
+            cars = [];
+            for (let i = 0; i < 40; i++) {
+                cars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: groundY - Math.random() * 5, // Just above water line
+                    speed: Math.random() + 0.5,
+                    dir: Math.random() > 0.5 ? 1 : -1,
+                    color: Math.random() > 0.5 ? '#ff4444' : '#ffffff' // Tail vs Headlights
+                });
+            }
+        }
+
+        function drawStaticCity() {
+            staticCityCvs.width = window.innerWidth;
+            staticCityCvs.height = window.innerHeight;
+            staticCityCtx.clearRect(0, 0, staticCityCvs.width, staticCityCvs.height);
+
+            buildings.forEach(b => {
+                const hue = 220 + b.colorIdx * 40;
+                const grad = staticCityCtx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+                grad.addColorStop(0, `hsl(${hue}, 30%, 20%)`);
+                grad.addColorStop(1, `hsl(${hue}, 40%, 5%)`);
+                staticCityCtx.fillStyle = grad;
+
+                staticCityCtx.beginPath();
+                if (b.shape === 'empire') {
+                    staticCityCtx.rect(b.x, b.y + 80, b.w, b.h - 80);
+                    staticCityCtx.rect(b.x + b.w * 0.15, b.y + 40, b.w * 0.7, 40);
+                    staticCityCtx.rect(b.x + b.w * 0.35, b.y, b.w * 0.3, 40);
+                    staticCityCtx.rect(b.x + b.w / 2 - 2, b.y - 30, 4, 30);
+                } else {
+                    staticCityCtx.rect(b.x, b.y, b.w, b.h);
+                }
+                staticCityCtx.fill();
+            });
+        }
+
+        function drawCity() {
+            cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
+            reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height);
+
+            // Scroll City
+            cityScroll -= 2; // Speed
+            if (cityScroll <= -w) cityScroll += w;
+
+            // Draw Tiled Background (2 copies to cover scroll)
+            cityCtx.drawImage(staticCityCvs, cityScroll, 0);
+            cityCtx.drawImage(staticCityCvs, cityScroll + w, 0);
+
+            const groundY = window.innerHeight * config.waterLevel;
+
+            // Draw Dynamic Elements (Windows) Twice for both tiles
+            [cityScroll, cityScroll + w].forEach(offsetX => {
+                // Optimization: Skip if off-screen completely
+                if (offsetX > w || offsetX + w < 0) return;
+
+                buildings.forEach(b => {
+                    // Windows (Dynamic)
+                    b.windows.forEach(win => {
+                        if (!win.on) return;
+                        let alpha = Math.abs(Math.sin((performance.now() + win.flickerOffset) * 0.002)) * 0.5 + 0.3;
+                        cityCtx.globalAlpha = alpha;
+                        cityCtx.fillStyle = '#ffebcc';
+                        cityCtx.fillRect(b.x + win.x + offsetX, b.y + win.y, win.w, win.h);
+                    });
+                    cityCtx.globalAlpha = 1;
+                });
+            });
+
+
+            // Street Lamps & Roads (Partially static, but keep for now or move to static)
+            cityCtx.fillStyle = '#000';
+            cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5);
+
+            for (let x = 20; x < window.innerWidth; x += 100) {
+                // Scroll lamps too? If so, need to offset.
+                // For simplicity, let's make lamps static to the screen (like a UI overlay) or scroll them.
+                // Let's scroll them to match the city movement
+                let lampX = (x + cityScroll) % window.innerWidth;
+                if (lampX < 0) lampX += window.innerWidth;
+
+                cityCtx.fillStyle = '#444';
+                cityCtx.fillRect(lampX, groundY - 40, 3, 40);
+                cityCtx.fillStyle = '#ffaa00';
+                cityCtx.shadowBlur = 10;
+                cityCtx.shadowColor = '#ffaa00';
+                cityCtx.beginPath();
+                cityCtx.arc(lampX + 1.5, groundY - 42, 4, 0, Math.PI * 2);
+                cityCtx.fill();
+                cityCtx.shadowBlur = 0;
+            }
+
+            // Traffic - Cars move independently
+            cars.forEach(car => {
+                car.x += car.speed * car.dir;
+                if (car.x > window.innerWidth) car.x = -20;
+                if (car.x < -20) car.x = window.innerWidth;
+
+                cityCtx.fillStyle = car.color;
+                cityCtx.shadowBlur = 5;
+                cityCtx.shadowColor = car.color;
+                cityCtx.fillRect(car.x, car.y, 8, 3);
+                cityCtx.shadowBlur = 0;
+            });
+
+            // Capture City for Reflection
+            reflectCtx.drawImage(cityCvs, 0, 0);
+        }
+
+        // --- Aurora & Meteors ---
+        let auroraTime = 0;
+        function drawAurora() {
+            auroraCtx.clearRect(0, 0, auroraCvs.width, auroraCvs.height);
+            auroraTime += 0.002;
+            const bands = 2;
+            for (let i = 0; i < bands; i++) {
+                auroraCtx.beginPath();
+                const baseY = 150 + i * 80;
+                for (let x = 0; x <= auroraCvs.width; x += 15) {
+                    const noise = Math.sin(x * 0.001 + auroraTime) * 1.2 + Math.sin(x * 0.003 - auroraTime) * 0.5;
+                    const y = baseY + noise * 40;
+                    if (x === 0) auroraCtx.moveTo(x, y); else auroraCtx.lineTo(x, y);
+                }
+                auroraCtx.lineTo(auroraCvs.width, 0); auroraCtx.lineTo(0, 0); auroraCtx.closePath();
+                const grad = auroraCtx.createLinearGradient(0, 0, 0, auroraCvs.height / 2);
+                grad.addColorStop(0, 'rgba(0, 255, 128, 0)'); grad.addColorStop(1, 'rgba(0, 255, 128, 0.2)');
+                auroraCtx.fillStyle = grad; auroraCtx.filter = 'blur(20px)'; auroraCtx.fill(); auroraCtx.filter = 'none';
+            }
+        }
+
+        class Meteor {
+            constructor() { this.reset(); }
+            reset() { this.active = false; this.spawnTime = performance.now() + Math.random() * 10000 + 2000; this.speed = 15; }
+            activate() { this.active = true; this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight * 0.3; this.size = Math.random() * 2 + 1; const angle = Math.PI / 4 + (Math.random() - 0.5); this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed; this.alpha = 1; }
+            update() { if (!this.active) { if (performance.now() > this.spawnTime) this.activate(); return; } this.x += this.vx; this.y += this.vy; this.alpha -= 0.05; if (this.alpha <= 0) this.reset(); }
+            draw() { if (!this.active || this.alpha <= 0) return; starsCtx.strokeStyle = `rgba(255,255,255,${this.alpha})`; starsCtx.lineWidth = this.size; starsCtx.beginPath(); starsCtx.moveTo(this.x, this.y); starsCtx.lineTo(this.x - this.vx * 2, this.y - this.vy * 2); starsCtx.stroke(); }
+        }
+        const meteors = [new Meteor(), new Meteor()];
+
+        function frame(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
+            const progress = (elapsed % config.cycleDuration) / config.cycleDuration;
+
+            drawSky(progress);
+            drawCity(); // Handles reflection & traffic
+            drawStars();
+            meteors.forEach(m => { m.update(); m.draw(); });
+            drawAurora();
+
+            requestAnimationFrame(frame);
+        }
+
+        resize();
+        requestAnimationFrame(frame);
+
+        // Obstacle Types Configuration
+        const OBSTACLE_TYPES = [
+            { name: 'credit', html: '<div class="credit-card"><div class="card-stripe"></div><div class="card-chip"></div></div>', width: 60, height: 36 }, // Resized (was 90x55)
+            { name: 'house', html: '<div class="house"><div class="house-door"></div></div>', width: 50, height: 50 },
+            { name: 'latte', html: '<div class="coffee-cup"><div class="coffee-lid"></div><div class="coffee-handle"></div></div>', width: 40, height: 50 },
+            { name: 'phone', html: '<div class="phone"><div class="phone-screen"></div><div class="phone-button"></div></div>', width: 45, height: 75 },
+            { name: 'student', html: '<div class="grad-cap"><div class="cap-board"></div><div class="cap-top"></div><div class="cap-base"></div><div class="tassel"><div class="tassel-end"></div></div></div>', width: 60, height: 60 },
+            { name: 'gamble', html: '<div class="poker-chip"><div class="chip-center">$</div></div>', width: 60, height: 60 },
+            { name: 'health', html: '<div class="health-cross"><div class="cross-vertical"></div><div class="cross-horizontal"></div></div>', width: 60, height: 60 }
+        ];
+
+        // Obstacle Class
+        class Obstacle {
+            constructor() {
+                // Pick random type
+                const typeIdx = Math.floor(Math.random() * OBSTACLE_TYPES.length);
+                const config = OBSTACLE_TYPES[typeIdx];
+
+                this.type = config.name;
+
+                // Random Size (0.8x to 1.3x)
+                this.scale = 0.8 + Math.random() * 0.5;
+                this.w = config.width * this.scale;
+                this.h = config.height * this.scale;
+
+                this.x = w;
+                // Random Y position within game area
+                // Avoid spawning too high or too low partially
+                this.y = Math.random() * (h * config.waterLevel - this.h);
+                // Fix: config.waterLevel is on global config object, not this config
+                // Recalculate safe Y range based on global config
+                const groundY = h * 0.75; // Using default 0.75 from config
+                this.y = 50 + Math.random() * (groundY - 50 - this.h);
+
+                this.markedForDeletion = false;
+
+                // Create DOM Element
+                this.element = document.createElement('div');
+                this.element.className = 'obstacle-sprite';
+                this.element.innerHTML = config.html;
+                this.element.style.transform = `scale(${this.scale})`;
+
+                // Append to overlay
+                document.getElementById('game-overlay').appendChild(this.element);
+
+                this.updatePosition();
+            }
+
+            updatePosition() {
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+            }
+
+            remove() {
+                this.markedForDeletion = true;
+                if (this.element && this.element.parentNode) {
+                    this.element.parentNode.removeChild(this.element);
+                }
+            }
+
+            update() {
+                this.x -= 3; // Speed (match existing speed)
+                this.updatePosition();
+
+                if (this.x + this.w < -100) {
+                    this.remove();
+                }
+            }
+
+            draw() {
+                // No canvas drawing needed for sprites
+                // Optional: Draw Debug Hitbox
+                // ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                // ctx.strokeRect(this.x, this.y, this.w, this.h);
+            }
+        }
+
+        // Coin Class
+        class Coin {
+            constructor() {
+                this.size = 15;
+                this.x = w;
+                this.y = 50 + Math.random() * (h - 100);
+                this.markedForDeletion = false;
+                this.waffleOffset = Math.random() * 100;
+            }
+            update() {
+                this.x -= 6;
+                this.waffleOffset += 0.1;
+                this.y += Math.sin(this.waffleOffset) * 0.5;
+                if (this.x + this.size < 0) this.markedForDeletion = true;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x + this.size, this.y + this.size);
+
+                // Outer Gold
+                ctx.beginPath();
+                ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700';
+                ctx.fill();
+                ctx.strokeStyle = '#DAA520';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Shine
+                ctx.beginPath();
+                ctx.arc(-4, -4, this.size * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.fill();
+
+                // Inner Symbol
+                ctx.fillStyle = '#DAA520';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('$', 0, 1);
+
+                ctx.restore();
+            }
+        }
+
+        // UI Drawing
+        function drawUI() {
+            const padding = 20;
+            const barHeight = 20;
+            const barWidth = 200;
+
+            // Health Bar
+            ctx.save();
+            ctx.translate(padding, padding);
+
+            // Heart Icon
+            ctx.fillStyle = '#ff0000';
+            ctx.beginPath();
+            ctx.moveTo(10, 10);
+            ctx.bezierCurveTo(10, 3, 5, 0, 0, 0);
+            ctx.bezierCurveTo(-5, 0, -10, 3, -10, 10);
+            ctx.bezierCurveTo(-10, 20, 0, 30, 10, 40);
+            ctx.bezierCurveTo(20, 30, 30, 20, 30, 10);
+            ctx.bezierCurveTo(30, 3, 25, 0, 20, 0);
+            ctx.bezierCurveTo(15, 0, 10, 3, 10, 10);
+            ctx.fill();
+
+            // Bar Background
+            ctx.fillStyle = '#550000';
+            ctx.fillRect(40, 5, barWidth, barHeight);
+
+            // Health Fill
+            ctx.fillStyle = '#ff0000';
+            const healthPercent = Math.max(0, player.health / player.maxHealth);
+            ctx.fillRect(40, 5, barWidth * healthPercent, barHeight);
+
+            // Border
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(40, 5, barWidth, barHeight);
+
+            ctx.restore();
+
+            // Balance Bar
+            ctx.save();
+            ctx.translate(padding, padding + 60);
+
+            // Money Icon ($)
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 40px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('$', 15, 30);
+
+            // Balance Text
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 32px Courier New';
+            ctx.textAlign = 'left';
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 4;
+            ctx.fillText(`$${player.money}`, 40, 30);
+            ctx.shadowBlur = 0;
+
+            ctx.restore();
+        }
+
+        // Collision Logic
+        function checkCollisions() {
+            // Obstacles
+            for (let i = 0; i < obstacles.length; i++) {
+                const obs = obstacles[i];
+                if (
+                    player.x < obs.x + obs.w &&
+                    player.x + player.size > obs.x &&
+                    player.y < obs.y + obs.h &&
+                    player.y + player.size > obs.y
+                ) {
+                    const damage = Math.floor(20 / defense);
+                    player.health -= damage;
+                    obs.remove(); // Removes DOM element and marks for deletion
+                    if (player.health <= 0) gameState = 'GAMEOVER';
+                }
+            }
+
+            // Coins
+            for (let i = 0; i < coins.length; i++) {
+                const c = coins[i];
+                const coinSize = c.size * 2;
+                if (
+                    player.x < c.x + coinSize &&
+                    player.x + player.size > c.x &&
+                    player.y < c.y + coinSize &&
+                    player.y + player.size > c.y
+                ) {
+                    player.money += Math.floor(100 * income);
+                    c.markedForDeletion = true;
+                }
+            }
+        }
+
+
+        // Scotty Dog (Title Screen Only)
+        // ... (Keep existing dogSprite and drawDog)
+        const dogSprite = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 1, 1, 1, 1],
+            [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0],
+            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+            [0, 0, 0, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0]
+        ];
+
+        function drawDog(x, y, scale) {
+            ctx.save();
+            ctx.translate(x, y + Math.sin(Date.now() / 300) * 10);
+            for (let r = 0; r < dogSprite.length; r++) {
+                for (let c = 0; c < dogSprite[r].length; c++) {
+                    const val = dogSprite[r][c];
+                    if (val === 0) continue;
+                    ctx.fillStyle = val === 1 ? '#111' : (val === 2 ? '#d00' : '#fff');
+                    ctx.fillRect(c * scale, r * scale, scale, scale);
+                }
+            }
+            ctx.restore();
+        }
+
+        // Loop
+        function loop() {
+            // clearRect to let background show through
+            ctx.clearRect(0, 0, w, h);
+
+            if (gameState === 'TITLE') {
+                const scale = Math.min(w, h) / 40;
+                const dogW = 16 * scale;
+                drawDog((w - dogW) / 2, h * 0.25, scale);
+
+            } else if (gameState === 'CHARACTERS') {
+                // Pause game updates during character selection
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
+
+            } else if (gameState === 'PATHS') {
+                // Pause game updates during path selection
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
+
+            } else if (gameState === 'PLAYING') {
+                // Timer Logic
+                gameTimer += 1 / 60; // Assuming 60fps
+                const timeRemaining = Math.max(0, Math.ceil(GAME_INTERVAL - gameTimer));
+                document.querySelector('.timer-display').textContent = timeRemaining;
+
+                if (gameTimer >= GAME_INTERVAL) {
+                    // Generate passive income
+                    const passiveEarnings = Math.floor(player.money * (passiveIncome * 0.1));
+                    player.money += passiveEarnings;
+
+                    gameState = 'SHOP';
+                    document.getElementById('shop-ui').classList.add('active');
+                    // Draw the first tab's content
+                    drawSkillsTree();
+                    updateShopStats();
+                    requestAnimationFrame(loop);
+                    return; // Pause game updates
+                }
+
+                // Player Physics
+                if (player.isThrusting) player.vy += player.thrust;
+                else player.vy += player.gravity;
+
+                if (player.vy > player.maxVy) player.vy = player.maxVy;
+                if (player.vy < -player.maxVy) player.vy = -player.maxVy;
+                player.y += player.vy;
+
+                if (player.y < 0) { player.y = 0; player.vy = 0; }
+                if (player.y > h - player.size) { player.y = h - player.size; player.vy = 0; }
+
+                // Spawning
+                obstacleTimer++;
+                if (obstacleTimer > 60) {
+                    obstacles.push(new Obstacle());
+                    obstacleTimer = 0;
+                }
+
+                coinTimer++;
+                if (coinTimer > 40) {
+                    if (Math.random() > 0.5) coins.push(new Coin());
+                    coinTimer = 0;
+                }
+
+                // Update & Draw Entities
+                obstacles.forEach(o => { o.update(); o.draw(); });
+                obstacles = obstacles.filter(o => !o.markedForDeletion);
+
+                coins.forEach(c => { c.update(); c.draw(); });
+                coins = coins.filter(c => !c.markedForDeletion);
+
+                checkCollisions();
+
+                // Draw Player
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(player.x, player.y, player.size, player.size);
+
+                drawUI();
+
+            } else if (gameState === 'SHOP') {
+                // Pause game updates while in shop
+                // Background animations continue via separate frame() loop
+                requestAnimationFrame(loop);
+                return;
+
+            } else if (gameState === 'GAMEOVER') {
+                ctx.fillStyle = '#fff';
+                ctx.font = '40px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', w / 2, h / 2);
+                ctx.font = '20px Courier New';
+                ctx.fillText(`Final Money: $${player.money}`, w / 2, h / 2 + 40);
+                ctx.fillText('Click to Title', w / 2, h / 2 + 80);
+            }
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+
+</html>
