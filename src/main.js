@@ -426,8 +426,6 @@ function resetGame() {
     document.getElementById('shop-ui').classList.remove('active');
     document.getElementById('character-selection').classList.remove('active');
     document.getElementById('path-selection').classList.remove('active');
-    const overlay = document.getElementById('game-overlay');
-    if (overlay) overlay.innerHTML = '';
     purchasedSkills.clear();
     currentSkill = null;
     stopAllAudio();
@@ -929,49 +927,31 @@ resize();
 requestAnimationFrame(frame);
 
 // ========== OBSTACLES & COINS ==========
-const OBSTACLE_TYPES = [
-    { name: 'credit', html: '<div class="credit-card"><div class="card-stripe"></div><div class="card-chip"></div></div>', width: 60, height: 36 },
-    { name: 'house', html: '<div class="house"><div class="house-door"></div></div>', width: 50, height: 50 },
-    { name: 'latte', html: '<div class="coffee-cup"><div class="coffee-lid"></div><div class="coffee-handle"></div></div>', width: 40, height: 50 },
-    { name: 'phone', html: '<div class="phone"><div class="phone-screen"></div><div class="phone-button"></div></div>', width: 45, height: 75 },
-    { name: 'student', html: '<div class="grad-cap"><div class="cap-board"></div><div class="cap-top"></div><div class="cap-base"></div><div class="tassel"><div class="tassel-end"></div></div></div>', width: 60, height: 60 },
-    { name: 'gamble', html: '<div class="poker-chip"><div class="chip-center">$</div></div>', width: 60, height: 60 },
-    { name: 'health', html: '<div class="health-cross"><div class="cross-vertical"></div><div class="cross-horizontal"></div></div>', width: 60, height: 60 }
-];
+const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
 
 class Obstacle {
     constructor() {
-        const typeIdx = Math.floor(Math.random() * OBSTACLE_TYPES.length);
-        const cfg = OBSTACLE_TYPES[typeIdx];
-        this.type = cfg.name;
+        this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
         this.scale = 0.8 + Math.random() * 0.5;
-        this.w = cfg.width * this.scale;
-        this.h = cfg.height * this.scale;
+        this.w = 50 * this.scale;
+        this.h = 50 * this.scale;
         this.x = w;
         const groundY = h * 0.75;
         this.y = 50 + Math.random() * (groundY - 50 - this.h);
         this.markedForDeletion = false;
-        this.element = document.createElement('div');
-        this.element.className = 'obstacle-sprite';
-        this.element.innerHTML = cfg.html;
-        this.element.style.transform = `scale(${this.scale})`;
-        document.getElementById('game-overlay').appendChild(this.element);
-        this.updatePosition();
     }
-    updatePosition() {
-        this.element.style.left = `${this.x}px`;
-        this.element.style.top = `${this.y}px`;
-    }
-    remove() {
-        this.markedForDeletion = true;
-        if (this.element && this.element.parentNode) this.element.parentNode.removeChild(this.element);
-    }
+    remove() { this.markedForDeletion = true; }
     update() {
         this.x -= 3;
-        this.updatePosition();
         if (this.x + this.w < -100) this.remove();
     }
-    draw() { }
+    draw() {
+        if (this.markedForDeletion) return;
+        ctx.font = `${Math.round(40 * this.scale)}px serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(this.emoji, this.x, this.y);
+    }
 }
 
 class Coin {
