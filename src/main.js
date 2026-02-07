@@ -902,15 +902,6 @@ function drawAurora() {
     }
 }
 
-class Meteor {
-    constructor() { this.reset(); }
-    reset() { this.active = false; this.spawnTime = performance.now() + Math.random() * 10000 + 2000; this.speed = 15; }
-    activate() { this.active = true; this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight * 0.3; this.size = Math.random() * 2 + 1; const angle = Math.PI / 4 + (Math.random() - 0.5); this.vx = Math.cos(angle) * this.speed; this.vy = Math.sin(angle) * this.speed; this.alpha = 1; }
-    update() { if (!this.active) { if (performance.now() > this.spawnTime) this.activate(); return; } this.x += this.vx; this.y += this.vy; this.alpha -= 0.05; if (this.alpha <= 0) this.reset(); }
-    draw() { if (!this.active || this.alpha <= 0) return; starsCtx.strokeStyle = `rgba(255,255,255,${this.alpha})`; starsCtx.lineWidth = this.size; starsCtx.beginPath(); starsCtx.moveTo(this.x, this.y); starsCtx.lineTo(this.x - this.vx * 2, this.y - this.vy * 2); starsCtx.stroke(); }
-}
-const meteors = [new Meteor(), new Meteor()];
-
 function frame(timestamp) {
     if (!startTime) startTime = timestamp;
     const elapsed = timestamp - startTime;
@@ -918,7 +909,6 @@ function frame(timestamp) {
     drawSky(progress);
     drawCity();
     drawStars();
-    meteors.forEach(m => { m.update(); m.draw(); });
     drawAurora();
     requestAnimationFrame(frame);
 }
