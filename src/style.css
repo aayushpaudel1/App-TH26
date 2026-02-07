@@ -929,6 +929,7 @@ h2 {
     flex-direction: column;
     align-items: center;
     min-height: 100%;
+    padding-top: 50px;
 }
 
 #skills-tab .icon-item {
