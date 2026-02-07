@@ -57,7 +57,7 @@ async function build() {
     //    EVERYTHING goes through terser + roadroller for maximum compression.
     const escapedCss = minifiedCss.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\${/g, '\\${');
     const escapedBody = minifiedBody.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\${/g, '\\${');
-    
+
     // 5.5. FIND GLOBAL FUNCTIONS REFERENCED IN HTML onclick handlers
     //      These must be preserved by terser (not mangled or dead-code eliminated)
     const onclickFns = new Set();
@@ -75,11 +75,11 @@ async function build() {
     }
     const reserved = [...onclickFns];
     console.log(`🔒 Preserving onclick globals: ${reserved.join(', ')}`);
-    
+
     // Wrap onclick functions to ensure terser keeps them as globals
     // by assigning them to window explicitly
     const globalExports = reserved.map(fn => `window.${fn}=${fn}`).join(';');
-    
+
     const combinedJs = [
         `document.head.insertAdjacentHTML('beforeend','<style>'+\`${escapedCss}\`+'</style>')`,
         `document.body.innerHTML=\`${escapedBody}\``,
@@ -135,7 +135,7 @@ async function build() {
     if (!fs.existsSync('dist')) fs.mkdirSync('dist');
     fs.writeFileSync(OUTPUT_FILE, finalHtml);
 
-    // 6. BROTLI CHECK
+    // 6. BROTLI COMPRESS (max quality) + write to dist
     const buffer = Buffer.from(finalHtml);
     const compressed = zlib.brotliCompressSync(buffer, {
         params: {
@@ -143,11 +143,12 @@ async function build() {
             [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
         }
     });
+    fs.writeFileSync('dist/index.html.br', compressed);
 
     const LIMIT = 15360;
     const size = compressed.length;
     const percent = ((size / LIMIT) * 100).toFixed(2);
-    
+
     console.log(`\n---------------------------------------`);
     console.log(`✅ Build Success!`);
     console.log(`📄 Raw HTML Size:  ${finalHtml.length} bytes`);

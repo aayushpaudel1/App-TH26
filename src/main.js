@@ -82,7 +82,7 @@ function startGameMusic() {
 
 function startShopMusic() {
     const ch = [[261,329,392],[293,369,440],[246,311,369],[220,277,329]];
-    playMu('shop', { vol: 0.12, ms: 2000, play(mg, t) {
+    playMu('shop', { vol: 0.25, ms: 2000, play(mg, t) {
         ch[t%4].forEach(f => {
             const o = audioCtx.createOscillator(), g = audioCtx.createGain();
             o.type='sine'; o.frequency.value=f;
@@ -111,7 +111,7 @@ function startLeaderboardMusic() {
 
 function startDilemmaMusic() {
     const ch = [[220,233,311],[196,233,294],[185,220,277],[208,247,311]];
-    playMu('dil', { vol: 0.12, ms: 2200, play(mg, t) {
+    playMu('dil', { vol: 0.22, ms: 2200, play(mg, t) {
         ch[t%4].forEach(f => {
             const o = audioCtx.createOscillator(), g = audioCtx.createGain();
             o.type='triangle'; o.frequency.value=f;
@@ -155,8 +155,8 @@ function playCoin() {
         gain.connect(audioCtx.destination);
         osc.type = 'square';
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.25, audioCtx.currentTime + i * 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.05 + 0.1);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + i * 0.05 + 0.1);
         osc.start(audioCtx.currentTime + i * 0.05);
         osc.stop(audioCtx.currentTime + i * 0.05 + 0.1);
     });
@@ -193,7 +193,7 @@ document.addEventListener('click', (e) => {
     const t = e.target;
     if (t.tagName === 'BUTTON' || t.closest('button') ||
         t.classList.contains('btn') || t.classList.contains('shop-item') ||
-        t.classList.contains('char-btn') || t.closest('.char-btn') ||
+        t.classList.contains('char-btn') || t.closest('.char-btn') || t.closest('.char-card') ||
         t.classList.contains('nav-tab') || t.classList.contains('skill-node') ||
         t.closest('.skill-node') || t.classList.contains('option-card') ||
         t.closest('.option-card') || t.closest('.shop-item') ||
@@ -378,26 +378,28 @@ function drawLeaderboard() {
     ctx.fillStyle = lbBankruptMsg.includes('\u2705') ? '#4ade80' : '#ef4444';
     ctx.font = "bold 20px 'Segoe UI',sans-serif";
     ctx.fillText(lbBankruptMsg, w / 2, 170);
+    ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(20,190,w-40,1);
     let si = Math.max(0, rank - 2), ei = Math.min(all.length, rank + 3);
     if (ei - si < 5) { if (si === 0) ei = Math.min(all.length, 5); else si = Math.max(0, all.length - 5); }
     const cw = Math.min(600, w - 40), ch = 60, gap = 12;
     ctx.textAlign = 'left';
     for (let i = si; i < ei; i++) {
-        const e = all[i], y = 200 + (i - si) * (ch + gap), ip = e.isPlayer;
+        const e = all[i], y = 210 + (i - si) * (ch + gap) | 0, ip = e.isPlayer;
         ctx.fillStyle = ip ? 'rgba(250,204,21,0.15)' : !e.alive ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)';
         ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
+        ctx.textBaseline = 'middle';
         ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
         ctx.font = "bold 16px 'Segoe UI',sans-serif";
         ctx.textAlign = 'left';
-        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 23);
+        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + ch / 2 | 0);
         ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
         ctx.font = (ip ? 'bold ' : '600 ') + "20px 'Segoe UI',sans-serif";
         ctx.textAlign = 'center';
-        ctx.fillText(e.name, w / 2, y + 23);
+        ctx.fillText(e.name, w / 2, y + ch / 2 | 0);
         ctx.textAlign = 'right';
         ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
         ctx.font = "bold 16px 'Segoe UI',sans-serif";
-        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 23);
+        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + ch / 2 | 0);
         ctx.textAlign = 'left';
     }
 }
