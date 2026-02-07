@@ -1,0 +1,214 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Shop</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --neon-blue: #00f3ff;
+            --neon-green: #00ff41;
+            --neon-pink: #d400ff;
+            --card-bg: #1e1e1e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            gap: 20px;
+        }
+
+        h1 {
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .shop-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 40px;
+            padding: 20px;
+        }
+
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 120px;
+            background: var(--card-bg);
+            border: 2px solid #333;
+            border-radius: 50%;
+            /* Ellipse shape */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .shop-item:hover {
+            transform: scale(1.1);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
+        .item-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+
+        .item-cost {
+            color: var(--neon-pink);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .item-health {
+            color: var(--neon-green);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* Unique Styles for Categories */
+        .item-food {
+            border-bottom: 3px solid #ffaa00;
+        }
+
+        .item-med {
+            border-bottom: 3px solid #ff0000;
+        }
+
+        .item-mental {
+            border-bottom: 3px solid #00f3ff;
+        }
+
+        .item-rest {
+            border-bottom: 3px solid #d400ff;
+        }
+
+        .back-btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            border-color: #fff;
+        }
+
+        #status-msg {
+            height: 20px;
+            color: var(--neon-blue);
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Health Shop</h1>
+
+    <div class="shop-container">
+        <!-- 1. Food: Apple -->
+        <div class="shop-item item-food" onclick="buyItem('Fresh Apple', 500, 5)">
+            <span class="item-icon">🍎</span>
+            <span class="item-title">Fresh Apple</span>
+            <span class="item-cost">$500</span>
+            <span class="item-health">+5 HP</span>
+        </div>
+
+        <!-- 2. Wellness: Vitamins -->
+        <div class="shop-item item-med" onclick="buyItem('Vitamins', 1250, 10)">
+            <span class="item-icon">💊</span>
+            <span class="item-title">Vitamins</span>
+            <span class="item-cost">$1250</span>
+            <span class="item-health">+10 HP</span>
+        </div>
+
+        <!-- 3. Exercise: Gym Pass -->
+        <div class="shop-item item-mental" onclick="buyItem('Gym Pass', 3750, 40)">
+            <span class="item-icon">💪</span>
+            <span class="item-title">Gym Pass</span>
+            <span class="item-cost">$3750</span>
+            <span class="item-health">+40 HP</span>
+        </div>
+
+        <!-- 4. Medicine: First Aid -->
+        <div class="shop-item item-med" onclick="buyItem('First Aid Kit', 2500, 25)">
+            <span class="item-icon">🩹</span>
+            <span class="item-title">First Aid Kit</span>
+            <span class="item-cost">$2500</span>
+            <span class="item-health">+25 HP</span>
+        </div>
+
+        <!-- 5. Mental Health: Therapy -->
+        <div class="shop-item item-mental" onclick="buyItem('Therapy', 5000, 50)">
+            <span class="item-icon">🧠</span>
+            <span class="item-title">Therapy</span>
+            <span class="item-cost">$5000</span>
+            <span class="item-health">+50 HP</span>
+        </div>
+
+        <!-- 6. Rest: Luxury Spa -->
+        <div class="shop-item item-rest" onclick="buyItem('Luxury Spa', 25000, 100)">
+            <span class="item-icon">🧖‍♀️</span>
+            <span class="item-title">Luxury Spa</span>
+            <span class="item-cost">$25000</span>
+            <span class="item-health">FULL HP</span>
+        </div>
+    </div>
+
+
+
+    <script>
+        function buyItem(name, cost, health) {
+            const msg = document.getElementById('status-msg');
+            msg.textContent = `Purchased ${name} for $${cost}! Restored ${health} Health.`;
+            msg.style.opacity = 1;
+
+            // Simple flash effect
+            setTimeout(() => {
+                msg.style.opacity = 0;
+            }, 2000);
+
+            // In a real game, this would update a global state or localStorage
+            console.log(`Bought ${name}: -${cost} Gold, +${health} HP`);
+        }
+    </script>
+
+</body>
+
+</html>

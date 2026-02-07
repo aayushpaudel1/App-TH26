@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doobert - Financial Decisions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>💰 Financial Crossroads</h1>
+    <p class="subtitle">Choose your year to preview the decision card</p>
+
+    <div class="year-selector" id="yearSelector">
+        <!-- Year buttons will be generated here -->
+    </div>
+
+    <div class="card-container" id="cardContainer">
+        <!-- Decision card will be rendered here -->
+    </div>
+
+    <script>
+        // Financial Decision Data
+        const decisions = [
+            {
+                year: 2,
+                scenario: "First Paycheck! 💵",
+                lesson: "Needs vs. Wants",
+                optionA: {
+                    title: "Buy New Collar",
+                    icon: "🎀",
+                    effect: "Visual change only — no stat benefit. Looking good, but your wallet stays the same!",
+                    result: "You look fabulous, but your future self might have preferred some savings..."
+                },
+                optionB: {
+                    title: "Start 401k",
+                    icon: "📈",
+                    effect: "-$100 Cash, but gain +5% Passive Income permanently!",
+                    result: "Smart move! Your future self thanks you. Compound interest is now your best friend."
+                }
+            },
+            {
+                year: 5,
+                scenario: "Car Breaks Down 🚗",
+                lesson: "Emergency Fund",
+                optionA: {
+                    title: "Put on Credit Card",
+                    icon: "💳",
+                    effect: "Keep your cash now, but Future Income -10% due to interest payments!",
+                    result: "The debt trap closes in... Interest payments will haunt you for years."
+                },
+                optionB: {
+                    title: "Pay Cash",
+                    icon: "💵",
+                    effect: "-$500 Cash immediately, but no penalties or interest!",
+                    result: "Pain now, gain later! No debt means freedom to grow your wealth."
+                }
+            },
+            {
+                year: 8,
+                scenario: "Student Loans 📚",
+                lesson: "Debt Avalanche",
+                optionA: {
+                    title: "Defer Payment",
+                    icon: "⏰",
+                    effect: "Keep your cash for now. Debt Bar flashes red as interest compounds!",
+                    result: "The debt grows silently... It's always watching, always growing."
+                },
+                optionB: {
+                    title: "Pay Aggressively",
+                    icon: "⚔️",
+                    effect: "-50% of current Cash, but Income Rate +20% permanently!",
+                    result: "Debt-free! With no monthly payments, your income potential skyrockets."
+                }
+            },
+            {
+                year: 12,
+                scenario: "Weekend Vibes 🎉",
+                lesson: "Investing in Self",
+                optionA: {
+                    title: "Party All Night",
+                    icon: "🥳",
+                    effect: "+1 Health/Life, but your Income pauses for this round!",
+                    result: "YOLO! Great memories made, but money doesn't grow while you sleep it off."
+                },
+                optionB: {
+                    title: "Take Online Course",
+                    icon: "🎓",
+                    effect: "-$200 Cash, but Income Rate +15% permanently!",
+                    result: "Knowledge is power! New skills unlock higher earning potential."
+                }
+            },
+            {
+                year: 15,
+                scenario: "Tax Refund Season 💰",
+                lesson: "Risk vs. Reward",
+                optionA: {
+                    title: "YOLO on Crypto",
+                    icon: "🚀",
+                    effect: "50% chance to 2x your Cash... 50% chance to lose it ALL!",
+                    result: "To the moon... or to the ground. Fortune favors the bold (sometimes)."
+                },
+                optionB: {
+                    title: "High Yield Savings",
+                    icon: "🛡️",
+                    effect: "Gain a Shield — Next obstacle deals 0 damage!",
+                    result: "Safe and protected! Your emergency fund shields you from life's surprises."
+                }
+            },
+            {
+                year: 20,
+                scenario: "The Promotion! 🏆",
+                lesson: "Lifestyle Creep",
+                optionA: {
+                    title: "Buy Luxury Condo",
+                    icon: "🏠",
+                    effect: "-$1000 Cash. Obstacles become bigger and harder to dodge!",
+                    result: "Living large has its costs... Your expenses grow with your income."
+                },
+                optionB: {
+                    title: "Stay in Apartment",
+                    icon: "🏢",
+                    effect: "Keep your Cash. Obstacles remain the same size!",
+                    result: "Humble living, wealthy building! You resist the temptation to inflate your lifestyle."
+                }
+            },
+            {
+                year: 25,
+                scenario: "Market Crash! 📉",
+                lesson: "Panic Selling",
+                optionA: {
+                    title: "Sell Everything!",
+                    icon: "😱",
+                    effect: "Gain $2000 Cash immediately, but Passive Income drops to 0!",
+                    result: "Panic sold at the bottom... The market always recovers, but you won't."
+                },
+                optionB: {
+                    title: "Hold & Buy Dip",
+                    icon: "💎",
+                    effect: "-$500 Cash to buy more, but Passive Income DOUBLES!",
+                    result: "Diamond hands! Buying when others panic is how millionaires are made."
+                }
+            },
+            {
+                year: 28,
+                scenario: "Health Scare 🏥",
+                lesson: "Insurance",
+                optionA: {
+                    title: "Risk It",
+                    icon: "🎲",
+                    effect: "Save your Cash, but next obstacle hit = INSTANT GAME OVER!",
+                    result: "Living dangerously... One wrong move and it's all over."
+                },
+                optionB: {
+                    title: "Buy Insurance",
+                    icon: "❤️",
+                    effect: "-$1000 Cash, but gain 3 extra Lives!",
+                    result: "Protected! Insurance isn't fun, but it's the adult thing to do."
+                }
+            }
+        ];
+
+        // Render year selector buttons
+        const yearSelector = document.getElementById('yearSelector');
+        decisions.forEach((decision, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'year-btn' + (index === 0 ? ' active' : '');
+            btn.textContent = `Year ${decision.year}`;
+            btn.onclick = () => selectYear(index);
+            yearSelector.appendChild(btn);
+        });
+
+        let currentIndex = 0;
+
+        function selectYear(index) {
+            currentIndex = index;
+
+            // Update active button
+            document.querySelectorAll('.year-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+
+            renderCard(decisions[index]);
+        }
+
+        function renderCard(decision) {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = `
+                <div class="decision-card">
+                    <div class="card-header">
+                        <span class="year-badge">📅 Year ${decision.year}</span>
+                        <h2 class="scenario-title">${decision.scenario}</h2>
+                        <span class="lesson-tag">📖 Lesson: ${decision.lesson}</span>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="option-card option-risky" onclick="selectOption('A')">
+                            <span class="option-icon">${decision.optionA.icon}</span>
+                            <h3 class="option-title">${decision.optionA.title}</h3>
+                            <p class="option-effect">${decision.optionA.effect}</p>
+                        </div>
+
+                        <div class="option-card option-smart" onclick="selectOption('B')">
+                            <span class="option-icon">${decision.optionB.icon}</span>
+                            <h3 class="option-title">${decision.optionB.title}</h3>
+                            <p class="option-effect">${decision.optionB.effect}</p>
+                        </div>
+                    </div>
+
+                    <div class="result-message" id="resultMessage">
+                        <h3 id="resultTitle"></h3>
+                        <p id="resultText"></p>
+                    </div>
+
+                    <button class="continue-btn" id="continueBtn" onclick="continueGame()">
+                        Continue to Next Year →
+                    </button>
+                </div>
+            `;
+        }
+
+        function selectOption(option) {
+            const decision = decisions[currentIndex];
+            const cards = document.querySelectorAll('.option-card');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            const continueBtn = document.getElementById('continueBtn');
+
+            // Remove previous selections
+            cards.forEach(card => card.classList.remove('selected'));
+
+            if (option === 'A') {
+                cards[0].classList.add('selected');
+                resultMessage.className = 'result-message show risky';
+                resultTitle.textContent = '😬 You chose the risky path!';
+                resultText.textContent = decision.optionA.result;
+            } else {
+                cards[1].classList.add('selected');
+                resultMessage.className = 'result-message show smart';
+                resultTitle.textContent = '🎉 Smart choice!';
+                resultText.textContent = decision.optionB.result;
+            }
+
+            continueBtn.classList.add('show');
+        }
+
+        function continueGame() {
+            if (currentIndex < decisions.length - 1) {
+                selectYear(currentIndex + 1);
+            } else {
+                alert('🎓 Congratulations! You\'ve completed all financial decisions!');
+                selectYear(0);
+            }
+        }
+
+        // Initial render
+        renderCard(decisions[0]);
+    </script>
+</body>
+
+</html>

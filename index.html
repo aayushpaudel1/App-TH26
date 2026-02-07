@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Doobert</title>
+    <title>Finance Dash</title>
     <style>
         body,
         html {
@@ -14,8 +14,16 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0f0c29;
             color: var(--text-color);
-            height: 100vh;
-            width: 100vw;
+            position: fixed;
+            /* Force no scroll */
+            width: 100%;
+            height: 100%;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            touch-action: none;
+            /* Disables zoom/pan on touch devices */
         }
 
         canvas {
@@ -879,9 +887,13 @@
             text-align: center;
             z-index: 10;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        h1 {
+        #ui h1 {
             color: #fff;
             font-size: 4rem;
             margin-bottom: 2rem;
@@ -890,7 +902,7 @@
             font-variant-caps: small-caps;
         }
 
-        button {
+        #ui button {
             background: #006400;
             /* Dark Green */
             color: #fff;
@@ -906,7 +918,7 @@
             font-weight: bold;
         }
 
-        button:active {
+        #ui button:active {
             transform: scale(0.95);
         }
 
@@ -947,7 +959,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 10, 0.95);
+            background: rgba(0, 0, 10, 1);
             z-index: 200;
             display: none;
             flex-direction: column;
@@ -955,6 +967,100 @@
 
         #shop-ui.active {
             display: flex;
+        }
+
+        /* Health Shop Styles - Scoped to #shop-tab */
+        #shop-tab h1 {
+            color: #00ff41;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            text-align: center;
+        }
+
+        #shop-tab .shop-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 40px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #shop-tab .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 120px;
+            background: #1e1e1e;
+            border: 2px solid #333;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #shop-tab .shop-item:hover {
+            transform: scale(1.1);
+            border-color: #00f3ff;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
+        #shop-tab .item-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        #shop-tab .item-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+
+        #shop-tab .item-cost {
+            color: #d400ff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        #shop-tab .item-health {
+            color: #00ff41;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        #shop-tab .item-food {
+            border-bottom: 3px solid #ffaa00;
+        }
+
+        #shop-tab .item-med {
+            border-bottom: 3px solid #ff0000;
+        }
+
+        #shop-tab .item-mental {
+            border-bottom: 3px solid #00f3ff;
+        }
+
+        #shop-tab .item-rest {
+            border-bottom: 3px solid #d400ff;
+        }
+
+        #shop-tab #status-msg {
+            height: 30px;
+            color: #00ff41;
+            font-size: 16px;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
         #closeShop {
@@ -970,6 +1076,36 @@
             border-radius: 10px;
             cursor: pointer;
             z-index: 201;
+        }
+
+        #shop-stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 30px;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #333;
+            border-radius: 10px;
+            z-index: 201;
+        }
+
+        #shop-stats .stat-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #shop-stats .stat-label {
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        #shop-stats .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
         }
 
         .tab-content {
@@ -1013,34 +1149,280 @@
             min-height: 600px;
         }
 
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 800px;
-            margin: 0 auto;
+        /* --- Game Overlay & Obstacles --- */
+        #game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Allow clicks to pass through to canvas if needed */
+            z-index: 4;
+            /* Above background, below main canvas (z-index 5) */
+            overflow: hidden;
         }
 
-        .shop-item {
-            width: 120px;
-            height: 120px;
+        .obstacle-sprite {
+            position: absolute;
+            transform-origin: center;
+        }
+
+        /* Copied from obstacles.html */
+        /* Credit Card */
+        .credit-card {
+            width: 90px;
+            height: 55px;
+            background: linear-gradient(135deg, #cc0000, #8b0000);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: rotate-card 3s linear infinite;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+        }
+
+        @keyframes rotate-card {
+            from {
+                transform: rotateY(0deg);
+            }
+
+            to {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .card-stripe {
+            width: 100%;
+            height: 8px;
+            background: #000;
+            margin-top: 5px;
+        }
+
+        .card-chip {
+            width: 20px;
+            height: 15px;
+            background: #ffd700;
+            border-radius: 3px;
+            margin-top: 8px;
+        }
+
+        /* House */
+        .house {
+            width: 50px;
+            height: 50px;
+            background: #4a90e2;
+            position: relative;
+            border-radius: 3px;
+        }
+
+        .house::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: -5px;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 25px solid #2c5aa0;
+        }
+
+        .house-door {
+            width: 15px;
+            height: 20px;
+            background: #8b4513;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Coffee Cup */
+        .coffee-cup {
+            width: 40px;
+            height: 50px;
+            background: #8b4513;
+            border-radius: 0 0 15px 15px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .coffee-lid {
+            width: 45px;
+            height: 8px;
+            background: #654321;
+            border-radius: 3px;
+            position: absolute;
+            top: -4px;
+            left: -2.5px;
+        }
+
+        .coffee-handle {
+            width: 15px;
+            height: 20px;
+            border: 3px solid #654321;
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            position: absolute;
+            right: -15px;
+            top: 10px;
+        }
+
+        /* Phone/Subscription */
+        .phone {
+            width: 45px;
+            height: 75px;
+            background: #333;
+            border-radius: 8px;
+            border: 3px solid #555;
+            position: relative;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .phone-screen {
+            width: 38px;
+            height: 55px;
+            background: #4a90e2;
+            border-radius: 3px;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .phone-button {
+            width: 8px;
+            height: 8px;
+            background: #666;
             border-radius: 50%;
-            background: #555;
-            border: 4px solid #888;
-            cursor: pointer;
-            transition: all 0.3s;
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .shop-item:hover {
-            background: #777;
-            border-color: #aaa;
-            transform: scale(1.1);
+        /* Graduation Cap */
+        .grad-cap {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .cap-top {
+            width: 60px;
+            height: 5px;
+            background: #000;
+            position: absolute;
+            top: 20px;
+        }
+
+        .cap-board {
+            width: 70px;
+            height: 3px;
+            background: #000;
+            position: absolute;
+            top: 17px;
+            left: -5px;
+        }
+
+        .cap-base {
+            width: 40px;
+            height: 25px;
+            background: #000;
+            border-radius: 20px 20px 0 0;
+            position: absolute;
+            top: 25px;
+            left: 10px;
+        }
+
+        .tassel {
+            width: 2px;
+            height: 20px;
+            background: #ffd700;
+            position: absolute;
+            top: 17px;
+            right: 10px;
+        }
+
+        .tassel-end {
+            width: 6px;
+            height: 6px;
+            background: #ffd700;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -6px;
+            left: -2px;
+        }
+
+        /* Poker Chip */
+        .poker-chip {
+            width: 60px;
+            height: 60px;
+            background: #ff0000;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            position: relative;
+            animation: spin-chip 2s linear infinite;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes spin-chip {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .chip-center {
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff0000;
+        }
+
+        /* Health Cross */
+        .health-cross {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .cross-vertical {
+            width: 20px;
+            height: 60px;
+            background: #ff0000;
+            position: absolute;
+            left: 20px;
+        }
+
+        .cross-horizontal {
+            width: 60px;
+            height: 20px;
+            background: #ff0000;
+            position: absolute;
+            top: 20px;
         }
     </style>
 </head>
 
 <body>
     <canvas id="c"></canvas>
+    <div id="game-overlay"></div>
     <div id="ui">
         <h1>DOOBERT</h1>
         <button id="playBtn">PLAY</button>
@@ -1049,11 +1431,71 @@
 
     <div id="shop-ui">
         <button id="closeShop">RESUME</button>
+        <div id="shop-stats">
+            <div class="stat-item">
+                <span class="stat-label">💰 Balance:</span>
+                <span id="shop-balance" class="stat-value">$0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">❤️ Health:</span>
+                <span id="shop-health" class="stat-value">100/100</span>
+            </div>
+        </div>
         <div id="skills-tab" class="tab-content active">
             <canvas id="skills-canvas"></canvas>
         </div>
         <div id="shop-tab" class="tab-content">
-            <div class="shop-grid" id="shopGrid"></div>
+            <h1>Health Shop</h1>
+            <div class="shop-container">
+                <!-- 1. Food: Apple -->
+                <div class="shop-item item-food" onclick="buyItem('Fresh Apple', 500, 5)">
+                    <span class="item-icon">🍎</span>
+                    <span class="item-title">Fresh Apple</span>
+                    <span class="item-cost">$500</span>
+                    <span class="item-health">+5 HP</span>
+                </div>
+
+                <!-- 2. Wellness: Vitamins -->
+                <div class="shop-item item-med" onclick="buyItem('Vitamins', 1250, 10)">
+                    <span class="item-icon">💊</span>
+                    <span class="item-title">Vitamins</span>
+                    <span class="item-cost">$1250</span>
+                    <span class="item-health">+10 HP</span>
+                </div>
+
+                <!-- 3. Exercise: Gym Pass -->
+                <div class="shop-item item-mental" onclick="buyItem('Gym Pass', 3750, 40)">
+                    <span class="item-icon">💪</span>
+                    <span class="item-title">Gym Pass</span>
+                    <span class="item-cost">$3750</span>
+                    <span class="item-health">+40 HP</span>
+                </div>
+
+                <!-- 4. Medicine: First Aid -->
+                <div class="shop-item item-med" onclick="buyItem('First Aid Kit', 2500, 25)">
+                    <span class="item-icon">🩹</span>
+                    <span class="item-title">First Aid Kit</span>
+                    <span class="item-cost">$2500</span>
+                    <span class="item-health">+25 HP</span>
+                </div>
+
+                <!-- 5. Mental Health: Therapy -->
+                <div class="shop-item item-mental" onclick="buyItem('Therapy', 5000, 50)">
+                    <span class="item-icon">🧠</span>
+                    <span class="item-title">Therapy</span>
+                    <span class="item-cost">$5000</span>
+                    <span class="item-health">+50 HP</span>
+                </div>
+
+                <!-- 6. Rest: Luxury Spa -->
+                <div class="shop-item item-rest" onclick="buyItem('Luxury Spa', 25000, 100)">
+                    <span class="item-icon">🧖‍♀️</span>
+                    <span class="item-title">Luxury Spa</span>
+                    <span class="item-cost">$25000</span>
+                    <span class="item-health">FULL HP</span>
+                </div>
+            </div>
+            <div id="status-msg"></div>
         </div>
         <div class="nav-bar">
             <button class="nav-tab active" data-tab="skills">SKILLS</button>
@@ -1107,7 +1549,7 @@
                             rx="6" />
 
                         <!-- Tartan Bandana -->
-                        <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanGradient)" stroke="#000" stroke-width="1" />
+                        <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanPattern)" stroke="#000" stroke-width="1" />
 
                         <!-- Head (black, shaggy) -->
                         <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
@@ -1481,6 +1923,7 @@
 
         // Player Path
         let playerPath = null;
+        let cityScroll = 0; // Tracks background scrolling range [0, -w]
 
         // Player
         const player = {
@@ -1488,7 +1931,7 @@
             y: 0,
             size: 30,
             vy: 0,
-            gravity: 0.2,
+            gravity: 0.3,
             thrust: -0.3,
             maxVy: 12,
             isThrusting: false,
@@ -1607,6 +2050,11 @@
             coins = [];
             score = 0;
             gameTimer = 0;
+
+            // Regenerate City & Reset Scroll
+            cityScroll = 0;
+            initCity();
+            drawStaticCity();
         }
 
         function startRunner() {
@@ -1622,17 +2070,66 @@
             document.getElementById('shop-ui').classList.remove('active');
             document.getElementById('character-selection').classList.remove('active');
             document.getElementById('path-selection').classList.remove('active');
+            // Clear DOM obstacles
+            const overlay = document.getElementById('game-overlay');
+            if (overlay) overlay.innerHTML = '';
         }
 
-        // Initialize Shop Grid
-        function initShopGrid() {
-            const shopGrid = document.getElementById('shopGrid');
-            shopGrid.innerHTML = '';
-            for (let i = 0; i < 18; i++) {
-                const item = document.createElement('button');
-                item.className = 'shop-item';
-                shopGrid.appendChild(item);
+        // Buy Item Function
+        function buyItem(name, cost, health) {
+            const msg = document.getElementById('status-msg');
+
+            // Check if player has enough money
+            if (player.money < cost) {
+                msg.textContent = `Not enough money! Need $${cost}, have $${player.money}`;
+                msg.style.color = '#ff0000';
+                msg.style.opacity = 1;
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                }, 2000);
+                return;
             }
+
+            // Check if player is already at full health
+            if (player.health >= player.maxHealth) {
+                msg.textContent = `Already at full health!`;
+                msg.style.color = '#ffaa00';
+                msg.style.opacity = 1;
+                setTimeout(() => {
+                    msg.style.opacity = 0;
+                }, 2000);
+                return;
+            }
+
+            // Deduct money
+            player.money -= cost;
+
+            // Restore health (FULL HP restores to max, otherwise add health value)
+            if (health === 100) {
+                player.health = player.maxHealth;
+            } else {
+                player.health = Math.min(player.health + health, player.maxHealth);
+            }
+
+            // Show success message
+            msg.textContent = `Purchased ${name} for $${cost}! Restored ${health === 100 ? 'FULL' : health} HP.`;
+            msg.style.color = '#00ff41';
+            msg.style.opacity = 1;
+
+            // Update shop stats display
+            updateShopStats();
+
+            setTimeout(() => {
+                msg.style.opacity = 0;
+            }, 2000);
+
+            console.log(`Bought ${name}: -$${cost}, +${health} HP`);
+        }
+
+        // Update Shop Stats Display
+        function updateShopStats() {
+            document.getElementById('shop-balance').textContent = `$${player.money}`;
+            document.getElementById('shop-health').textContent = `${player.health}/${player.maxHealth}`;
         }
 
         // Draw Skills Tree
@@ -1716,8 +2213,6 @@
                 if (tab.dataset.tab === 'skills') drawSkillsTree();
             });
         });
-
-        initShopGrid();
 
         // --- Configuration ---
         const config = {
@@ -1912,40 +2407,58 @@
             cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
             reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height);
 
-            // Draw cached buildings
-            cityCtx.drawImage(staticCityCvs, 0, 0);
+            // Scroll City
+            cityScroll -= 2; // Speed
+            if (cityScroll <= -w) cityScroll += w;
+
+            // Draw Tiled Background (2 copies to cover scroll)
+            cityCtx.drawImage(staticCityCvs, cityScroll, 0);
+            cityCtx.drawImage(staticCityCvs, cityScroll + w, 0);
 
             const groundY = window.innerHeight * config.waterLevel;
 
-            buildings.forEach(b => {
-                // Windows (Dynamic)
-                b.windows.forEach(win => {
-                    if (!win.on) return;
-                    let alpha = Math.abs(Math.sin((performance.now() + win.flickerOffset) * 0.002)) * 0.5 + 0.3;
-                    cityCtx.globalAlpha = alpha;
-                    cityCtx.fillStyle = '#ffebcc';
-                    cityCtx.fillRect(b.x + win.x, b.y + win.y, win.w, win.h);
+            // Draw Dynamic Elements (Windows) Twice for both tiles
+            [cityScroll, cityScroll + w].forEach(offsetX => {
+                // Optimization: Skip if off-screen completely
+                if (offsetX > w || offsetX + w < 0) return;
+
+                buildings.forEach(b => {
+                    // Windows (Dynamic)
+                    b.windows.forEach(win => {
+                        if (!win.on) return;
+                        let alpha = Math.abs(Math.sin((performance.now() + win.flickerOffset) * 0.002)) * 0.5 + 0.3;
+                        cityCtx.globalAlpha = alpha;
+                        cityCtx.fillStyle = '#ffebcc';
+                        cityCtx.fillRect(b.x + win.x + offsetX, b.y + win.y, win.w, win.h);
+                    });
+                    cityCtx.globalAlpha = 1;
                 });
-                cityCtx.globalAlpha = 1;
             });
+
 
             // Street Lamps & Roads (Partially static, but keep for now or move to static)
             cityCtx.fillStyle = '#000';
             cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5);
 
             for (let x = 20; x < window.innerWidth; x += 100) {
+                // Scroll lamps too? If so, need to offset.
+                // For simplicity, let's make lamps static to the screen (like a UI overlay) or scroll them.
+                // Let's scroll them to match the city movement
+                let lampX = (x + cityScroll) % window.innerWidth;
+                if (lampX < 0) lampX += window.innerWidth;
+
                 cityCtx.fillStyle = '#444';
-                cityCtx.fillRect(x, groundY - 40, 3, 40);
+                cityCtx.fillRect(lampX, groundY - 40, 3, 40);
                 cityCtx.fillStyle = '#ffaa00';
                 cityCtx.shadowBlur = 10;
                 cityCtx.shadowColor = '#ffaa00';
                 cityCtx.beginPath();
-                cityCtx.arc(x + 1.5, groundY - 42, 4, 0, Math.PI * 2);
+                cityCtx.arc(lampX + 1.5, groundY - 42, 4, 0, Math.PI * 2);
                 cityCtx.fill();
                 cityCtx.shadowBlur = 0;
             }
 
-            // Traffic
+            // Traffic - Cars move independently
             cars.forEach(car => {
                 car.x += car.speed * car.dir;
                 if (car.x > window.innerWidth) car.x = -20;
@@ -1959,8 +2472,6 @@
             });
 
             // Capture City for Reflection
-            // We just draw the city canvas onto the reflection canvas
-            // Use drawImage
             reflectCtx.drawImage(cityCvs, 0, 0);
         }
 
@@ -2011,37 +2522,80 @@
         resize();
         requestAnimationFrame(frame);
 
+        // Obstacle Types Configuration
+        const OBSTACLE_TYPES = [
+            { name: 'credit', html: '<div class="credit-card"><div class="card-stripe"></div><div class="card-chip"></div></div>', width: 60, height: 36 }, // Resized (was 90x55)
+            { name: 'house', html: '<div class="house"><div class="house-door"></div></div>', width: 50, height: 50 },
+            { name: 'latte', html: '<div class="coffee-cup"><div class="coffee-lid"></div><div class="coffee-handle"></div></div>', width: 40, height: 50 },
+            { name: 'phone', html: '<div class="phone"><div class="phone-screen"></div><div class="phone-button"></div></div>', width: 45, height: 75 },
+            { name: 'student', html: '<div class="grad-cap"><div class="cap-board"></div><div class="cap-top"></div><div class="cap-base"></div><div class="tassel"><div class="tassel-end"></div></div></div>', width: 60, height: 60 },
+            { name: 'gamble', html: '<div class="poker-chip"><div class="chip-center">$</div></div>', width: 60, height: 60 },
+            { name: 'health', html: '<div class="health-cross"><div class="cross-vertical"></div><div class="cross-horizontal"></div></div>', width: 60, height: 60 }
+        ];
+
         // Obstacle Class
         class Obstacle {
             constructor() {
-                // Type: 0 = floating block, 1 = top wall, 2 = bottom wall
-                this.type = Math.floor(Math.random() * 3);
-                this.w = 50 + Math.random() * 30;
+                // Pick random type
+                const typeIdx = Math.floor(Math.random() * OBSTACLE_TYPES.length);
+                const config = OBSTACLE_TYPES[typeIdx];
+
+                this.type = config.name;
+
+                // Random Size (0.8x to 1.3x)
+                this.scale = 0.8 + Math.random() * 0.5;
+                this.w = config.width * this.scale;
+                this.h = config.height * this.scale;
+
                 this.x = w;
-                this.color = '#ff4444';
+                // Random Y position within game area
+                // Avoid spawning too high or too low partially
+                this.y = Math.random() * (h * config.waterLevel - this.h);
+                // Fix: config.waterLevel is on global config object, not this config
+                // Recalculate safe Y range based on global config
+                const groundY = h * 0.75; // Using default 0.75 from config
+                this.y = 50 + Math.random() * (groundY - 50 - this.h);
+
                 this.markedForDeletion = false;
 
-                if (this.type === 0) { // Block
-                    this.h = 40 + Math.random() * 40;
-                    this.y = Math.random() * (h - this.h);
-                } else if (this.type === 1) { // Top Wall
-                    this.h = h * 0.2 + Math.random() * (h * 0.4); // 20-60% height
-                    this.y = 0;
-                } else { // Bottom Wall
-                    this.h = h * 0.2 + Math.random() * (h * 0.4);
-                    this.y = h - this.h;
+                // Create DOM Element
+                this.element = document.createElement('div');
+                this.element.className = 'obstacle-sprite';
+                this.element.innerHTML = config.html;
+                this.element.style.transform = `scale(${this.scale})`;
+
+                // Append to overlay
+                document.getElementById('game-overlay').appendChild(this.element);
+
+                this.updatePosition();
+            }
+
+            updatePosition() {
+                this.element.style.left = `${this.x}px`;
+                this.element.style.top = `${this.y}px`;
+            }
+
+            remove() {
+                this.markedForDeletion = true;
+                if (this.element && this.element.parentNode) {
+                    this.element.parentNode.removeChild(this.element);
                 }
             }
+
             update() {
-                this.x -= 3; // Speed
-                if (this.x + this.w < 0) this.markedForDeletion = true;
+                this.x -= 3; // Speed (match existing speed)
+                this.updatePosition();
+
+                if (this.x + this.w < -100) {
+                    this.remove();
+                }
             }
+
             draw() {
-                ctx.fillStyle = this.color;
-                ctx.fillRect(this.x, this.y, this.w, this.h);
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(this.x, this.y, this.w, this.h);
+                // No canvas drawing needed for sprites
+                // Optional: Draw Debug Hitbox
+                // ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                // ctx.strokeRect(this.x, this.y, this.w, this.h);
             }
         }
 
@@ -2163,7 +2717,7 @@
                 ) {
                     const damage = Math.floor(20 / defense);
                     player.health -= damage;
-                    obs.markedForDeletion = true;
+                    obs.remove(); // Removes DOM element and marks for deletion
                     if (player.health <= 0) gameState = 'GAMEOVER';
                 }
             }
@@ -2255,6 +2809,7 @@
                     document.getElementById('shop-ui').classList.add('active');
                     // Draw the first tab's content
                     drawSkillsTree();
+                    updateShopStats();
                     requestAnimationFrame(loop);
                     return; // Pause game updates
                 }
