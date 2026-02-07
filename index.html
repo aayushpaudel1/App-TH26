@@ -143,6 +143,116 @@
                 transform: scale(1);
             }
         }
+
+        /* Timer Display */
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            display: none;
+        }
+
+        /* Shop/Skills UI */
+        #shop-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 10, 0.95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+        }
+
+        #shop-ui.active {
+            display: flex;
+        }
+
+        #closeShop {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 201;
+        }
+
+        .tab-content {
+            flex: 1;
+            display: none;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .nav-bar {
+            display: flex;
+            background: #1a1a2e;
+            border-top: 2px solid #333;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #16213e;
+            color: #888;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            background: #0f3460;
+            color: white;
+            border-bottom: 4px solid #00d4ff;
+        }
+
+        #skills-canvas {
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .shop-item {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #555;
+            border: 4px solid #888;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .shop-item:hover {
+            background: #777;
+            border-color: #aaa;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
@@ -151,6 +261,20 @@
     <div id="ui">
         <h1>DOOBERT</h1>
         <button id="playBtn">PLAY</button>
+    </div>
+    <div class="timer-display">15</div>
+    <div id="shop-ui">
+        <button id="closeShop">RESUME</button>
+        <div id="skills-tab" class="tab-content active">
+            <canvas id="skills-canvas"></canvas>
+        </div>
+        <div id="shop-tab" class="tab-content">
+            <div class="shop-grid" id="shopGrid"></div>
+        </div>
+        <div class="nav-bar">
+            <button class="nav-tab active" data-tab="skills">SKILLS</button>
+            <button class="nav-tab" data-tab="shop">SHOP</button>
+        </div>
     </div>
     <canvas id="sky-canvas" class="layer"></canvas>
     <canvas id="stars-canvas" class="layer"></canvas>
@@ -168,13 +292,103 @@
         const ctx = c.getContext('2d');
         const ui = document.getElementById('ui');
 
+        const staticCityCvs = document.createElement('canvas');
+        const staticCityCtx = staticCityCvs.getContext('2d');
+
         let w, h;
 
         // Game State
-        let gameState = 'TITLE'; // TITLE, PLAYING, GAMEOVER
+        let gameState = 'TITLE'; // TITLE, PLAYING, GAMEOVER, SHOP
         let gameTime = 0;
         let score = 0;
+        let gameTimer = 0;
+        const GAME_INTERVAL = 15; // 15 seconds
 
+        // Initialize Shop Grid
+        function initShopGrid() {
+            const shopGrid = document.getElementById('shopGrid');
+            shopGrid.innerHTML = '';
+            for (let i = 0; i < 18; i++) {
+                const item = document.createElement('button');
+                item.className = 'shop-item';
+                shopGrid.appendChild(item);
+            }
+        }
+
+        // Draw Skills Tree
+        function drawSkillsTree() {
+            const canvas = document.getElementById('skills-canvas');
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const layers = [1, 2, 4, 8];
+            const nodeRadius = 30;
+            const layerHeight = canvas.height / (layers.length + 1);
+            const nodes = [];
+
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 2;
+
+            for (let layer = 0; layer < layers.length; layer++) {
+                const nodeCount = layers[layer];
+                const spacing = canvas.width / (nodeCount + 1);
+                for (let i = 0; i < nodeCount; i++) {
+                    const x = spacing * (i + 1);
+                    const y = layerHeight * (layer + 1);
+                    nodes.push({ x, y, layer, index: i });
+
+                    if (layer < layers.length - 1) {
+                        const childLayer = layer + 1;
+                        const childSpacing = canvas.width / (layers[childLayer] + 1);
+                        for (let c = 0; c < 2; c++) {
+                            const childIndex = i * 2 + c;
+                            const childX = childSpacing * (childIndex + 1);
+                            const childY = layerHeight * (childLayer + 1);
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            ctx.lineTo(childX, childY);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            nodes.forEach(node => {
+                ctx.fillStyle = '#ddd';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#777';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeRadius - 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // UI Event Listeners
+        document.getElementById('closeShop').addEventListener('click', () => {
+            document.getElementById('shop-ui').classList.remove('active');
+            gameState = 'PLAYING';
+            gameTimer = 0;
+        });
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+
+                if (tab.dataset.tab === 'skills') drawSkillsTree();
+            });
+        });
+
+        initShopGrid();
         // Player
         const player = {
             x: 50,
@@ -227,6 +441,8 @@
         function startGame() {
             gameState = 'PLAYING';
             ui.style.display = 'none';
+            document.querySelector('.timer-display').style.display = 'block';
+
             player.y = h / 2;
             player.vy = 0;
             player.isThrusting = false;
@@ -235,11 +451,14 @@
             obstacles = [];
             coins = [];
             score = 0;
+            gameTimer = 0;
         }
 
         function resetGame() {
             gameState = 'TITLE';
             ui.style.display = 'block';
+            document.querySelector('.timer-display').style.display = 'none';
+            document.getElementById('shop-ui').classList.remove('active');
         }
 
         // --- Configuration ---
@@ -275,6 +494,7 @@
 
             initStars();
             initCity();
+            drawStaticCity(); // Call after initCity to draw buildings
         }
         window.addEventListener('resize', resize);
 
@@ -405,54 +625,59 @@
             }
         }
 
+        function drawStaticCity() {
+            staticCityCvs.width = window.innerWidth;
+            staticCityCvs.height = window.innerHeight;
+            staticCityCtx.clearRect(0, 0, staticCityCvs.width, staticCityCvs.height);
+
+            buildings.forEach(b => {
+                const hue = 220 + b.colorIdx * 40;
+                const grad = staticCityCtx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
+                grad.addColorStop(0, `hsl(${hue}, 30%, 20%)`);
+                grad.addColorStop(1, `hsl(${hue}, 40%, 5%)`);
+                staticCityCtx.fillStyle = grad;
+
+                staticCityCtx.beginPath();
+                if (b.shape === 'empire') {
+                    staticCityCtx.rect(b.x, b.y + 80, b.w, b.h - 80);
+                    staticCityCtx.rect(b.x + b.w * 0.15, b.y + 40, b.w * 0.7, 40);
+                    staticCityCtx.rect(b.x + b.w * 0.35, b.y, b.w * 0.3, 40);
+                    staticCityCtx.rect(b.x + b.w / 2 - 2, b.y - 30, 4, 30);
+                } else {
+                    staticCityCtx.rect(b.x, b.y, b.w, b.h);
+                }
+                staticCityCtx.fill();
+            });
+        }
+
         function drawCity() {
             cityCtx.clearRect(0, 0, cityCvs.width, cityCvs.height);
-            reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height); // Update reflection
+            reflectCtx.clearRect(0, 0, reflectCvs.width, reflectCvs.height);
+
+            // Draw cached buildings
+            cityCtx.drawImage(staticCityCvs, 0, 0);
 
             const groundY = window.innerHeight * config.waterLevel;
 
             buildings.forEach(b => {
-                // Gradient Body
-                const hue = 220 + b.colorIdx * 40;
-                const grad = cityCtx.createLinearGradient(b.x, b.y, b.x, b.y + b.h);
-                grad.addColorStop(0, `hsl(${hue}, 30%, 20%)`);
-                grad.addColorStop(1, `hsl(${hue}, 40%, 5%)`);
-                cityCtx.fillStyle = grad;
-
-                cityCtx.beginPath();
-                if (b.shape === 'empire') {
-                    // Tapered Spire
-                    cityCtx.rect(b.x, b.y + 80, b.w, b.h - 80); // Base
-                    cityCtx.rect(b.x + b.w * 0.15, b.y + 40, b.w * 0.7, 40); // Mid
-                    cityCtx.rect(b.x + b.w * 0.35, b.y, b.w * 0.3, 40); // Top
-                    cityCtx.rect(b.x + b.w / 2 - 2, b.y - 30, 4, 30); // Mast
-                } else {
-                    cityCtx.rect(b.x, b.y, b.w, b.h);
-                }
-                cityCtx.fill();
-
-                // Windows
+                // Windows (Dynamic)
                 b.windows.forEach(win => {
                     if (!win.on) return;
-                    let color = '#ffebcc';
-
                     let alpha = Math.abs(Math.sin((performance.now() + win.flickerOffset) * 0.002)) * 0.5 + 0.3;
-
                     cityCtx.globalAlpha = alpha;
-                    cityCtx.fillStyle = color;
+                    cityCtx.fillStyle = '#ffebcc';
                     cityCtx.fillRect(b.x + win.x, b.y + win.y, win.w, win.h);
                 });
                 cityCtx.globalAlpha = 1;
             });
 
-            // Street Lamps & Roads
+            // Street Lamps & Roads (Partially static, but keep for now or move to static)
             cityCtx.fillStyle = '#000';
-            cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5); // Road base
+            cityCtx.fillRect(0, groundY - 5, window.innerWidth, 5);
 
-            // Lamps
             for (let x = 20; x < window.innerWidth; x += 100) {
                 cityCtx.fillStyle = '#444';
-                cityCtx.fillRect(x, groundY - 40, 3, 40); // Pole
+                cityCtx.fillRect(x, groundY - 40, 3, 40);
                 cityCtx.fillStyle = '#ffaa00';
                 cityCtx.shadowBlur = 10;
                 cityCtx.shadowColor = '#ffaa00';
@@ -526,7 +751,6 @@
         }
 
         resize();
-        initCity();
         requestAnimationFrame(frame);
 
         // Obstacle Class
@@ -695,11 +919,29 @@
                     player.y < c.y + coinSize &&
                     player.y + player.size > c.y
                 ) {
-                    player.money += 1;
+                    player.money += 100;
                     c.markedForDeletion = true;
                 }
             }
         }
+
+        // Event Listeners
+        const playBtn = document.getElementById('playBtn');
+        playBtn.addEventListener('click', () => {
+            startGame();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if (gameState === 'TITLE' || gameState === 'GAMEOVER') startGame();
+                else player.isThrusting = true;
+            }
+            if (e.code === 'KeyR' && gameState === 'GAMEOVER') startGame();
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') player.isThrusting = false;
+        });
 
         // Scotty Dog (Title Screen Only)
         // ... (Keep existing dogSprite and drawDog)
@@ -745,6 +987,19 @@
                 drawDog((w - dogW) / 2, h * 0.25, scale);
 
             } else if (gameState === 'PLAYING') {
+                // Timer Logic
+                gameTimer += 1 / 60; // Assuming 60fps
+                const timeRemaining = Math.max(0, Math.ceil(GAME_INTERVAL - gameTimer));
+                document.querySelector('.timer-display').textContent = timeRemaining;
+
+                if (gameTimer >= GAME_INTERVAL) {
+                    gameState = 'SHOP';
+                    document.getElementById('shop-ui').classList.add('active');
+                    // Draw the first tab's content
+                    drawSkillsTree();
+                    return; // Pause game updates
+                }
+
                 // Player Physics
                 if (player.isThrusting) player.vy += player.thrust;
                 else player.vy += player.gravity;
