@@ -12,7 +12,6 @@ const GAME_INTERVAL = 15;
 let leaderboardTimer = 0;
 
 // Player Class Stats
-let playerClass = null;
 let income = 1.0;
 let defense = 1.0;
 let passiveIncome = 1.0;
@@ -206,7 +205,7 @@ document.addEventListener('click', (e) => {
 // ========== INPUT HANDLING ==========
 function startThrust(e) {
     const t = e.target;
-    if (t.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) return;
+    if (t.closest('button,#shop-ui,.char-btn,.char-card,.path-option,.option-card,.skill-node,.nav-tab')) return;
     if (e.type === 'touchstart') e.preventDefault();
     if (gameState === 'READY') {
         hideHoldToPlayOverlay();
@@ -218,7 +217,7 @@ function startThrust(e) {
 }
 
 function endThrust(e) {
-    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
+    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.char-card,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
     player.isThrusting = false;
 }
 
@@ -244,7 +243,6 @@ function showCharacterSelection() {
 
 function selectCharacter(characterType) {
     player.character = characterType;
-    playerClass = characterType;
     switch (characterType) {
         case 'scotty': income = 0.95; defense = 1.30; passiveIncome = 1.20; break;
         case 'husky': income = 1.40; defense = 0.65; passiveIncome = 0.75; break;
@@ -937,7 +935,7 @@ const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
 class Obstacle {
     constructor() {
         this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
-        this.scale = 0.5 + Math.random() * 1.0;
+        this.scale = 0.8 + Math.random() * 0.5;
         this.w = 50 * this.scale;
         this.h = 50 * this.scale;
         this.x = w;
@@ -1028,9 +1026,10 @@ function drawUI() {
     ctx.fillStyle = '#ffd700';
     ctx.font = 'bold 32px Courier New';
     ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
-    ctx.fillText(`$${player.money}`, 0, 30);
+    ctx.fillText(`$${player.money}`, 0, 0);
     ctx.shadowBlur = 0;
     ctx.restore();
 }
@@ -1071,33 +1070,16 @@ function checkCollisions() {
 }
 
 // ========== DOG SPRITE (Title Screen) ==========
-const dogSprite = [
-    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,0,0,0,0,0,1,1,3,1,1,1,1],
-    [1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1],
-    [0,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0],
-    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,2,2,1,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,2,2,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0]
-];
+const dogSprite = '0000000000001001000000000000000100010000000000001111110000000000010131110100000000001111110001100000000011111000011111111111100000011221111111000000011221111110000000011111111110000000011111111110000000011000000011000000011000000011000000011000000011';
 
 function drawDog(x, y, scale) {
     ctx.save();
     ctx.translate(x, y + Math.sin(Date.now() / 300) * 10);
-    for (let r = 0; r < dogSprite.length; r++) {
-        for (let col = 0; col < dogSprite[r].length; col++) {
-            const val = dogSprite[r][col];
-            if (val === 0) continue;
-            ctx.fillStyle = val === 1 ? '#111' : (val === 2 ? '#d00' : '#fff');
-            ctx.fillRect(col * scale, r * scale, scale, scale);
-        }
+    for (let i = 0; i < 224; i++) {
+        const v = +dogSprite[i];
+        if (!v) continue;
+        ctx.fillStyle = v === 1 ? '#111' : v === 2 ? '#d00' : '#fff';
+        ctx.fillRect((i % 16) * scale, (i / 16 | 0) * scale, scale, scale);
     }
     ctx.restore();
 }
