@@ -115,7 +115,17 @@
             margin: 0;
         }
 
-        char-body {
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --neon-blue: #00f3ff;
+            --neon-pink: #d400ff;
+            --gold: #ffd700;
+            --tartan-red: #cc0000;
+            --tartan-green: #006600;
+        }
+
+        body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Segoe UI', sans-serif;
@@ -134,10 +144,12 @@
         }
 
         .container {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            justify-items: center;
         }
 
         .char-card {
@@ -145,28 +157,55 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            width: 280px;
-            background: #1a1a1a;
+            width: 100%;
+            max-width: 400px;
+            /* Slightly wider */
+            background: transparent;
+            /* No background */
             padding: 20px;
-            border-radius: 12px;
-            border: 2px solid #333;
+            border-radius: 0;
+            border: none;
+            /* No border */
         }
 
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                /* Smaller gap on mobile */
+            }
+
+            .char-card {
+                padding: 10px;
+                /* Smaller padding */
+            }
+
+            .char-btn {
+                width: 100px;
+                height: 100px;
+                /* Smaller icons */
+            }
+        }
+
+        /* Default button styles (Desktop) */
         .char-btn {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            width: 140px;
+            height: 140px;
             position: relative;
-            background: #222;
-            border: 4px solid #444;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            background: transparent;
+            /* No background bubble */
+            border: none;
+            /* No border */
+            overflow: visible;
+            /* Let them breathe */
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
             transition: transform 0.2s;
             cursor: pointer;
         }
 
+
         .char-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         .char-name {
@@ -224,18 +263,14 @@
 
         /* --- Scotty: Terrier, Tartan --- */
         .btn-scotty {
-            background: #1a1a1a;
-            border-color: #3a3a3a;
+            background: transparent;
+            border: none;
         }
 
         /* Plaid Background Effect */
         .scotty-bg {
-            position: absolute;
-            inset: 0;
-            opacity: 0.3;
-            background-image:
-                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(204, 0, 0, 0.2) 10px, rgba(204, 0, 0, 0.2) 20px),
-                repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(0, 100, 0, 0.2) 10px, rgba(0, 100, 0, 0.2) 20px);
+            display: none;
+            /* Hidden as requested */
         }
 
         .scotty-svg {
@@ -300,9 +335,9 @@
 
         /* --- Husky: Neon, Sunglasses --- */
         .btn-husky {
-            background: linear-gradient(135deg, #102030, #000);
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: transparent;
+            border: none;
+            box-shadow: none;
         }
 
         .husky-svg {
@@ -339,28 +374,13 @@
         }
 
         /* --- Golden: Glasses, Charts --- */
+        /* --- Golden: Glasses, Charts --- */
         .btn-golden {
-            background: #2a2010;
-            border-color: var(--gold);
+            background: transparent;
+            border: none;
         }
 
-        .chart-bg {
-            position: absolute;
-            inset: 0;
-            opacity: 0.2;
-            background-image: linear-gradient(0deg, transparent 95%, rgba(0, 255, 0, 0.5) 95%);
-            background-size: 10px 10px;
-        }
-
-        .golden-chart-line {
-            position: absolute;
-            inset: 0;
-            stroke: #00ff00;
-            stroke-width: 2;
-            fill: none;
-            opacity: 0.3;
-            transform: scaleY(0.5) translateY(30px);
-        }
+        /* Chart effects removed */
 
         .golden-svg {
             position: relative;
@@ -391,9 +411,9 @@
 
         /* --- Corgi: Crown, Royal --- */
         .btn-corgi {
-            background: #2a1505;
-            border-color: #ff8800;
-            box-shadow: 0 0 15px rgba(255, 136, 0, 0.3);
+            background: transparent;
+            border: none;
+            box-shadow: none;
         }
 
         .corgi-svg {
@@ -437,9 +457,9 @@
 
         /* --- Shiba Inu: Safety Helmet, Shield --- */
         .btn-shiba {
-            background: #2a1a10;
-            border-color: #4488ff;
-            box-shadow: 0 0 10px rgba(68, 136, 255, 0.4) inset;
+            background: transparent;
+            border: none;
+            box-shadow: none;
         }
 
         .shiba-svg {
@@ -469,33 +489,13 @@
             opacity: 0.8;
         }
 
-        .safety-shield-aura {
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
-            border: 2px solid rgba(68, 136, 255, 0.5);
-            box-shadow: 0 0 15px rgba(68, 136, 255, 0.3);
-            animation: shield-pulse 3s infinite;
-        }
-
-        @keyframes shield-pulse {
-
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
-        }
+        /* Shield effects removed */
 
         /* --- Pitbull: Hard Hat, Hustle --- */
+        /* --- Pitbull: Hard Hat, Hustle --- */
         .btn-pitbull {
-            background: #222222;
-            border-color: #888;
+            background: transparent;
+            border: none;
         }
 
         .pitbull-svg {
@@ -532,6 +532,158 @@
             stroke-width: 1;
             opacity: 0.5;
         }
+
+        /* Animation adjust for full body */
+        @keyframes jump {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-40px) scaleY(1.05);
+            }
+
+            /* Higher jump */
+        }
+
+        .walking-legs {
+            animation: walk 1s infinite linear;
+        }
+
+        @keyframes walk {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(10deg);
+            }
+
+            50% {
+                transform: rotate(0deg);
+            }
+
+            75% {
+                transform: rotate(-10deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* --- Animation Classes --- */
+        .anim-jump .char-btn {
+            animation: jump 0.6s ease-in-out infinite;
+        }
+
+        @keyframes jump {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px) scaleY(1.05);
+            }
+        }
+
+        .anim-damage .char-btn {
+            animation: damage 0.4s ease-in-out infinite;
+        }
+
+        @keyframes damage {
+
+            0%,
+            100% {
+                transform: translateX(0);
+                filter: drop-shadow(0 0 0 red);
+            }
+
+            25% {
+                transform: translateX(-5px) rotate(-5deg);
+                filter: drop-shadow(0 0 10px red);
+            }
+
+            75% {
+                transform: translateX(5px) rotate(5deg);
+                filter: drop-shadow(0 0 10px red);
+            }
+        }
+
+        .anim-collect .char-btn {
+            animation: collect 0.8s ease-out infinite;
+        }
+
+        @keyframes collect {
+            0% {
+                transform: scale(1);
+                filter: brightness(1) drop-shadow(0 0 0 gold);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.3) drop-shadow(0 0 15px gold);
+                /* Removed box-shadow, added drop-shadow */
+            }
+
+            100% {
+                transform: scale(1);
+                filter: brightness(1) drop-shadow(0 0 0 gold);
+            }
+        }
+
+        .anim-collect .char-btn::after {
+            content: '+💰';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: floatUp 0.8s ease-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -40px);
+                opacity: 0;
+            }
+        }
+
+        .anim-lose .char-btn {
+            filter: grayscale(100%) contrast(1.2);
+            transform: translateY(10px) rotate(10deg);
+            transition: all 0.5s ease;
+        }
+
+        .anim-win .char-btn {
+            animation: win 0.6s infinite alternate;
+            box-shadow: none;
+            /* Removed box-shadow */
+        }
+
+        @keyframes win {
+            0% {
+                transform: translateY(0) rotate(-5deg);
+                filter: drop-shadow(0 0 10px var(--neon-blue));
+            }
+
+            100% {
+                transform: translateY(-15px) rotate(5deg);
+                filter: drop-shadow(0 0 25px var(--neon-blue));
+            }
+        }
+
+
 
         .btn-tech {
             width: 150px;
@@ -908,7 +1060,7 @@
             <button class="nav-tab" data-tab="shop">SHOP</button>
         </div>
     </div>
-    
+
     <canvas id="sky-canvas" class="layer"></canvas>
     <canvas id="stars-canvas" class="layer"></canvas>
     <canvas id="aurora-canvas" class="layer"></canvas>
@@ -922,296 +1074,354 @@
 
     <!-- Character selection -->
     <div id="character-selection">
-    <svg width="0" height="0">
-        <defs>
-            <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#cc0000" />
-                <stop offset="25%" stop-color="#006600" />
-                <stop offset="50%" stop-color="#000066" />
-                <stop offset="75%" stop-color="#ffff00" />
-                <stop offset="100%" stop-color="#cc0000" />
-            </linearGradient>
-            <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#00f3ff" />
-                <stop offset="100%" stop-color="#d400ff" />
-            </linearGradient>
-        </defs>
-    </svg>
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="tartanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#cc0000" />
+                    <stop offset="25%" stop-color="#006600" />
+                    <stop offset="50%" stop-color="#000066" />
+                    <stop offset="75%" stop-color="#ffff00" />
+                    <stop offset="100%" stop-color="#cc0000" />
+                </linearGradient>
+                <linearGradient id="lensGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#00f3ff" />
+                    <stop offset="100%" stop-color="#d400ff" />
+                </linearGradient>
+            </defs>
+        </svg>
 
-    <h2>Character Selection</h2>
-    <div class="container char-body">
-        <!-- Scotty -->
-        <div class="char-card">
-            <div class="char-btn btn-scotty" title="Scotty" onclick="selectCharacter('scotty')">
-                <div class="scotty-bg"></div>
-                <svg class="scotty-svg" viewBox="0 0 100 100">
-                    <!-- Body with Tartan Coat -->
-                    <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
-                    <rect x="28" y="50" width="44" height="25" class="tartan-coat" rx="3" />
+        <h2>Character Selection</h2>
+        <div class="container char-body">
+            <!-- Scotty -->
+            <div class="char-card">
+                <div class="char-btn btn-scotty" title="Scotty" onclick="selectCharacter('scotty')">
+                    <div class="scotty-bg"></div>
+                    <svg class="scotty-svg" viewBox="0 0 100 100">
+                        <!-- Body -->
+                        <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
 
-                    <!-- Head (black, shaggy) -->
-                    <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
+                        <!-- Legs -->
+                        <rect x="30" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
+                            rx="6" />
+                        <rect x="60" y="75" width="12" height="15" fill="#0d0d0d" stroke="#333" stroke-width="2"
+                            rx="6" />
 
-                    <!-- Pointed Ears -->
-                    <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
-                    <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
-                    <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
-                    <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
+                        <!-- Tartan Bandana -->
+                        <path d="M30 50 L 70 50 L 50 78 Z" fill="url(#tartanGradient)" stroke="#000" stroke-width="1" />
 
-                    <!-- Shaggy fur texture -->
-                    <path d="M32 38 Q 28 42, 30 46" class="shaggy-fur" />
-                    <path d="M68 38 Q 72 42, 70 46" class="shaggy-fur" />
-                    <path d="M35 50 Q 32 54, 34 58" class="shaggy-fur" />
-                    <path d="M65 50 Q 68 54, 66 58" class="shaggy-fur" />
+                        <!-- Head (black, shaggy) -->
+                        <ellipse cx="50" cy="42" rx="20" ry="22" class="terrier-head" />
 
-                    <!-- Distinctive Beard (Scottish Terrier feature) -->
-                    <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
-                    <path d="M40 58 Q 38 62, 40 64" class="shaggy-fur" />
-                    <path d="M60 58 Q 62 62, 60 64" class="shaggy-fur" />
+                        <!-- Pointed Ears -->
+                        <path d="M35 30 L 32 15 L 40 28 Z" class="terrier-head" />
+                        <path d="M65 30 L 68 15 L 60 28 Z" class="terrier-head" />
+                        <path d="M36 28 L 34 20 L 39 28 Z" class="ear-highlight" />
+                        <path d="M64 28 L 66 20 L 61 28 Z" class="ear-highlight" />
 
-                    <!-- Snout -->
-                    <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
+                        <!-- Shaggy fur texture -->
+                        <path d="M32 38 Q 28 42, 30 46" class="shaggy-fur" />
+                        <path d="M68 38 Q 72 42, 70 46" class="shaggy-fur" />
+                        <path d="M35 50 Q 32 54, 34 58" class="shaggy-fur" />
+                        <path d="M65 50 Q 68 54, 66 58" class="shaggy-fur" />
 
-                    <!-- Eyes (bright for contrast) -->
-                    <circle cx="43" cy="42" r="3" class="scotty-eye" />
-                    <circle cx="57" cy="42" r="3" class="scotty-eye" />
-                    <circle cx="43" cy="42" r="1.5" fill="#fff" />
-                    <circle cx="57" cy="42" r="1.5" fill="#fff" />
+                        <!-- Distinctive Beard -->
+                        <ellipse cx="50" cy="56" rx="14" ry="10" class="scotty-beard" />
+                        <path d="M40 58 Q 38 62, 40 64" class="shaggy-fur" />
+                        <path d="M60 58 Q 62 62, 60 64" class="shaggy-fur" />
 
-                    <!-- Nose -->
-                    <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
-                </svg>
-            </div>
-            <div class="char-name">Scotty</div>
-            <div class="char-desc">Thrifty, Steady, Risk-Averse</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">95%</span></div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">130%</span>
+                        <!-- Snout -->
+                        <ellipse cx="50" cy="52" rx="8" ry="6" class="scotty-snout" />
+
+                        <!-- Eyes -->
+                        <circle cx="43" cy="42" r="3" class="scotty-eye" />
+                        <circle cx="57" cy="42" r="3" class="scotty-eye" />
+                        <circle cx="43" cy="42" r="1.5" fill="#fff" />
+                        <circle cx="57" cy="42" r="1.5" fill="#fff" />
+
+                        <!-- Nose -->
+                        <ellipse cx="50" cy="52" rx="3" ry="2.5" fill="#000" />
+                    </svg>
                 </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">120%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">SCOTTISH SAVINGS</div>
-                    <div class="ability-desc">• Auto-banks 10% of year-end balance<br>• Locked for 2 years, +15% passive
-                        income<br>• Early withdrawal burns 20%</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Husky -->
-        <div class="char-card">
-            <div class="char-btn btn-husky" title="Husky" onclick="selectCharacter('husky')">
-                <svg class="husky-svg" viewBox="0 0 100 100">
-                    <path class="husky-fur"
-                        d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
-                    <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
-                    <path class="husky-fur" d="M40 30 L 50 50 L 60 30" /> <!-- Forehead blaze -->
-                    <!-- Sunglasses -->
-                    <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
-                    <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
-                    <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
-                    <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" /> <!-- Bridge -->
-                    <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" /> <!-- Glint -->
-                </svg>
-            </div>
-            <div class="char-name">Husky</div>
-            <div class="char-desc">High Risk, Crypto Bro Energy</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">140%</span>
-                </div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">65%</span>
-                </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">75%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">MOON SHOT</div>
-                    <div class="ability-desc">• Coin value: $65–$160 (volatile)<br>• Boom: +2× coin value<br>• Crash:
-                        −30% year-end balance<br>• Consecutive crashes stack</div>
+                <div class="char-name">Scotty</div>
+                <div class="char-desc">Thrifty, Steady, Risk-Averse</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">95%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">130%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">120%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">SCOTTISH SAVINGS</div>
+                        <div class="ability-desc">• Auto-banks 10% of year-end balance<br>• Locked for 2 years, +15%
+                            passive
+                            income<br>• Early withdrawal burns 20%</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Golden -->
-        <div class="char-card">
-            <div class="char-btn btn-golden" title="Golden Retriever" onclick="selectCharacter('golden')">
-                <div class="chart-bg"></div>
-                <!-- Background Chart Line -->
-                <svg class="golden-chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <polyline points="0,80 20,70 40,75 60,50 80,40 100,20" />
-                </svg>
-                <svg class="golden-svg" viewBox="0 0 100 100">
-                    <!-- Head -->
-                    <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
-                    <!-- Ears -->
-                    <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
-                    <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
-                    <!-- Snout -->
-                    <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
-                    <!-- Eyes -->
-                    <circle cx="42" cy="42" r="3" fill="#000" />
-                    <circle cx="58" cy="42" r="3" fill="#000" />
-                    <!-- Nose -->
-                    <circle cx="50" cy="55" r="3" fill="#000" />
-                    <!-- Reading Glasses -->
-                    <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5"
-                        fill="rgba(255,255,255,0.2)" />
-                    <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5"
-                        fill="rgba(255,255,255,0.2)" />
-                    <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
-                </svg>
-            </div>
-            <div class="char-name">Golden Retriever</div>
-            <div class="char-desc">Patient, Compound Interest</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">75%</span></div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">95%</span>
+            <!-- Husky -->
+            <div class="char-card">
+                <div class="char-btn btn-husky" title="Husky" onclick="selectCharacter('husky')">
+                    <svg class="husky-svg" viewBox="0 0 100 100">
+                        <path class="husky-fur"
+                            d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
+                        <path class="husky-mask" d="M20 40 L 40 30 L 50 50 L 60 30 L 80 40 L 75 60 Q 50 70, 25 60 Z" />
+                        <path class="husky-fur" d="M40 30 L 50 50 L 60 30" /> <!-- Forehead blaze -->
+                        <!-- Sunglasses -->
+                        <path class="glasses-frame" d="M25 45 H 75 V 55 H 25 Z" />
+                        <rect class="glasses-lens" x="27" y="47" width="20" height="6" />
+                        <rect class="glasses-lens" x="53" y="47" width="20" height="6" />
+                        <path d="M50 48 L 50 45" stroke="#111" stroke-width="2" /> <!-- Bridge -->
+                        <path class="crypto-glint" d="M30 47 L 35 47 L 32 53 Z" /> <!-- Glint -->
+                        <!-- Snout -->
+                        <ellipse cx="50" cy="58" rx="10" ry="8" fill="#e0e0e0" /> <!-- Muzzle base -->
+                        <path d="M42 55 Q 50 52, 58 55" fill="none" stroke="#ddd" stroke-width="1" />
+                        <ellipse cx="50" cy="54" rx="4" ry="3" fill="#111" /> <!-- Nose -->
+                        <!-- Confident Smirk -->
+                        <path d="M45 62 Q 50 64, 55 61" fill="none" stroke="#111" stroke-width="1.5" />
+                    </svg>
                 </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">165%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">COMPOUND MAGIC</div>
-                    <div class="ability-desc">• Year-end balance +10% growth<br>• Passive skills unlock 1 year
-                        early<br>• 70% balance locked each year</div>
+                <div class="char-name">Husky</div>
+                <div class="char-desc">High Risk, Crypto Bro Energy</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">140%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">65%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">75%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">MOON SHOT</div>
+                        <div class="ability-desc">• Coin value: $65–$160 (volatile)<br>• Boom: +2× coin value<br>•
+                            Crash:
+                            −30% year-end balance<br>• Consecutive crashes stack</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Corgi -->
-        <div class="char-card">
-            <div class="char-btn btn-corgi" title="Corgi" onclick="selectCharacter('corgi')">
-                <svg class="corgi-svg" viewBox="0 0 100 100">
-                    <!-- Head -->
-                    <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
-                    <!-- Ears -->
-                    <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-                    <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
-                    <!-- White Blaze -->
-                    <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
-                    <!-- Eyes (properly centered) -->
-                    <circle cx="42" cy="47" r="3" fill="#000" />
-                    <circle cx="58" cy="47" r="3" fill="#000" />
-                    <!-- Nose -->
-                    <circle cx="50" cy="58" r="3" fill="#000" />
-                    <!-- Smile -->
-                    <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
-                    <!-- Crown -->
-                    <g class="crown">
-                        <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
-                        <circle class="gem" cx="50" cy="24" r="2" />
-                    </g>
-                </svg>
+            <!-- Golden -->
+            <div class="char-card">
+                <div class="char-btn btn-golden" title="Golden Retriever" onclick="selectCharacter('golden')">
+                    <svg class="golden-svg" viewBox="0 0 100 120">
+                        <!-- Tail (Wagging) -->
+                        <path d="M65 95 Q 80 85, 75 75" stroke="#d4af37" stroke-width="6" fill="none"
+                            stroke-linecap="round">
+                            <animate attributeName="d"
+                                values="M65 95 Q 80 85, 75 75; M65 95 Q 80 105, 85 95; M65 95 Q 80 85, 75 75" dur="1s"
+                                repeatCount="indefinite" />
+                        </path>
+
+                        <!-- Body (Sitting) -->
+                        <path d="M30 110 L 40 60 Q 50 50, 60 60 L 70 110 Z" class="golden-fur" />
+
+                        <!-- Paws -->
+                        <ellipse cx="35" cy="110" rx="8" ry="5" class="golden-fur" />
+                        <ellipse cx="65" cy="110" rx="8" ry="5" class="golden-fur" />
+                        <ellipse cx="40" cy="100" rx="6" ry="10" class="golden-fur" />
+                        <ellipse cx="60" cy="100" rx="6" ry="10" class="golden-fur" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="45" rx="22" ry="25" class="golden-fur" />
+                            <!-- Ears -->
+                            <ellipse cx="30" cy="40" rx="8" ry="15" class="golden-fur" />
+                            <ellipse cx="70" cy="40" rx="8" ry="15" class="golden-fur" />
+                            <!-- Snout/Face -->
+                            <ellipse cx="50" cy="55" rx="12" ry="10" class="golden-snoot" />
+                            <circle cx="42" cy="42" r="3" fill="#000" />
+                            <circle cx="58" cy="42" r="3" fill="#000" />
+                            <circle cx="50" cy="55" r="3" fill="#000" />
+                            <!-- Glasses -->
+                            <circle class="glass-lens-clear" cx="42" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                                fill="rgba(255,255,255,0.2)" />
+                            <circle class="glass-lens-clear" cx="58" cy="42" r="6" stroke="#000" stroke-width="1.5"
+                                fill="rgba(255,255,255,0.2)" />
+                            <line x1="48" y1="42" x2="52" y2="42" stroke="#000" stroke-width="1.5" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Golden Retriever</div>
+                <div class="char-desc">Patient, Compound Interest</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">75%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">95%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">165%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">COMPOUND MAGIC</div>
+                        <div class="ability-desc">• Year-end balance +10% growth<br>• Passive skills unlock 1 year
+                            early<br>• 70% balance locked each year</div>
+                    </div>
+                </div>
             </div>
-            <div class="char-name">Corgi</div>
-            <div class="char-desc">Royalty, Born with Advantages</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">120%</span>
+
+            <!-- Corgi -->
+            <div class="char-card">
+                <div class="char-btn btn-corgi" title="Corgi" onclick="selectCharacter('corgi')">
+                    <svg class="corgi-svg" viewBox="0 0 100 120">
+                        <!-- Cape -->
+                        <path d="M30 60 L 70 60 L 80 110 L 20 110 Z" fill="#990000" stroke="#ffd700" stroke-width="1" />
+
+                        <!-- Tail (Nub) -->
+                        <ellipse cx="73" cy="80" rx="3" ry="5" class="corgi-fur-orange" transform="rotate(-20 73 80)" />
+
+                        <!-- Body (Long) -->
+                        <rect x="25" y="70" width="50" height="30" rx="10" class="corgi-fur-orange" />
+                        <rect x="35" y="70" width="30" height="30" rx="10" class="corgi-fur-white" opacity="0.5" />
+
+                        <!-- Stubby Legs -->
+                        <rect x="25" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+                        <rect x="67" y="95" width="8" height="15" rx="3" class="corgi-fur-orange" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 15)">
+                            <ellipse cx="50" cy="50" rx="20" ry="22" class="corgi-fur-orange" />
+                            <ellipse cx="35" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                            <ellipse cx="65" cy="35" rx="7" ry="12" class="corgi-fur-orange" />
+                            <ellipse cx="50" cy="50" rx="8" ry="15" class="corgi-fur-white" />
+                            <circle cx="42" cy="47" r="3" fill="#000" />
+                            <circle cx="58" cy="47" r="3" fill="#000" />
+                            <circle cx="50" cy="58" r="3" fill="#000" />
+                            <!-- Smile -->
+                            <path d="M45 62 Q 50 65, 55 62" fill="none" stroke="#000" stroke-width="1.5" />
+                            <!-- Crown -->
+                            <g class="crown">
+                                <path d="M35 28 L 38 20 L 43 25 L 50 18 L 57 25 L 62 20 L 65 28 L 35 28 Z" />
+                                <circle class="gem" cx="50" cy="24" r="2" />
+                            </g>
+                        </g>
+                    </svg>
                 </div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">110%</span>
-                </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">135%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">INHERITANCE</div>
-                    <div class="ability-desc">• Starts Year 1 with 500 coins ($50K)<br>• Random windfalls (+100–300
-                        coins)<br>• Skill costs +15% yearly<br>• Lifestyle siphons 5% balance yearly</div>
+                <div class="char-name">Corgi</div>
+                <div class="char-desc">Royalty, Born with Advantages</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">120%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">110%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">135%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">INHERITANCE</div>
+                        <div class="ability-desc">• Starts Year 1 with 500 coins ($50K)<br>• Random windfalls (+100–300
+                            coins)<br>• Skill costs +15% yearly<br>• Lifestyle siphons 5% balance yearly</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Shiba Inu -->
-        <div class="char-card">
-            <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
-                <div class="safety-shield-aura"></div>
-                <svg class="shiba-svg" viewBox="0 0 100 100">
-                    <!-- Head (round, fox-like) -->
-                    <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
+            <!-- Shiba Inu -->
+            <div class="char-card">
+                <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
+                    <div class="safety-shield-aura"></div>
+                    <svg class="shiba-svg" viewBox="0 0 100 120">
+                        <!-- Curled Tail - Moved Closer & Down -->
+                        <path d="M72 85 Q 85 75, 80 65" stroke="#d4834f" stroke-width="6" fill="none"
+                            stroke-linecap="round" />
 
-                    <!-- Pointed Ears (characteristic feature) -->
-                    <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
-                    <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
-                    <!-- Ear inner (cream) -->
-                    <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
-                    <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
+                        <!-- Body -->
+                        <rect x="30" y="60" width="40" height="40" rx="10" class="fur-orange" />
+                        <rect x="35" y="65" width="30" height="30" rx="8" class="fur-cream" opacity="0.6" />
 
-                    <!-- Cream cheeks/muzzle area -->
-                    <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
+                        <!-- Legs -->
+                        <rect x="32" y="90" width="8" height="20" rx="3" class="fur-orange" />
+                        <rect x="60" y="90" width="8" height="20" rx="3" class="fur-orange" />
 
-                    <!-- Eyes (small, alert) -->
-                    <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
-                    <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
-
-                    <!-- Nose -->
-                    <circle cx="50" cy="60" r="3" fill="#000" />
-
-                    <!-- Smile (characteristic Shiba smile) -->
-                    <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
-
-                    <!-- Safety Helmet -->
-                    <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
-                    <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
-                    <rect x="49" y="22" width="2" height="10" class="helmet-stripe" />
-                </svg>
-            </div>
-            <div class="char-name">Shiba Inu</div>
-            <div class="char-desc">Cautious, Emergency Fund</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">85%</span></div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">150%</span>
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="50" rx="22" ry="24" class="fur-orange" />
+                            <!-- Ears -->
+                            <path d="M35 35 L 30 20 L 40 30 Z" class="fur-orange" />
+                            <path d="M65 35 L 70 20 L 60 30 Z" class="fur-orange" />
+                            <path d="M35 32 L 32 22 L 38 30 Z" class="fur-cream" />
+                            <path d="M65 32 L 68 22 L 62 30 Z" class="fur-cream" />
+                            <!-- Face -->
+                            <ellipse cx="50" cy="58" rx="14" ry="10" class="fur-cream" />
+                            <ellipse cx="42" cy="48" rx="3" ry="4" fill="#000" />
+                            <ellipse cx="58" cy="48" rx="3" ry="4" fill="#000" />
+                            <circle cx="50" cy="60" r="3" fill="#000" />
+                            <path d="M42 64 Q 50 68, 58 64" fill="none" stroke="#000" stroke-width="1.5" />
+                            <!-- Helmet -->
+                            <ellipse cx="50" cy="28" rx="18" ry="10" class="helmet-yellow" />
+                            <rect x="32" y="34" width="36" height="4" class="helmet-yellow" rx="2" />
+                        </g>
+                    </svg>
                 </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">95%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
-                    <div class="ability-desc">• Starts with 3 Guard Tokens yearly<br>• Tokens negate
-                        obstacles/events<br>• Debt/penalties reduced 40%<br>• Skill costs +10%, no high-risk bonuses
+                <div class="char-name">Shiba Inu</div>
+                <div class="char-desc">Cautious, Emergency Fund</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">85%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span
+                            class="stat-value">150%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">95%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">SELF-PRESERVATION INSTINCT</div>
+                        <div class="ability-desc">• Starts with 3 Guard Tokens yearly<br>• Tokens negate
+                            obstacles/events<br>• Debt/penalties reduced 40%<br>• Skill costs +10%, no high-risk bonuses
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pitbull -->
+            <div class="char-card">
+                <div class="char-btn btn-pitbull" title="Pitbull" onclick="selectCharacter('pitbull')">
+                    <svg class="pitbull-svg" viewBox="0 0 100 120">
+                        <!-- Body (Muscular) -->
+                        <rect x="25" y="60" width="50" height="40" rx="10" class="fur-grey" />
+                        <path d="M30 65 L 70 65" stroke="#555" stroke-width="1" opacity="0.5" />
+                        <!-- chest definition -->
+
+                        <!-- Legs -->
+                        <rect x="25" y="90" width="12" height="20" rx="3" class="fur-grey" />
+                        <rect x="63" y="90" width="12" height="20" rx="3" class="fur-grey" />
+
+                        <!-- Head -->
+                        <g transform="translate(0, 10)">
+                            <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
+                            <!-- Ears -->
+                            <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
+                            <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
+                            <!-- Chest Patch -->
+                            <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
+                            <!-- Face -->
+                            <circle cx="42" cy="48" r="3" fill="#000" />
+                            <circle cx="58" cy="48" r="3" fill="#000" />
+                            <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
+                            <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
+                            <!-- Hard Hat -->
+                            <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
+                            <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
+                            <!-- Collar -->
+                            <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
+                            <circle cx="50" cy="68" r="3" fill="#ffd700" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="char-name">Pitbull</div>
+                <div class="char-desc">Pure Hustle, No Shortcuts</div>
+                <div class="char-stats">
+                    <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">105%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">90%</span>
+                    </div>
+                    <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
+                            class="stat-value">65%</span></div>
+                    <div class="special-ability">
+                        <div class="ability-name">OVERTIME GRIND</div>
+                        <div class="ability-desc">• Active collection +25% coin value<br>• High combos boost income
+                            permanently<br>• Missed runs reduce combo bonuses<br>• No passive scaling bonuses</div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Pitbull -->
-        <div class="char-card">
-            <div class="char-btn btn-pitbull" title="Pitbull" onclick="selectCharacter('pitbull')">
-                <svg class="pitbull-svg" viewBox="0 0 100 100">
-                    <!-- Head (wide and muscular) -->
-                    <ellipse cx="50" cy="50" rx="25" ry="22" class="fur-grey" />
-                    <!-- Ears (small, folded) -->
-                    <ellipse cx="32" cy="38" rx="6" ry="8" class="fur-grey" />
-                    <ellipse cx="68" cy="38" rx="6" ry="8" class="fur-grey" />
-                    <!-- White chest patch -->
-                    <ellipse cx="50" cy="65" rx="10" ry="8" class="fur-white-patch" />
-                    <!-- Eyes -->
-                    <circle cx="42" cy="48" r="3" fill="#000" />
-                    <circle cx="58" cy="48" r="3" fill="#000" />
-                    <!-- Nose -->
-                    <ellipse cx="50" cy="58" rx="4" ry="3" fill="#000" />
-                    <!-- Mouth -->
-                    <path d="M45 60 L 50 62 L 55 60" fill="none" stroke="#000" stroke-width="2" />
-                    <!-- Hard Hat -->
-                    <ellipse cx="50" cy="32" rx="22" ry="10" class="hard-hat" />
-                    <rect x="28" y="38" width="44" height="4" class="hard-hat" rx="1" />
-                    <!-- Collar -->
-                    <ellipse cx="50" cy="68" rx="18" ry="5" class="collar-blue" />
-                    <circle cx="50" cy="68" r="3" fill="#ffd700" />
-                </svg>
-            </div>
-            <div class="char-name">Pitbull</div>
-            <div class="char-desc">Pure Hustle, No Shortcuts</div>
-            <div class="char-stats">
-                <div class="stat-row"><span class="stat-label">💰 Income</span><span class="stat-value">105%</span>
-                </div>
-                <div class="stat-row"><span class="stat-label">🛡️ Defense</span><span class="stat-value">90%</span>
-                </div>
-                <div class="stat-row"><span class="stat-label">📊 Passive Income</span><span
-                        class="stat-value">65%</span></div>
-                <div class="special-ability">
-                    <div class="ability-name">OVERTIME GRIND</div>
-                    <div class="ability-desc">• Active collection +25% coin value<br>• High combos boost income
-                        permanently<br>• Missed runs reduce combo bonuses<br>• No passive scaling bonuses</div>
-                </div>
-            </div>
-        </div>
-    </div>
     </div>
 
     <!-- Path selection -->
@@ -1243,6 +1453,8 @@
             </div>
         </div>
     </div>
+
+
 
     <script>
         const c = document.getElementById('c');
@@ -1333,7 +1545,7 @@
             playerClass = characterType;
 
             // Set stats based on character
-            switch(characterType) {
+            switch (characterType) {
                 case 'scotty':
                     income = 0.95;
                     defense = 1.30;
