@@ -13,8 +13,14 @@
     <div id="ui">
         <h1>CAPITAL K9</h1>
         <button id="playBtn">PLAY</button>
+        <p style="color:#94a3b8;font-size:0.9rem;margin-top:1rem">🔊 Unmute for sound!</p>
     </div>
     <div class="timer-display">15</div>
+
+    <!-- Hold to Play Overlay -->
+    <div id="hold-to-play-overlay">
+        <div class="hold-to-play-text">HOLD TO PLAY</div>
+    </div>
 
     <div id="shop-ui">
         <button id="closeShop">RESUME</button>
@@ -264,9 +270,8 @@
         <h2>Character Selection</h2>
         <div class="container char-body">
             <!-- Scotty -->
-            <div class="char-card">
-                <div class="char-btn btn-scotty" title="Scotty" onclick="selectCharacter('scotty')">
-                    <div class="scotty-bg"></div>
+            <div class="char-card" onclick="selectCharacter('scotty')">
+                <div class="char-btn btn-scotty" title="Scotty">
                     <svg class="scotty-svg" viewBox="0 0 100 100">
                         <!-- Body -->
                         <ellipse cx="50" cy="65" rx="22" ry="18" class="terrier-body" />
@@ -331,8 +336,8 @@
             </div>
 
             <!-- Husky -->
-            <div class="char-card">
-                <div class="char-btn btn-husky" title="Husky" onclick="selectCharacter('husky')">
+            <div class="char-card" onclick="selectCharacter('husky')">
+                <div class="char-btn btn-husky" title="Husky">
                     <svg class="husky-svg" viewBox="0 0 100 100">
                         <path class="husky-fur"
                             d="M20 40 L 30 10 L 40 30 L 60 30 L 70 10 L 80 40 L 85 70 Q 50 85, 15 70 Z" />
@@ -369,8 +374,8 @@
             </div>
 
             <!-- Golden -->
-            <div class="char-card">
-                <div class="char-btn btn-golden" title="Golden Retriever" onclick="selectCharacter('golden')">
+            <div class="char-card" onclick="selectCharacter('golden')">
+                <div class="char-btn btn-golden" title="Golden Retriever">
                     <svg class="golden-svg" viewBox="0 0 100 120">
                         <!-- Tail (Wagging) -->
                         <path d="M65 95 Q 80 85, 75 75" stroke="#d4af37" stroke-width="6" fill="none"
@@ -426,8 +431,8 @@
             </div>
 
             <!-- Shiba Inu -->
-            <div class="char-card">
-                <div class="char-btn btn-shiba" title="Shiba Inu" onclick="selectCharacter('shiba')">
+            <div class="char-card" onclick="selectCharacter('shiba')">
+                <div class="char-btn btn-shiba" title="Shiba Inu">
                     <svg class="shiba-svg" viewBox="0 0 100 120">
                         <!-- Curled Tail - Moved Closer & Down -->
                         <path d="M72 85 Q 85 75, 80 65" stroke="#d4834f" stroke-width="6" fill="none"

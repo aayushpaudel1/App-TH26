@@ -12,7 +12,6 @@ const GAME_INTERVAL = 15;
 let leaderboardTimer = 0;
 
 // Player Class Stats
-let playerClass = null;
 let income = 1.0;
 let defense = 1.0;
 let passiveIncome = 1.0;
@@ -206,15 +205,19 @@ document.addEventListener('click', (e) => {
 // ========== INPUT HANDLING ==========
 function startThrust(e) {
     const t = e.target;
-    if (t.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) return;
+    if (t.closest('button,#shop-ui,.char-btn,.char-card,.path-option,.option-card,.skill-node,.nav-tab')) return;
     if (e.type === 'touchstart') e.preventDefault();
+    if (gameState === 'READY') {
+        hideHoldToPlayOverlay();
+        return;
+    }
     player.isThrusting = true;
     if (gameState === 'PLAYING') playJump();
     if (gameState === 'GAMEOVER') resetGame();
 }
 
 function endThrust(e) {
-    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
+    if (e.type === 'touchend' && !e.target.closest('button,#shop-ui,.char-btn,.char-card,.path-option,.option-card,.skill-node,.nav-tab')) e.preventDefault();
     player.isThrusting = false;
 }
 
@@ -240,7 +243,6 @@ function showCharacterSelection() {
 
 function selectCharacter(characterType) {
     player.character = characterType;
-    playerClass = characterType;
     switch (characterType) {
         case 'scotty': income = 0.95; defense = 1.30; passiveIncome = 1.20; break;
         case 'husky': income = 1.40; defense = 0.65; passiveIncome = 0.75; break;
@@ -294,6 +296,16 @@ function selectPath(pathType) {
     playerPath = pathType;
     document.getElementById('path-selection').classList.remove('active');
     initializeGame();
+    showHoldToPlayOverlay();
+}
+
+function showHoldToPlayOverlay() {
+    gameState = 'READY';
+    document.getElementById('hold-to-play-overlay').classList.add('active');
+}
+
+function hideHoldToPlayOverlay() {
+    document.getElementById('hold-to-play-overlay').classList.remove('active');
     startRunner();
 }
 
@@ -376,14 +388,16 @@ function drawLeaderboard() {
         ctx.fillRect(w / 2 - cw / 2, y, cw, ch);
         ctx.fillStyle = ip ? '#facc15' : '#94a3b8';
         ctx.font = "bold 16px 'Segoe UI',sans-serif";
-        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 25);
+        ctx.textAlign = 'left';
+        ctx.fillText(`#${i + 1}`, w / 2 - cw / 2 + 15, y + 23);
         ctx.fillStyle = ip ? '#fff' : e.alive ? '#e2e8f0' : '#ef4444';
-        ctx.font = (ip ? 'bold ' : '600 ') + "18px 'Segoe UI',sans-serif";
-        ctx.fillText(e.name, w / 2 - cw / 2 + 80, y + 48);
+        ctx.font = (ip ? 'bold ' : '600 ') + "20px 'Segoe UI',sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(e.name, w / 2, y + 23);
         ctx.textAlign = 'right';
         ctx.fillStyle = e.alive ? '#4ade80' : '#ef4444';
-        ctx.font = "bold 18px 'Segoe UI',sans-serif";
-        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 38);
+        ctx.font = "bold 16px 'Segoe UI',sans-serif";
+        ctx.fillText(e.alive ? `$${Math.floor(e.netWorth).toLocaleString()}` : 'BANKRUPT', w / 2 + cw / 2 - 15, y + 23);
         ctx.textAlign = 'left';
     }
 }
@@ -392,7 +406,7 @@ function drawLeaderboard() {
 function showLeaderboard() {
     updateLeaderboardBots();
     gameState = 'LEADERBOARD';
-    leaderboardTimer = 180;
+    leaderboardTimer = 300;
     stopMu('game');
     startLeaderboardMusic();
 }
@@ -921,7 +935,7 @@ const OBSTACLE_EMOJI = ['💳','🏠','☕','📱','🎓','🎰','🏥'];
 class Obstacle {
     constructor() {
         this.emoji = OBSTACLE_EMOJI[Math.floor(Math.random() * OBSTACLE_EMOJI.length)];
-        this.scale = 0.5 + Math.random() * 1.0;
+        this.scale = 0.8 + Math.random() * 0.5;
         this.w = 50 * this.scale;
         this.h = 50 * this.scale;
         this.x = w;
@@ -1010,15 +1024,12 @@ function drawUI() {
     ctx.save();
     ctx.translate(padding, padding + 60);
     ctx.fillStyle = '#ffd700';
-    ctx.font = 'bold 40px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('$', 15, 30);
-    ctx.fillStyle = '#ffd700';
     ctx.font = 'bold 32px Courier New';
     ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 4;
-    ctx.fillText(`$${player.money}`, 40, 30);
+    ctx.fillText(`$${player.money}`, 0, 0);
     ctx.shadowBlur = 0;
     ctx.restore();
 }
@@ -1059,33 +1070,16 @@ function checkCollisions() {
 }
 
 // ========== DOG SPRITE (Title Screen) ==========
-const dogSprite = [
-    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1],
-    [0,0,0,0,0,0,0,0,0,1,1,3,1,1,1,1],
-    [1,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1],
-    [0,1,1,1,0,0,0,0,0,0,1,1,1,1,1,0],
-    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-    [0,0,0,1,1,2,2,1,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,2,2,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0],
-    [0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0]
-];
+const dogSprite = '0000000000001001000000000000000100010000000000001111110000000000010131110100000000001111110001100000000011111000011111111111100000011221111111000000011221111110000000011111111110000000011111111110000000011000000011000000011000000011000000011000000011';
 
 function drawDog(x, y, scale) {
     ctx.save();
     ctx.translate(x, y + Math.sin(Date.now() / 300) * 10);
-    for (let r = 0; r < dogSprite.length; r++) {
-        for (let col = 0; col < dogSprite[r].length; col++) {
-            const val = dogSprite[r][col];
-            if (val === 0) continue;
-            ctx.fillStyle = val === 1 ? '#111' : (val === 2 ? '#d00' : '#fff');
-            ctx.fillRect(col * scale, r * scale, scale, scale);
-        }
+    for (let i = 0; i < 224; i++) {
+        const v = +dogSprite[i];
+        if (!v) continue;
+        ctx.fillStyle = v === 1 ? '#111' : v === 2 ? '#d00' : '#fff';
+        ctx.fillRect((i % 16) * scale, (i / 16 | 0) * scale, scale, scale);
     }
     ctx.restore();
 }
@@ -1174,7 +1168,7 @@ function loop() {
     if (gameState === 'TITLE') {
         const scale = Math.min(w, h) / 40;
         drawDog((w - 16 * scale) / 2, h * 0.25, scale);
-    } else if (gameState === 'CHARACTERS' || gameState === 'PATHS') {
+    } else if (gameState === 'CHARACTERS' || gameState === 'PATHS' || gameState === 'READY') {
         Juice.postDraw();
         requestAnimationFrame(loop);
         return;
